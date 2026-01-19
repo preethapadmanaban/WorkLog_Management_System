@@ -9,6 +9,10 @@ import java.util.List;
 
 import com.worklog.entities.Employee;
 
+/**
+ * This a employee dao class that 
+ */
+
 public class EmployeeDAO {
 	
 public static List<Employee> getAllMembers(){
