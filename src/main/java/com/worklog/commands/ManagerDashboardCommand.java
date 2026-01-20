@@ -29,7 +29,7 @@ public class ManagerDashboardCommand implements Command{
 		
 		if(session == null) {
 			return false;
-		}
+		} 
 		
 		String role = (String) session.getAttribute("role");
 		

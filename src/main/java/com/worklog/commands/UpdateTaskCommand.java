@@ -40,7 +40,7 @@ public class UpdateTaskCommand implements Command{
 			
 			if(description == null) {
 				return false;
-			}
+			} 
 			
 			if(assignedStr == null) {
 				return false;

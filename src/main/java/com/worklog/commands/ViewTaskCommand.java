@@ -22,7 +22,7 @@ public class ViewTaskCommand implements Command{
 		String role = (String)session.getAttribute("role");
 		
 		if(role != null && role.equalsIgnoreCase("Manager")) {
-			
+			 
 			String idStr = request.getParameter("id");
 
 			if (idStr == null || idStr.trim().isEmpty()) {

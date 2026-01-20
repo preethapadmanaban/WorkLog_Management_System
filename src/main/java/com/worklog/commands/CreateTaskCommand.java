@@ -29,7 +29,7 @@ import jakarta.servlet.http.HttpSession;
 				String assignedStr = request.getParameter("assigned_to");
 				String deadlineStr = request.getParameter("deadline");
 				
-				if(title == null || title.trim().isEmpty()) {
+				if(title == null || title.trim().isEmpty()) { 
 					return false;
 				}
 				

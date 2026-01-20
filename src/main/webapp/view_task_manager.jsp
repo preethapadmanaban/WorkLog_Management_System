@@ -10,7 +10,7 @@
 <body>
 	
 	<%
-		Task t = (Task) request.getAttribute("task");
+		Task t = (Task) request.getAttribute("task"); 
 	%>
 
 	
