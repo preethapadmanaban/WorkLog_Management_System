@@ -87,6 +87,11 @@ public class Task {
 
 		}
 
+		public Builder withId(int id) {
+			this.id = id;
+			return this;
+		}
+
 		public Builder withTitle(String title) {
 			this.title = title;
 			return this;
