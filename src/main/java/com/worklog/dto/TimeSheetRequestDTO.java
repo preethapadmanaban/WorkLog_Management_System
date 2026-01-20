@@ -6,16 +6,18 @@ public class TimeSheetRequestDTO {
 	
 	private int manager_id;
 	private LocalDate work_date;
+	private double total_hours;
 	private TimeSheetEntryDTO[] entries;
 
 	public TimeSheetRequestDTO() {
 
 	}
 
-	public TimeSheetRequestDTO(int manager_id, LocalDate work_date, TimeSheetEntryDTO[] entries) {
+	public TimeSheetRequestDTO(int manager_id, LocalDate work_date, double total_hours, TimeSheetEntryDTO[] entries) {
 		super();
 		this.manager_id = manager_id;
 		this.work_date = work_date;
+		this.total_hours = total_hours;
 		this.entries = entries;
 	}
 
@@ -43,5 +45,13 @@ public class TimeSheetRequestDTO {
 		this.entries = entries;
 	}
 
+
+	public double getTotal_hours() {
+		return total_hours;
+	}
+
+	public void setTotal_hours(double total_hours) {
+		this.total_hours = total_hours;
+	}
 
 }

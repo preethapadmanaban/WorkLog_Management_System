@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.worklog.dto.TimeSheetRequestDTO;
 import com.worklog.entities.TimeSheet;
 import com.worklog.interfaces.Command;
+import com.worklog.repositories.TimeSheetDAO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,7 +29,21 @@ public class CreateTimeSheetCommand implements Command {
 		timesheet.setWork_date(timeSheetRequest.getWork_date());
 		timesheet.setStatus("PENDING");
 		timesheet.setEmployee_id(Integer.parseInt((String) request.getSession().getAttribute("id")));
-		// timesheet.setTotal_hours();
+		timesheet.setTotal_hours(timeSheetRequest.getTotal_hours());
+		TimeSheetDAO repo = new TimeSheetDAO();
+		boolean flag = repo.createTimeSheet(timesheet);
+		if (flag == false) {
+			request.setAttribute("message", "Time sheet creation failed, please try again!");
+			return false;
+		}
+
+		int timeSheetId = repo.getTimeSheetId(timesheet);
+
+		if (timeSheetId == -1) {
+			request.setAttribute("message", "Time sheet creation failed, please try again!");
+			return false;
+		}
+
 		return false;
 	}
 
