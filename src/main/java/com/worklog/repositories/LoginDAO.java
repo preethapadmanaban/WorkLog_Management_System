@@ -14,7 +14,7 @@ public class LoginDAO {
 	Employee employee=null;
 	public Optional<Employee> getDetails(String emailId) {
 		
-		String sql="select * from employee where email=?";
+		String sql="select * from employees where email=?";
 		try(Connection conn=DataSourceFactory.getConnectionInstance();
 			PreparedStatement pstmt=conn.prepareStatement(sql)){
 			pstmt.setString(1, emailId);
