@@ -5,11 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import com.worklog.db.DataSourceFactory;
-import com.worklog.entities.TimeSheetEntry;
+import com.worklog.dto.TimeSheetEntryDTO;
 
 public class TimeSheetEntryDAO {
 
-	private String createQuery(TimeSheetEntry[] entries) {
+	private String createQuery(TimeSheetEntryDTO[] entries) {
 
 		StringBuilder builder = new StringBuilder();
 		builder.append("INSERT INTO timesheet_entries(timesheet_id, task_id, notes, hours_spent) values ");
@@ -22,13 +22,13 @@ public class TimeSheetEntryDAO {
 		return builder.toString();
 	}
 
-	private PreparedStatement bindQuery(int timeSheetId, PreparedStatement pstmt, TimeSheetEntry[] entries) throws SQLException {
+	private PreparedStatement bindQuery(int timeSheetId, PreparedStatement pstmt, TimeSheetEntryDTO[] entries) throws SQLException {
 
 		// initially set to 1 to bind the value to the sql query. increase to place dynamiclly with respect to the size of the entries
 		// array.
 		int binder = 1;
 
-		for (TimeSheetEntry entry : entries) {
+		for (TimeSheetEntryDTO entry : entries) {
 			// here we increment the binder to place the value in the correct position.
 			pstmt.setInt(binder++, timeSheetId);
 			pstmt.setInt(binder++, entry.getTask_id());
@@ -40,7 +40,7 @@ public class TimeSheetEntryDAO {
 		return pstmt;
 	}
 
-	public boolean createTimeSheetEntries(int timeSheetId, TimeSheetEntry[] entries) {
+	public boolean createTimeSheetEntries(int timeSheetId, TimeSheetEntryDTO[] entries) {
 
 		String sql = createQuery(entries);
 
