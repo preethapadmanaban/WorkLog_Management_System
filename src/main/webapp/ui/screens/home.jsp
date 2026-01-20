@@ -10,5 +10,6 @@
 
 <h1>Homepage</h1>
 <h2>Hello, <%=request.getSession().getAttribute("name") %></h2> 
+
 </body>
 </html>
