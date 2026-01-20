@@ -1,14 +1,24 @@
 package com.worklog.commands;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.worklog.entities.Employee;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.EmployeeDAO;
+import com.worklog.repositories.PendingTimesheetCount;
+import com.worklog.repositories.TaskDAO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+
+/**
+ * ManagerDashboardCommand - this class is command class.This holds the logic for the Manager dashboard.
+ * @author Preetha
+ * @since 19-01-2026
+ */
 
 public class ManagerDashboardCommand implements Command{
 
@@ -25,9 +35,18 @@ public class ManagerDashboardCommand implements Command{
 		
 		if(role != null && role.equalsIgnoreCase("Manager")) {
 			
-			EmployeeDAO dao = new EmployeeDAO();
 			List<Employee> emp_list =  EmployeeDAO.getAllMembers();
 			session.setAttribute("Members", emp_list);
+			
+			int timesheet_count = PendingTimesheetCount.pendingTimeSheet();
+			session.setAttribute("PendingTimesheetCount", timesheet_count);
+			
+			TaskDAO dao = new TaskDAO();
+			Map<String, Integer> status = dao.getTaskCountByStatus().orElse(new HashMap<>());
+			session.setAttribute("Assigned", status.getOrDefault("Assigned", 0));
+			session.setAttribute("InProgress", status.getOrDefault("In Progress", 0));
+			session.setAttribute("Completed", status.getOrDefault("Completed", 0));
+			
 			
 			return true;
 		}

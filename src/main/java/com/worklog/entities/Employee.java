@@ -2,6 +2,12 @@ package com.worklog.entities;
 
 import java.sql.Timestamp;
 
+/**
+ * This is employee pojo class
+ * @author Preetha
+ * @since 19-01-2026
+ */
+
 public class Employee {
 	
 	private int id;
