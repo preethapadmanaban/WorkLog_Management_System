@@ -6,8 +6,8 @@ import java.time.LocalDate;
 /**
  * This class is a entity class for task.
  * 
- * @author Vasudevan.
- * @since 19-02-2026
+ * @author Vasudevan Tamizharasan.
+ * @since 19-01-2026
  * 
  */
 public class Task {
