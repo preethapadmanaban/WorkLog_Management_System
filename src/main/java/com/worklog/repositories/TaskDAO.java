@@ -18,7 +18,7 @@ import com.worklog.entities.Task;
  * 
  * TaskDAO - used for managing crud operations on tasks in this application on database.
  * 
- * @author Vasudevan Tamizharasan
+ * @author Vasudevan Tamizharasan, Preetha
  * @since 20-01-2026
  * 
  */

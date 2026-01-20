@@ -29,7 +29,7 @@ public class PendingTimesheetCount {
 			    count = rs.getInt(1);
 			}
 
-			System.out.println("Pending Timesheets Count = " + count);
+			// System.out.println("Pending Timesheets Count = " + count);
 		}
 		catch(SQLException e) {
 			e.printStackTrace();
