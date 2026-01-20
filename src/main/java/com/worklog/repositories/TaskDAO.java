@@ -6,7 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.worklog.db.DataSourceFactory;
@@ -53,5 +55,31 @@ public class TaskDAO {
 			return Optional.ofNullable(null);
 		}
 
+	}
+	
+	public Optional<Map<String, Integer>> getTaskCountByStatus() {
+		
+		String sql = "select status, count(*) from tasks group by status";
+		
+		try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
+			
+			ResultSet rs = pstmt.executeQuery();
+			
+			Map<String, Integer> map = new HashMap<>();
+			
+			while(rs.next()) {
+				
+				String status = rs.getString("status");
+				int count = rs.getInt(2);
+				
+				map.put(status,count);
+			}
+			
+			return Optional.of(map);
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+			return Optional.ofNullable(null);
+		}
 	}
 }
