@@ -23,6 +23,7 @@ public static List<Employee> getAllMembers(){
 		
 		List<Employee> list = new ArrayList<>();
 		
+
 		String sql = "select id,name,role from employees where role = 'Employee' ";
 		
 		try(Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)){
@@ -33,8 +34,7 @@ public static List<Employee> getAllMembers(){
 				int id = rs.getInt("id");
 				String name = rs.getString("name");
 				String role = rs.getString("role");
-				
-				list.add(new Employee(id,name,role));
+				//list.add(new Employee(id,name,role));
 			}
 			 
 		}
