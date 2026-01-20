@@ -21,6 +21,7 @@ public class LoginCommand implements Command{
 		session.setAttribute("name", employee.getName());
 		session.setAttribute("role", employee.getRole());
 		HttpServletRequest request=(HttpServletRequest) session.getServletContext();
+		@SuppressWarnings("unchecked")
 		Map<String,String> logged_in_users=(Map<String, String>)request.getServletContext().getAttribute("logged_in_users");
 		if(logged_in_users==null) {
 			logged_in_users=new HashMap<String, String>();

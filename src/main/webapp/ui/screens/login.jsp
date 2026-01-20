@@ -7,7 +7,7 @@
 </head>
 <body>
 	<!-- <form action="login" method="post" class="mx-auto my-20 max-w-md space-y-4 rounded-lg border border-gray-300 bg-gray-100 p-6"> -->
-	<form action="controller" method="post" class="mx-auto my-20 max-w-md space-y-4 rounded-lg border border-gray-300 bg-gray-100 p-6">
+	<form action="/worklog/controller" method="post" class="mx-auto my-20 max-w-md space-y-4 rounded-lg border border-gray-300 bg-gray-100 p-6">
 	  
 		<div class="flex justify-center">
 		 	<label class="block text-md text-2xl font-medium text-gray-900">Login page</label>
@@ -16,8 +16,8 @@
 			<input class="mt-1 w-full rounded-lg border-black-700 border p-2" value="login" name="action" id="action" type="text" hidden>
 		</div>
 		<div>
-			<label class="block text-sm font-medium text-gray-900" for="email">Username</label>
-			<input class="mt-1 w-full rounded-lg border-black-700 border p-2" name="username" id="username" type="text" placeholder="Your username" required>
+			<label class="block text-sm font-medium text-gray-900" for="email">Email</label>
+			<input class="mt-1 w-full rounded-lg border-black-700 border p-2" name="email" id="email" type="email" placeholder="Your email" required>
 		</div>
 		
 		<div>
