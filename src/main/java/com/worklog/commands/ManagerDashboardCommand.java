@@ -36,16 +36,16 @@ public class ManagerDashboardCommand implements Command{
 		if(role != null && role.equalsIgnoreCase("Manager")) {
 			
 			List<Employee> emp_list =  EmployeeDAO.getAllMembers();
-			session.setAttribute("Members", emp_list);
+			request.setAttribute("Members", emp_list);
 			
 			int timesheet_count = PendingTimesheetCount.pendingTimeSheet();
-			session.setAttribute("PendingTimesheetCount", timesheet_count);
+			request.setAttribute("PendingTimesheetCount", timesheet_count);
 			
 			TaskDAO dao = new TaskDAO();
 			Map<String, Integer> status = dao.getTaskCountByStatus().orElse(new HashMap<>());
-			session.setAttribute("Assigned", status.getOrDefault("Assigned", 0));
-			session.setAttribute("InProgress", status.getOrDefault("In Progress", 0));
-			session.setAttribute("Completed", status.getOrDefault("Completed", 0));
+			request.setAttribute("Assigned", status.getOrDefault("Assigned", 0));
+			request.setAttribute("InProgress", status.getOrDefault("In Progress", 0));
+			request.setAttribute("Completed", status.getOrDefault("Completed", 0));
 			
 			
 			return true;

@@ -43,7 +43,7 @@ public class Task {
 		return title;
 	}
 
-	public String description() {
+	public String getDescription() {
 		return description;
 	}
 

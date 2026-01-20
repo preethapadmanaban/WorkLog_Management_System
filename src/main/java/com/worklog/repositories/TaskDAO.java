@@ -1,6 +1,7 @@
 package com.worklog.repositories;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -82,4 +83,103 @@ public class TaskDAO {
 			return Optional.ofNullable(null);
 		}
 	}
+	
+	public boolean createTask(String title, String description, int assignedTo, String status, Date deadline, int createdBy) {
+
+		String sql = "insert into tasks (title, description, assigned_to, status, deadline, created_by, created_at, updated_at) "
+				+ "values (?, ?, ?, ?, ?, ?, current_timestamp, current_timestamp)";
+
+		try (Connection con = DataSourceFactory.getConnectionInstance();
+				PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+			pstmt.setString(1, title);
+			pstmt.setString(2, description);
+			pstmt.setInt(3, assignedTo);
+			pstmt.setString(4, status);
+			pstmt.setDate(5, deadline);
+			pstmt.setInt(6, createdBy);
+
+			int rows = pstmt.executeUpdate();
+
+			return rows > 0;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public Optional<List<Task>> getAllTasks() {
+		
+		List<Task> task = new ArrayList<>();
+		
+		String sql = "select * from tasks";
+		
+		try(Connection con = DataSourceFactory.getConnectionInstance();
+						PreparedStatement pstmt = con.prepareStatement(sql)){
+			
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				task.add(mapToTask(rs));
+			}
+			return Optional.of(task);
+			
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+			return Optional.ofNullable(null);
+		}
+	}
+	
+	public Optional<Task> getTaskById(int id){
+		
+		String sql = "select * from tasks where id = ?";
+		
+		try(Connection con = DataSourceFactory.getConnectionInstance();
+						PreparedStatement pstmt = con.prepareStatement(sql)){
+			
+			pstmt.setInt(1, id);
+			
+			ResultSet rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				Task task = mapToTask(rs);
+				return Optional.of(task);
+			}
+			
+			return Optional.empty();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+			return Optional.ofNullable(null);
+		}
+		
+	}
+
+	public boolean updateTask(int id, String title, String description, int assigned_to, String status, Date deadline) {
+		
+		String sql = "update task set title=?, description=?, assigned_to=?, status=?, deadline=? where id = ?";
+		
+		try(Connection con = DataSourceFactory.getConnectionInstance();
+						PreparedStatement pstmt = con.prepareStatement(sql)){
+			
+			pstmt.setString(1, title);
+			pstmt.setString(2, description);
+			pstmt.setInt(3, assigned_to);
+			pstmt.setString(4, status);
+			pstmt.setDate(5, deadline);
+			pstmt.setInt(6, id);
+			
+			int rows = pstmt.executeUpdate();
+			
+			return rows > 0;
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+
 }
