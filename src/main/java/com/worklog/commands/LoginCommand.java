@@ -49,20 +49,20 @@ public class LoginCommand implements Command{
 				return true;
 			}
 			else {
-				num_attempts++;
-				
-				if(num_attempts<MAX_ATTEMPTS) {
-					return false;
-					
-				}else {
-					
-				}
-				request.setAttribute("message","Invalid credentilias!");
+//				num_attempts++;
+//				
+//				if(num_attempts<MAX_ATTEMPTS) {
+//					return false;
+//					
+//				}else {
+//					
+//				}
+				request.setAttribute("message","Invalid credentials!");
 				return false;
 			}
 		}
 		else {
-			request.setAttribute("message","invalid credentilias");
+			request.setAttribute("message","invalid credentials");
 			return false;
 		}
 	}
