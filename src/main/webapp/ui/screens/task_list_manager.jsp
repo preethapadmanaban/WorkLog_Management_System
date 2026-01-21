@@ -16,7 +16,7 @@
 
 	<form action="controller" method="get">
     
-	    <input type="hidden" name="command" value="listTasks">
+	    <input type="hidden" name="action" value="listTasks">
 	
 	    Employee ID:
 	    <input type="text" name="empId" placeholder="e.g. 101">
@@ -62,8 +62,8 @@
         <td><%= t.getDeadline() %></td>
 
         <td>
-            <a href="controller?command=viewTask&id=<%= t.getId() %>">View</a>
-            <a href="controller?command=editTask&id=<%= t.getId() %>">Edit</a>
+            <a href="controller?action=viewTask&id=<%= t.getId() %>">View</a>
+            <a href="controller?action=editTask&id=<%= t.getId() %>">Edit</a>
         </td>
     </tr>
 

@@ -80,6 +80,7 @@ public class TimeSheetEntryDAO {
 			return false;
 		}
 	}
+<<<<<<< Updated upstream
 	public Optional<List<TimeSheetEntry>> getTimeSheetEntries(int timeSheetId){
 		String sql="select * from timesheet_entries where timesheet_id=?";
 		try(Connection conn=DataSourceFactory.getConnectionInstance();
@@ -93,12 +94,45 @@ public class TimeSheetEntryDAO {
 			}
 			return Optional.ofNullable(timeSheetEntries);
 			
+=======
+	
+	public Optional<List<TimeSheetEntry>> getEntriesByTimesheetId(int timesheetId) {
+		
+		String sql = "select * from timesheet_entries where timesheetId = ?";
+		
+		List<TimeSheetEntry> list = new ArrayList<>();
+		
+		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			
+			pstmt.setInt(1, timesheetId);
+			
+			ResultSet rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				
+				TimeSheetEntry sheet_entry = new TimeSheetEntry(
+								rs.getInt("id"),
+								rs.getInt("timesheetId"),
+								rs.getInt("task_id"),
+								rs.getString("notes"),
+								rs.getDouble("hours_spent")
+								);
+				
+				list.add(sheet_entry);
+				
+			}
+			
+			return Optional.of(list);
+>>>>>>> Stashed changes
 			
 		}catch(SQLException e) {
 			e.printStackTrace();
 			return Optional.ofNullable(null);
 		}
+<<<<<<< Updated upstream
 		
+=======
+>>>>>>> Stashed changes
 	}
 
 }

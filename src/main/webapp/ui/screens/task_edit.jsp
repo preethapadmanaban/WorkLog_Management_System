@@ -25,7 +25,7 @@
 	
 	<form action="controller" method="post">
 	
-	    <input type="hidden" name="command" value="updateTask">
+	    <input type="hidden" name="action" value="updateTask">
 	    <input type="hidden" name="id" value="<%= t.getId() %>">
 	
 	    Title:

@@ -1,9 +1,5 @@
 package com.worklog.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.worklog.entities.TimeSheet;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.TimeSheetDAO;
 
@@ -11,16 +7,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-/**
- * TimesheetPendingCommand - This class gives the pending timesheet
- * @author Preetha
- * @since 21-01-2026
- */
-public class TimesheetPendingCommand implements Command{
+public class RejectTimesheetCommand implements Command{
 
 	@Override
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession(false);
+		
 		
 		if(session == null) {
 			return false;
@@ -30,12 +22,26 @@ public class TimesheetPendingCommand implements Command{
 		
 		if(role != null && role.equalsIgnoreCase("Manager")) {
 			
+			String timesheetIdStr = request.getParameter("timesheetId");
+			String commentStr = request.getParameter("manager_comment");
 			
+			if(timesheetIdStr == null) {
+				return false;
+			}
+			
+			int timesheetId = Integer.parseInt(timesheetIdStr);
+			
+			if(commentStr == null) {
+				commentStr = "";
+			}
+			
+			int managerId = (int) session.getAttribute("id");
+
 			TimeSheetDAO dao = new TimeSheetDAO();
-			List<TimeSheet> pendingList = dao.getPendingTimesheet().orElse(new ArrayList<>());
-			request.setAttribute("pending", pendingList);
-			
-			return true;
+
+			boolean updated = dao.updateTimesheetStatus(timesheetId, "rejected", managerId, commentStr, false);
+
+			return updated;
 		}
 		return false;
 	}

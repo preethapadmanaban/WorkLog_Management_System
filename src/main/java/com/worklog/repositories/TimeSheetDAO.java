@@ -147,4 +147,62 @@ public class TimeSheetDAO {
 	}
 
 
+	public Optional<TimeSheet> getTimesheetByid(int id){
+		
+		String sql = "select * from timesheets where id=?";
+		
+		try (Connection conn = DataSourceFactory.getConnectionInstance();
+						PreparedStatement pstmt = conn.prepareStatement(sql)){
+			
+			pstmt.setInt(1, id);
+			ResultSet rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				
+				TimeSheet ts = new TimeSheet(
+								rs.getInt("id"),
+								rs.getInt("employee_id"),
+								rs.getDate("work_date").toLocalDate(),   
+								rs.getDouble("total_hours"),
+								rs.getString("status"),
+								rs.getInt("manager_id"),
+								rs.getString("manager_comment"),
+								rs.getBoolean("approved"),
+								rs.getTimestamp("created_at")
+								);
+				return Optional.of(ts);
+				
+			}
+			return Optional.empty();
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+			return Optional.ofNullable(null);
+		}
+		
+	}
+	
+	public boolean updateTimesheetStatus(int timesheetId, String status, int managerId, String comment, boolean approved) {
+
+		String sql = "update timesheets set status=?, manager_id=?, manager_comment=?, approved=? where id=?";
+
+		try (Connection conn = DataSourceFactory.getConnectionInstance();
+				PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			pstmt.setString(1, status);
+			pstmt.setInt(2, managerId);
+			pstmt.setString(3, comment);
+			pstmt.setBoolean(4, approved);
+			pstmt.setInt(5, timesheetId);
+
+			int rows = pstmt.executeUpdate();
+
+			return rows > 0;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 }

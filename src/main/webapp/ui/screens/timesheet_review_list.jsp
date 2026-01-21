@@ -63,7 +63,7 @@
 	</table>
 	
 	<br>
-	<a href=""controller?command=managerDashboard"">Back to Dashboard</a>
+	<a href=""controller?action=managerDashboard"">Back to Dashboard</a>
 
 </body>
 </html>

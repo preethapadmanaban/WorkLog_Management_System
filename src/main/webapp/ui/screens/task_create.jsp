@@ -13,7 +13,7 @@
 
 	<form action="/worklog/controller" method="post">
 
-    <input type="hidden" name="command" value="createTask">
+    <input type="hidden" name="action" value="createTask">
 
     Title:
     <input type="text" name="title">
