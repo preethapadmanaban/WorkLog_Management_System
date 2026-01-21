@@ -18,7 +18,6 @@ public class ListTasksCommand implements Command{
 		
 		HttpSession session = request.getSession(false);
 		
-		
 		if(session == null) {
 			return false;
 		}
@@ -31,6 +30,7 @@ public class ListTasksCommand implements Command{
 			List<Task> taskList = dao.getAllTasks().orElse(new ArrayList<>());
 			
 			session.setAttribute("tasks", taskList);
+			return true;
 			
 		}
 		
