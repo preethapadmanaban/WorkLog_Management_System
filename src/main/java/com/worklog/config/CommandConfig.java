@@ -4,6 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * CommandConfig - This class is used as in-memory storing object for the command.properties file to product the action based objects.
+ * 
+ * @see com.worklog.factories.CommandFactory;
+ * 
+ * @author Vasudevan
+ * @since 20-01-2026
+ * 
+ */
 public class CommandConfig {
 	private String commandClass;
 	private String successPage;

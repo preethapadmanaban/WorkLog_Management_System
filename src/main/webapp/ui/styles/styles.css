@@ -1,0 +1,14 @@
+@charset "UTF-8";
+
+.task_card{
+	border: 1px solid grey;
+	border-radius: 5px;
+}
+
+.task_card_label{
+	font-weight: bold;
+}
+
+.task_card_value{
+	font-style: italic;
+}

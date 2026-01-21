@@ -6,7 +6,7 @@ import java.time.LocalDate;
 /**
  * This class is a entity class for task.
  * 
- * @author Vasudevan Tamizharasan.
+ * @author Vasudevan.
  * @since 19-01-2026
  * 
  */
@@ -33,6 +33,7 @@ public class Task {
 		this.created_by = builder.created_by;
 		this.created_at = builder.created_at;
 		this.updated_at = builder.updated_at;
+
 	}
 
 	public int getId() {

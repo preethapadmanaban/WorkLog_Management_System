@@ -7,6 +7,17 @@ import java.util.Properties;
 import com.worklog.config.CommandConfig;
 import com.worklog.interfaces.Command;
 
+/**
+ * 
+ * CommandFactory - this class is used for produce command class objects to perform response for client requests with based on the action
+ * provided by the client. action is key point here, because the object were created using the action defined in the command.properties in
+ * the com.worklog.resources.command.properties.
+ * 
+ * @see com.worklog.resources.command.properties for clarity
+ * 
+ * @author Vasudevan
+ * @since 20-02-2026
+ */
 public class CommandFactory {
 
 	public static Properties commandMappings = new Properties();
