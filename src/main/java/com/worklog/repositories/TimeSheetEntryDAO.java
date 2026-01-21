@@ -2,14 +2,34 @@ package com.worklog.repositories;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import com.worklog.db.DataSourceFactory;
 import com.worklog.dto.TimeSheetEntryDTO;
+import com.worklog.entities.TimeSheetEntry;
 
 public class TimeSheetEntryDAO {
+	private int id;
+	private int timesheet_id;
+	private int task_id;
+	private String notes;
+	private double hours_spent;
 
+	private TimeSheetEntry getTimeSheetEntry(ResultSet rs) throws SQLException{
+		TimeSheetEntry timeSheetEntry=new TimeSheetEntry();
+		timeSheetEntry.setId(rs.getInt(id));
+		timeSheetEntry.setHours_spent(rs.getDouble("hours_spent"));
+		timeSheetEntry.setNotes(rs.getString("notes"));
+		timeSheetEntry.setTask_id(rs.getInt("task_id"));
+		timeSheetEntry.setTimesheet_id(rs.getInt("timesheet_id"));
+		return timeSheetEntry;
+	}
 	private String createQuery(TimeSheetEntryDTO[] entries) {
+		
 
 		StringBuilder builder = new StringBuilder();
 		builder.append("INSERT INTO timesheet_entries(timesheet_id, task_id, notes, hours_spent) values ");
@@ -59,6 +79,26 @@ public class TimeSheetEntryDAO {
 			e.printStackTrace();
 			return false;
 		}
+	}
+	public Optional<List<TimeSheetEntry>> getTimeSheetEntries(int timeSheetId){
+		String sql="select * from timesheet_entries where timesheet_id=?";
+		try(Connection conn=DataSourceFactory.getConnectionInstance();
+			 PreparedStatement pstmt=conn.prepareStatement(sql);){
+			pstmt.setInt(1, timeSheetId);
+			ResultSet rs=pstmt.executeQuery();
+			List<TimeSheetEntry> timeSheetEntries=new ArrayList<>();
+			while(rs.next()) {
+				TimeSheetEntry timeSheetEntry=getTimeSheetEntry(rs);
+				timeSheetEntries.add(timeSheetEntry);
+			}
+			return Optional.ofNullable(timeSheetEntries);
+			
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+			return Optional.ofNullable(null);
+		}
+		
 	}
 
 }

@@ -5,10 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-<<<<<<< Updated upstream
-=======
 import java.time.LocalDate;
->>>>>>> Stashed changes
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,15 +27,7 @@ import com.worklog.entities.TimeSheet;
  */
 
 public class TimeSheetDAO {
-//	private int id;
-//	private int employee_id;
-//	private LocalDate work_date;
-//	private double total_hours;
-//	private String status;
-//	private int manager_id;
-//	private String manager_comment;
-//	private boolean approved;
-//	private Timestamp created_at;
+
 	private TimeSheet mapToTimeSheet(ResultSet rs) throws SQLException {
 		TimeSheet timeSheet = new TimeSheet();
 		timeSheet.setApproved(rs.getBoolean("approved"));
@@ -119,7 +108,7 @@ public class TimeSheetDAO {
 			return Optional.ofNullable(timeSheets);
 		}catch(SQLException e) {
 			e.printStackTrace();
-			return null;
+			return Optional.ofNullable(null);
 		}
 		
 	}

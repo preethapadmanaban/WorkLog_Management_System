@@ -51,13 +51,15 @@ tr:hover {
 				<th>total_hours</th>
 				<th>status</th>
 				<th>mannager_comment</th>
+				<th>details</th>
 			</tr>
 			<tr>
-				<td><a href="#">renga</a></td>
-				<td><a href="#">10-12-09</a></td>
-				<td><a href="#">8.00</a></td>
-				<td><a href="#">true</a></td>
-				<td><a href="#">is good</a></td>
+				<td>renga</td>
+				<td>10-12-09</td>
+				<td>8.00</td>
+				<td>true</td>
+				<td>is good</td>
+				<td><a href="#">view</a></td>
 			</tr>
 		</table>
 	</div>
