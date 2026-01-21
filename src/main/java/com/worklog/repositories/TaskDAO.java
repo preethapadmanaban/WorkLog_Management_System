@@ -5,7 +5,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +18,7 @@ import com.worklog.entities.Task;
  * 
  * TaskDAO - used for managing crud operations on tasks in this application on database.
  * 
- * @author Vasudevan Tamizharasan, Preetha
+ * @author Vasudevan, Preetha
  * @since 20-01-2026
  * 
  */
@@ -29,7 +28,7 @@ public class TaskDAO {
 	private Task mapToTask(ResultSet rs) throws SQLException {
 		return new Task.Builder().withId(rs.getInt("id")).withTitle(rs.getString("title")).withDescription(rs.getString("description"))
 						.assignedTo(rs.getInt("assigned_to")).setStatus(rs.getString("status"))
-						.withDeadline(LocalDate.parse(rs.getDate("deadline").toString())).createdBy(rs.getInt("created_by"))
+						.withDeadline(rs.getDate("deadline").toLocalDate()).createdBy(rs.getInt("created_by"))
 						.createdAt(rs.getTimestamp("created_at")).updatedAt(rs.getTimestamp("updated_at")).build();
 	}
 
@@ -182,7 +181,6 @@ public class TaskDAO {
 	}
 	public Optional<List<Task>> getAllCompletedTakEmployeeId(int id){
 		
-
 		List<Task> tasks=new ArrayList<>();
 		String sql = "select * from task where assigned_to=? and status='COMPLETED' ";
 		try(Connection conn = DataSourceFactory.getConnectionInstance();
@@ -202,5 +200,25 @@ public class TaskDAO {
 		}
 	}
 
+	public Optional<List<Task>> getAllPendingTasks(int employeeId) {
+
+		String sql = "SELECT * FROM tasks WHERE assigned_to=? and status='PENDING'";
+
+		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(sql);) {
+			pstmt.setInt(1, employeeId);
+
+			ResultSet rs = pstmt.executeQuery();
+			List<Task> pendingTasks = new ArrayList<Task>();
+			while (rs.next()) {
+				pendingTasks.add(mapToTask(rs));
+			}
+
+			return Optional.ofNullable(pendingTasks);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Optional.ofNullable(null);
+		}
+
+	}
 
 }

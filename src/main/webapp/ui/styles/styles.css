@@ -3,6 +3,8 @@
 .task_card{
 	border: 1px solid grey;
 	border-radius: 5px;
+	width: 150px;
+	padding: 10px 15px;
 }
 
 .task_card_label{
