@@ -5,7 +5,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -191,26 +190,8 @@ public class TaskDAO {
 			pstmt.setInt(1,id );
 			ResultSet rs=pstmt.executeQuery();
 			while(rs.next()) {
-				String title=rs.getString("title");
-				String description=rs.getString("description");
-				int assigned_to=rs.getInt("id");
-				String status=rs.getString("status");
-				Date deadline=rs.getDate("deadline");
-				LocalDate localDate=deadline.toLocalDate();
-				int craetes_by=rs.getInt("created_by");
-				Timestamp created_at=rs.getTimestamp("created_at");
-				Timestamp updated_at=rs.getTimestamp("updated_at");
-				Task task=new Task.Builder()
-								  .withDeadline(localDate)
-								  .assignedTo(id)
-								  .createdAt(created_at)
-								  .createdBy(craetes_by)
-								  .setStatus(status)
-								  .withDescription(description)
-								  .withTitle(title)
-								  .withId(id)
-								  .updatedAt(updated_at).build();
-				tasks.add(task);
+				
+				tasks.add( mapToTask(rs));
 								
 			}
 			return Optional.ofNullable(tasks);
