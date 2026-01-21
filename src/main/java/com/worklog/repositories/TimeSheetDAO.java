@@ -5,6 +5,10 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+<<<<<<< Updated upstream
+=======
+import java.time.LocalDate;
+>>>>>>> Stashed changes
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,12 +20,41 @@ import com.worklog.entities.TimeSheet;
  * 
  * TimeSheetDAO - This class is used for creating time sheets in the database.
  * 
+<<<<<<< Updated upstream
  * @author Vasudevan Tamizharasan, Preetha
+=======
+ * @author Vasudevan,Renganathan
+>>>>>>> Stashed changes
  * @since 20-02-2026
  * 
  */
 
 public class TimeSheetDAO {
+//	private int id;
+//	private int employee_id;
+//	private LocalDate work_date;
+//	private double total_hours;
+//	private String status;
+//	private int manager_id;
+//	private String manager_comment;
+//	private boolean approved;
+//	private Timestamp created_at;
+	private TimeSheet mapToTimeSheet(ResultSet rs) throws SQLException {
+		TimeSheet timeSheet = new TimeSheet();
+		timeSheet.setApproved(rs.getBoolean("approved"));
+		timeSheet.setCreated_at(rs.getTimestamp("reated_at"));
+		timeSheet.setEmployee_id(rs.getInt("employee_id"));
+		timeSheet.setId(rs.getInt("id"));
+		timeSheet.setStatus(rs.getString("status"));
+		timeSheet.setManager_comment(rs.getString("Manager_comment"));
+		timeSheet.setTotal_hours(rs.getDouble("total_hours"));
+		timeSheet.setManager_id(rs.getInt("manager_id"));
+		Date date=rs.getDate("work_date");
+		LocalDate localDate=date.toLocalDate();
+		timeSheet.setWork_date(localDate);
+		return timeSheet;
+	}
+
 
 	public int getTimeSheetId(TimeSheet timesheet) {
 		String sql = "SELECT id FROM timesheets where employee_id = ? and work_date = ? and total_hours = ? and status = ? and manager_id = ?";
@@ -67,6 +100,28 @@ public class TimeSheetDAO {
 			e.printStackTrace();
 			return false;
 		}
+	}
+	
+	public Optional<List<TimeSheet>> getAllApprovedTimeSheet(int id){
+		String sql="select * from Timesheet where employee_id=? and approved=?";
+		try(Connection conn=DataSourceFactory.getConnectionInstance();
+			PreparedStatement pstmt=conn.prepareStatement(sql);
+			){
+			pstmt.setInt(1, id);
+			pstmt.setBoolean(2,true);
+			List<TimeSheet> timeSheets=new ArrayList<>();
+			ResultSet rs=pstmt.executeQuery();
+			while(rs.next()) {
+				TimeSheet timeSheet=mapToTimeSheet(rs);
+				timeSheets.add(timeSheet);
+				
+			}
+			return Optional.ofNullable(timeSheets);
+		}catch(SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 
 	public Optional<List<TimeSheet>> getPendingTimesheet() {
