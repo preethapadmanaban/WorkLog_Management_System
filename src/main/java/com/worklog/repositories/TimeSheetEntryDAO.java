@@ -80,7 +80,7 @@ public class TimeSheetEntryDAO {
 			return false;
 		}
 	}
-<<<<<<< Updated upstream
+
 	public Optional<List<TimeSheetEntry>> getTimeSheetEntries(int timeSheetId){
 		String sql="select * from timesheet_entries where timesheet_id=?";
 		try(Connection conn=DataSourceFactory.getConnectionInstance();
@@ -93,9 +93,13 @@ public class TimeSheetEntryDAO {
 				timeSheetEntries.add(timeSheetEntry);
 			}
 			return Optional.ofNullable(timeSheetEntries);
-			
-=======
-	
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return Optional.ofNullable(null);
+		}
+	}
+		
 	public Optional<List<TimeSheetEntry>> getEntriesByTimesheetId(int timesheetId) {
 		
 		String sql = "select * from timesheet_entries where timesheetId = ?";
@@ -123,16 +127,11 @@ public class TimeSheetEntryDAO {
 			}
 			
 			return Optional.of(list);
->>>>>>> Stashed changes
 			
 		}catch(SQLException e) {
 			e.printStackTrace();
 			return Optional.ofNullable(null);
 		}
-<<<<<<< Updated upstream
-		
-=======
->>>>>>> Stashed changes
 	}
 
 }
