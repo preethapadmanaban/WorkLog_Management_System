@@ -11,7 +11,7 @@
 </head>
 <body>
 
-	<form action="controller" method="post">
+	<form action="/worklog/controller" method="post">
 
     <input type="hidden" name="command" value="createTask">
 

@@ -2,8 +2,8 @@ package com.worklog.servlets;
 
 import java.io.IOException;
 
-import com.worklog.config.CommandConfig;
-import com.worklog.factories.CommandFactory;
+import com.worklog.config.CommandXMLConfig;
+import com.worklog.factories.CommandXMLFactory;
 import com.worklog.interfaces.Command;
 
 import jakarta.servlet.ServletException;
@@ -13,29 +13,32 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * 
- * Controller - Act as front controller servlet for this application and as a unit in command pattern
- * 
- * @author Vasudevan Tamizharasan
- * @since 20-01-2026
- * 
+ * Servlet implementation class Controller
  */
-@WebServlet("/controller")
+@WebServlet("/controller/*")
 public class Controller extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    public Controller() {
-        super();
-    }
+
+	public Controller() {
+		super();
+	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		CommandConfig cmdConfig = null;
+		System.out.println("QueryString: " + request.getQueryString());
+		String action = request.getParameter("action");
+
+		System.out.println("current action: " + action);
+		if (action == null) {
+			response.sendRedirect("/worklog/");
+			return;
+		}
+
+		Command cmd = CommandXMLFactory.getCommand(action);
+		CommandXMLConfig cmdConfig = CommandXMLFactory.configMap.get(action);
+
 		try {
-			String action = request.getParameter("action");
-			Command cmd = CommandFactory.getCommand(action);
 			boolean flag = cmd.execute(request, response);
-			cmdConfig = CommandFactory.configMap.get(action);
 			String forward;
 			if (flag) {
 				forward = cmdConfig.getSuccessPage();
@@ -44,7 +47,8 @@ public class Controller extends HttpServlet {
 			}
 			request.getRequestDispatcher(forward).forward(request, response);
 		} catch (Exception e) {
-			request.getRequestDispatcher(cmdConfig.getFailurePage()).forward(request, response);
+			request.setAttribute("message", e.getMessage());
+			request.getRequestDispatcher(cmdConfig.getFailurePage()).include(request, response);
 		}
 	}
 
@@ -52,5 +56,6 @@ public class Controller extends HttpServlet {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
+
 
 }

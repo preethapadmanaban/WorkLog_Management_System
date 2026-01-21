@@ -21,7 +21,7 @@ public class UpdateTaskCommand implements Command{
 		
 		String role = (String)session.getAttribute("role");
 		
-		if(role != null && role.equalsIgnoreCase("Manager")) {
+		if (role != null && role.equalsIgnoreCase("manager")) {
 			
 			String idStr = request.getParameter("id");
 			String title = request.getParameter("title");
@@ -35,33 +35,42 @@ public class UpdateTaskCommand implements Command{
 			int id = Integer.parseInt(idStr);
 			
 			if(title == null) {
+				request.setAttribute("message", "Invalid title!");
 				return false;
 			}
 			
 			if(description == null) {
+				request.setAttribute("message", "Invalid description!");
 				return false;
 			} 
 			
 			if(assignedStr == null) {
+				request.setAttribute("message", "Invalid assignment employee!");
 				return false;
 			}
 			int assigned_to = Integer.parseInt(assignedStr);
 			
 			if(deadlineStr == null) {
+				request.setAttribute("message", "Invalid deadline!");
 				return false;
 			}
 			Date deadline = Date.valueOf(deadlineStr);
 			
 			String status = request.getParameter("status");
 			if(status == null) {
+				request.setAttribute("message", "Invalid task status!");
 				return false;
 			}
 			
 			TaskDAO dao = new TaskDAO();
 			boolean updated = dao.updateTask(id, title, description, assigned_to, status, deadline);
-			request.setAttribute("message", "Task Updated");
-			
-			return true;
+			if (updated == true) {
+				request.setAttribute("message", "Task Updated");
+				return true;
+			} else {
+				request.setAttribute("message", "Task Updation failed!");
+				return false;
+			}
 		}
 		return false;
 	}

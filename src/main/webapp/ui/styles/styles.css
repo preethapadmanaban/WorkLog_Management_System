@@ -1,10 +1,15 @@
 @charset "UTF-8";
 
 .task_card{
-	border: 1px solid grey;
+/* 	border: 1px solid grey; */
 	border-radius: 5px;
-	width: 150px;
-	padding: 10px 15px;
+    width: 350px;
+    padding: 10px 15px;
+    margin: 10px 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .task_card_label{
@@ -13,4 +18,32 @@
 
 .task_card_value{
 	font-style: italic;
+}
+
+.task_card_row{
+	 margin: 10px 0px;
+}
+
+.deadline{
+	color: orange;
+}
+
+.message{
+	font-weight: bold;
+	color: red;
+	padding: 10px;
+	border: 0.5px solid grey;
+	border-radius: 3px;
+}
+.icon-large{
+	font-size: 45px;
+}
+
+.icon-large:hover{
+	font-size: 50px;
+}
+.edit_button{
+	background: none;
+	border: none;
+	cursor: pointer;
 }

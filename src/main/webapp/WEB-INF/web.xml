@@ -3,7 +3,8 @@
   <display-name>worklog_management_system</display-name>
   <welcome-file-list>
  
-    <welcome-file>ui/screens/index.html</welcome-file>
+    <welcome-file>ui/screens/login.jsp</welcome-file>
+    <welcome-file>ui/screens/sinup.jsp</welcome-file>
   
   </welcome-file-list>
 </web-app>

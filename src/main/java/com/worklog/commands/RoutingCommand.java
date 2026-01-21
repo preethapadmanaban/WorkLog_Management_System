@@ -1,7 +1,5 @@
 package com.worklog.commands;
 
-import java.io.IOException;
-
 import com.worklog.interfaces.Command;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,34 +12,24 @@ public class RoutingCommand implements Command{
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) {
 		
 		HttpSession session = request.getSession(false);
-		
-		if(session == null) {
-			return false;
-		}
-		
+//		
+//		if(session == null) {
+//			request.setAttribute("message", "Access denied!");
+//			return false;
+//		}
+//		
 		String role = (String) session.getAttribute("role");
 		
 		if(role == null) {
+			request.setAttribute("message", "Access denied!");
 			return false;
 		}
-		
-		try {
-			
-			if(role.equalsIgnoreCase("manager")) {
-				response.sendRedirect("manager_dashboard.jsp");
-			}
-			else if(role.equalsIgnoreCase("employee")) {
-				response.sendRedirect("employee_dashboard.jsp");
-			}
-			else {
-				response.sendRedirect("login.jsp");
-			}
-			
-		}catch(IOException e) {
-			e.printStackTrace();
+
+		// see command.properties to success and failure commands for login
+		if (role.equalsIgnoreCase("manager")) {
+			return true;
+		} else {
 			return false;
 		}
-		
-		return true;
 	}
 }

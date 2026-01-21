@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+
+<commands>
+
+	<!-- AUTH -->
+
+	<command name="login">
+		<class>com.worklog.commands.LoginCommand</class>
+		<success>/controller?action=routing</success>
+		<failure>ui/screens/login.jsp</failure>
+	</command>
+	<command name="signup">
+		<class>com.worklog.commands.SignupCommand</class>
+		<success>ui/screens/login.jsp</success>
+		<failure>ui/screens/signup.jsp</failure>
+	</command>
+	<command name="routing">
+		<class>com.worklog.commands.RoutingCommand</class>
+		<success>/controller?action=managerDashboard</success>
+		<failure>/controller?action=employeeDashboard</failure>
+	</command>
+	
+	
+	<!-- DASHBOARD  -->
+	
+	<command name="managerDashboard">
+		<class>com.worklog.commands.ManagerDashboardCommand</class>
+		<success>ui/screens/manager_dashboard.jsp</success>
+		<failure>failure=ui/screens/login.jsp</failure>
+	</command>
+	
+	<command name="employeeDashboard">
+		<class>com.worklog.commands.EmployeeDashboardCommand</class>
+		<success>ui/screens/employee_dashboard.jsp</success>
+		<failure>failure=ui/screens/login.jsp</failure>
+	</command>
+	
+	
+	
+</commands>

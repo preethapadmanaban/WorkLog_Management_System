@@ -9,6 +9,7 @@ import com.worklog.interfaces.Command;
 import com.worklog.repositories.LoginDAO;
 import com.worklog.utils.PasswordProtector;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -16,17 +17,17 @@ import jakarta.servlet.http.HttpSession;
 public class LoginCommand implements Command{
 	 
 	private static final int MAX_ATTEMPTS=3;
+
 	private void setInfoInSession(HttpSession session, Employee employee) {
 		session.setAttribute("id",employee.getId());
 		session.setAttribute("name", employee.getName());
 		session.setAttribute("role", employee.getRole());
-		HttpServletRequest request=(HttpServletRequest) session.getServletContext();
+		ServletContext context = session.getServletContext();
 		@SuppressWarnings("unchecked")
-		Map<String,String> logged_in_users=(Map<String, String>)request.getServletContext().getAttribute("logged_in_users");
+		Map<String, String> logged_in_users = (Map<String, String>) context.getAttribute("logged_in_users");
 		if(logged_in_users==null) {
 			logged_in_users=new HashMap<String, String>();
-			request.getServletContext().setAttribute("logged_in_users", logged_in_users);
-			
+			context.setAttribute("logged_in_users", logged_in_users);
 		}
 		
 	}
@@ -46,6 +47,9 @@ public class LoginCommand implements Command{
 			if(emp.isPresent() && (PasswordProtector.checkPassword(password, emp.get().getPassword()))) {
 				Employee employee=emp.get();
 				setInfoInSession(session,employee);
+				// for route this into routing command.
+				request.setAttribute("action", "routing");
+				// request.set
 				return true;
 			}
 			else {

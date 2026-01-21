@@ -2,40 +2,24 @@ package com.worklog.factories;
 
 import java.io.InputStream;
 import java.util.Map;
-import java.util.Properties;
 
-import com.worklog.config.CommandConfig;
+import com.worklog.config.CommandXMLConfig;
 import com.worklog.interfaces.Command;
 
-/**
- * 
- * CommandFactory - this class is used for produce command class objects to perform response for client requests with based on the action
- * provided by the client. action is key point here, because the object were created using the action defined in the command.properties in
- * the com.worklog.resources.command.properties.
- * 
- * @see com.worklog.resources.command.properties for clarity
- * 
- * @author Vasudevan
- * @since 20-02-2026
- */
-public class CommandFactory {
-
-	public static Properties commandMappings = new Properties();
-	public static Map<String, CommandConfig> configMap = null;
+public class CommandXMLFactory {
+	public static Map<String, CommandXMLConfig> configMap = null;
 	static {
 		// Load properties only once when class is loaded
-		try (InputStream is = CommandFactory.class.getClassLoader().getResourceAsStream("com/worklog/resources/command.properties")) {
+		// try (InputStream is = CommandFactory.class.getClassLoader().getResourceAsStream("com/worklog/resources/commands.properties")) {
+		try (InputStream is = CommandFactory.class.getClassLoader().getResourceAsStream("com/worklog/resources/commands.xml")) {
 
 			if (is == null) {
-				throw new RuntimeException("navigation.properties file not found in classpath");
+				throw new RuntimeException("commands.xml file not found in classpath");
 			}
 
-			commandMappings.load(is);
 			// logger.debug("Porperty file loaded : "+is);
-			if (commandMappings != null) {
-				configMap = CommandConfig.loadConfigurations(commandMappings);
+			configMap = CommandXMLConfig.loadConfigurations(is);
 
-			}
 			// logger.debug("configuration maping created : "+configMap);
 		} catch (Exception e) {
 			// logger.error("Failed to load command mappings : "+e.getMessage());
@@ -43,7 +27,7 @@ public class CommandFactory {
 		}
 	}
 
-	private CommandFactory() {
+	private CommandXMLFactory() {
 		// Prevent object creation
 	}
 

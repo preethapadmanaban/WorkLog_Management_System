@@ -25,9 +25,10 @@ public class EmployeeDashboardCommand implements Command {
 	@Override
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
-		Integer employeeId = session.getAttribute("id") != null ? Integer.parseInt((String) session.getAttribute("id")) : -1;
+		Integer employeeId = session.getAttribute("id") != null ? (Integer) session.getAttribute("id") : -1;
 		if (employeeId == -1) {
 			request.setAttribute("message", "Access denied!");
+			System.out.println("id doesn't present in session.");
 			return false;
 		}
 		TaskDAO taskDao = new TaskDAO();

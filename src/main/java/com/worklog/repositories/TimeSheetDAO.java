@@ -17,11 +17,7 @@ import com.worklog.entities.TimeSheet;
  * 
  * TimeSheetDAO - This class is used for creating time sheets in the database.
  * 
-<<<<<<< Updated upstream
- * @author Vasudevan Tamizharasan, Preetha
-=======
- * @author Vasudevan,Renganathan
->>>>>>> Stashed changes
+ * @author Vasudevan Tamizharasan, Preetha, Renganathan
  * @since 20-02-2026
  * 
  */
