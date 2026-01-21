@@ -18,6 +18,7 @@ public class ListTasksCommand implements Command{
 		
 		HttpSession session = request.getSession(false);
 		
+		
 		if(session == null) {
 			return false;
 		}
