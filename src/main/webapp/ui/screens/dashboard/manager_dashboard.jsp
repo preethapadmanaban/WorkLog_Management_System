@@ -56,7 +56,7 @@
 	<!-- Actions -->
 	<h3>Actions</h3>
 	
-	<a href="controller?action=createTask">Assign New Task</a>
+	<a href="controller?action=createTaskPage">Assign New Task</a>
 	<a href="controller?action=listTasks">View All Tasks</a>
 	<a href="controller?action=pending">Review Timesheets</a>
 	<a href="controller?action=report">Reports</a>

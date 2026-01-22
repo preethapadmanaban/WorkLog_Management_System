@@ -89,6 +89,12 @@
 	  <success>ui/screens/tasks/task_create.jsp</success>
 	  <failure>ui/screens/auth/login.jsp</failure>
 	</command>
+	
+	<command name="createTask">
+	  <class>com.worklog.commands.CreateTaskCommand</class>
+	  <success>/controller?action=listTasks</success>
+	  <failure>ui/screens/tasks/task_create.jsp</failure>
+	</command>
 
 	<command name="timesheet">
 		<class>com.worklog.commands.TimesheetReviewCommand</class>
