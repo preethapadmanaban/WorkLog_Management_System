@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.worklog.db.DataSourceFactory;
+import com.worklog.entities.Report;
 import com.worklog.entities.TimeSheet;
 
 /**
@@ -26,17 +27,19 @@ public class TimeSheetDAO {
 
 	private TimeSheet mapToTimeSheet(ResultSet rs) throws SQLException {
 		TimeSheet timeSheet = new TimeSheet();
-		timeSheet.setApproved(rs.getBoolean("approved"));
-		timeSheet.setCreated_at(rs.getTimestamp("reated_at"));
-		timeSheet.setEmployee_id(rs.getInt("employee_id"));
-		timeSheet.setId(rs.getInt("id"));
-		timeSheet.setStatus(rs.getString("status"));
-		timeSheet.setManager_comment(rs.getString("Manager_comment"));
-		timeSheet.setTotal_hours(rs.getDouble("total_hours"));
-		timeSheet.setManager_id(rs.getInt("manager_id"));
-		Date date=rs.getDate("work_date");
-		LocalDate localDate=date.toLocalDate();
-		timeSheet.setWork_date(localDate);
+		while(rs.next()) {
+			timeSheet.setApproved(rs.getBoolean("approved"));
+			timeSheet.setCreated_at(rs.getTimestamp("reated_at"));
+			timeSheet.setEmployee_id(rs.getInt("employee_id"));
+			timeSheet.setId(rs.getInt("id"));
+			timeSheet.setStatus(rs.getString("status"));
+			timeSheet.setManager_comment(rs.getString("Manager_comment"));
+			timeSheet.setTotal_hours(rs.getDouble("total_hours"));
+			timeSheet.setManager_id(rs.getInt("manager_id"));
+			Date date=rs.getDate("work_date");
+			LocalDate localDate=date.toLocalDate();
+			timeSheet.setWork_date(localDate);
+		}
 		return timeSheet;
 	}
 
@@ -141,6 +144,30 @@ public class TimeSheetDAO {
 			return Optional.of(list);
 
 		} catch (SQLException e) {
+			e.printStackTrace();
+			return Optional.ofNullable(null);
+		}
+	}
+	// tommorrow seen this reportdao
+	public Optional<Report> getReportDailyworkhours(LocalDate fromDate,LocalDate toDate,int id){
+		String sql="select  employee_id, work_date,total_hours,status from timesheet where (work_date=? between work_date=? )and manager_id=?";
+		try(Connection conn=DataSourceFactory.getConnectionInstance();
+			PreparedStatement pstmt=conn.prepareStatement(sql)
+						){
+			pstmt.setDate(1, Date.valueOf(fromDate));
+			pstmt.setDate(1, Date.valueOf(toDate));
+			pstmt.setInt(3, id);
+			Report report=new Report();
+			ResultSet rs=pstmt.executeQuery();
+			while(rs.next()) {
+				report.setEmp_id(rs.getInt("employee_id"));
+				report.setTotalHours(rs.getDouble("totalHours"));
+				report.setWorkDate(rs.getDate("work_date").toLocalDate());
+				
+			}
+			return Optional.of(report);
+			
+		}catch(SQLException e) {
 			e.printStackTrace();
 			return Optional.ofNullable(null);
 		}

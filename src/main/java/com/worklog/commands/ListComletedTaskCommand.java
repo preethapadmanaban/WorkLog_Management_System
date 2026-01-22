@@ -22,15 +22,15 @@ public class ListComletedTaskCommand implements Command{
 			Optional<List<Task>> op=taskDAO.getAllCompletedTakEmployeeId(empid);
 			if(op.isPresent()) {
 				List<Task> tasks=op.get(); 
-				session.setAttribute("taskcompleted", tasks);
+				request.setAttribute("taskcompleted", tasks);
 				return true;
 				
 			}else {
-				session.setAttribute("message", "you have no completed tasks");
+				request.setAttribute("message", "you have no completed tasks");
 				return true;
 			}
 		}else {
-			session.setAttribute("message","access denied");
+			request.setAttribute("message","access denied");
 			return false;
 		}
 		

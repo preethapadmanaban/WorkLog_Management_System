@@ -28,8 +28,7 @@ public class LoginCommand implements Command{
 		if(logged_in_users==null) {
 			logged_in_users=new HashMap<String, String>();
 			context.setAttribute("logged_in_users", logged_in_users);
-		}
-		
+		}		
 	}
 
 	@Override

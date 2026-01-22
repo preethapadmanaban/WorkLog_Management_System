@@ -4,7 +4,8 @@
   <welcome-file-list>
  
     <welcome-file>ui/screens/login.jsp</welcome-file>
-    <welcome-file>ui/screens/sinup.jsp</welcome-file>
+    <welcome-file>ui/screens/signup.jsp</welcome-file>
+    
   
   </welcome-file-list>
 </web-app>

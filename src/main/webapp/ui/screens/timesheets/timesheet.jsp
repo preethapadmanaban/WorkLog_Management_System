@@ -42,6 +42,7 @@ tr:hover {
 </style>
 </head>
 <body>
+	<%List<Employee> employees = (List<Employee>) request.getAttribute("employees"); %>
 	<div class="container">
 		<h2>Approved TimeSheets</h2>
 		<table>
@@ -59,7 +60,7 @@ tr:hover {
 				<td>8.00</td>
 				<td>true</td>
 				<td>is good</td>
-				<td><a href="#">view</a></td>
+				<td><a href="/worklog/controller/">view</a></td>
 			</tr>
 		</table>
 	</div>

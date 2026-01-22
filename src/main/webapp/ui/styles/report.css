@@ -1,0 +1,39 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    
+}
+
+.container {
+    padding: 15px 20px;
+    background:white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display:flex;
+    justify-content: space-between;
+}
+
+.header-form {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-form select,
+.header-form input[type="date"] {
+    height: 36px;
+    padding: 6px 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.header-form button {
+    height: 38px;
+    padding: 0 18px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    mrging:70px;
+}

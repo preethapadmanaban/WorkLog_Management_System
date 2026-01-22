@@ -39,7 +39,7 @@ public class CommandFactory {
 			// logger.debug("configuration maping created : "+configMap);
 		} catch (Exception e) {
 			// logger.error("Failed to load command mappings : "+e.getMessage());
-			throw new RuntimeException("Failed to load command mappings", e);
+			throw new RuntimeException("Failed to load command mappings",e);
 		}
 	}
 
