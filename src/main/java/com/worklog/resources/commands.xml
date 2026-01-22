@@ -84,12 +84,12 @@
 		<failure>/controller?action=employeeDashboard</failure>
 	</command>
 	
-	<command name="createTask">
-		<class>com.worklog.commands.CreateTaskCommand</class>
-		<success>ui/screens/tasks/task_create.jsp</success>
-		<failure>ui/screens/auth/login.jsp</failure>
+	<command name="createTaskPage">
+	  <class>com.worklog.commands.CreateTaskPageCommand</class>
+	  <success>ui/screens/tasks/task_create.jsp</success>
+	  <failure>ui/screens/auth/login.jsp</failure>
 	</command>
-	
+
 	<command name="timesheet">
 		<class>com.worklog.commands.TimesheetReviewCommand</class>
 		<success>ui/screens/timsheets/timesheet_review.jsp</success>
