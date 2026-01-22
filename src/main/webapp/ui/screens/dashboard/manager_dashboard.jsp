@@ -18,7 +18,7 @@
 			</div>
 			
 			<div class="nav_links">
-				<a href="ui/screens/task_create.jsp">Assign New Task</a>
+				<a href="ui/screens/auth/task_create.jsp">Assign New Task</a>
 				<a href="#">View All Tasks</a>
 				<a href="#">Review Timesheets</a>
 				<a href="#">Reports</a>
@@ -56,10 +56,11 @@
 	<!-- Actions -->
 	<h3>Actions</h3>
 	
-	<a href="controller?action=createTask">Assign Task</a> |
-	<a href="controller?action=listTasks">View / Edit Tasks</a> |
-	<a href="controller?action=timesheetPending">Review Pending Timesheets</a> |
-	<a href="controller?action=generateReport">Generate Report</a>
+	<a href="controller?action=createTask">Assign New Task</a>
+	<a href="controller?action=listTasks">View All Tasks</a>
+	<a href="controller?action=pending">Review Timesheets</a>
+	<a href="controller?action=report">Reports</a>
+	<a href="controller?action=logout">Logout</a>
 	
 	<hr>
 	

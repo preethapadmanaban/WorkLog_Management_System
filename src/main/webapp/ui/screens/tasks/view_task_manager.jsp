@@ -38,7 +38,7 @@
 	
 	<br>
 	
-	<a href="controller?command=listTasks">Back to Task List</a>
+	<a href="controller?action=listTasks">Back to Task List</a>
 	
 	<%
 	    }

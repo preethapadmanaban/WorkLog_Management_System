@@ -9,17 +9,17 @@
 	<command name="login">
 		<class>com.worklog.commands.LoginCommand</class>
 		<success>/controller?action=routing</success>
-		<failure>ui/screens/login.jsp</failure>
+		<failure>ui/screens/auth/login.jsp</failure>
 	</command>
 	<command name="signup">
 		<class>com.worklog.commands.SignupCommand</class>
-		<success>ui/screens/login.jsp</success>
-		<failure>ui/screens/signup.jsp</failure>
+		<success>ui/screens/auth/login.jsp</success>
+		<failure>ui/screens/auth/signup.jsp</failure>
 	</command>
 	<command name="logout">
 		<class>com.worklog.commands.LogoutCommand</class>
-		<success>ui/screens/login.jsp</success>
-		<failure>ui/screens/logout.jsp</failure>
+		<success>ui/screens/auth/login.jsp</success>
+		<failure>ui/screens/auth/logout.jsp</failure>
 	</command>
 	
 	<!-- ROUTING -->
@@ -32,8 +32,8 @@
 	
 	<command name="listTaskRouting">
 		<class>com.worklog.commands.ListTaskRoutingCommand</class>
-		<success>ui/screens/task_list_manager.jsp</success>
-		<failure>ui/screens/task_list_employee.jsp</failure>
+		<success>ui/screens/tasks/task_list_manager.jsp</success>
+		<failure>ui/screens/tasks/task_list_employee.jsp</failure>
 	</command>
 	
 	
@@ -41,22 +41,34 @@
 	
 	<command name="managerDashboard">
 		<class>com.worklog.commands.ManagerDashboardCommand</class>
-		<success>ui/screens/manager_dashboard.jsp</success>
-		<failure>ui/screens/login.jsp</failure>
+		<success>ui/screens/dashboard/manager_dashboard.jsp</success>
+		<failure>ui/screens/auth/login.jsp</failure>
 	</command>
 	
 	<command name="employeeDashboard">
 		<class>com.worklog.commands.EmployeeDashboardCommand</class>
-		<success>ui/screens/employee_dashboard.jsp</success>
-		<failure>ui/screens/login.jsp</failure>
+		<success>ui/screens/dashboard/employee_dashboard.jsp</success>
+		<failure>ui/screens/auth/login.jsp</failure>
 	</command>
 	
 	
 	<!-- TASK -->
 	
+	<command name="listTasks">
+	  <class>com.worklog.commands.ListTasksCommand</class>
+	  <success>ui/screens/tasks/task_list_manager.jsp</success>
+	  <failure>ui/screens/auth/login.jsp</failure>
+	</command>
+	
+	<command name="viewTask">
+	  <class>com.worklog.commands.ViewTaskCommand</class>
+	  <success>ui/screens/tasks/view_task_manager.jsp</success>
+	  <failure>ui/screens/tasks/task_list_manager.jsp</failure>
+	</command>
+	
 	<command name="editTaskCommand">
 		<class>com.worklog.commands.EditTaskCommand</class>
-		<success>ui/screens/task_edit.jsp</success>
+		<success>ui/screens/tasks/task_edit.jsp</success>
 		<failure>/controller?action=routing</failure>
 	</command>
 	
@@ -68,8 +80,44 @@
 	
 	<command name="listEmployeeTasks">
 		<class>com.worklog.commands.EmployeeListTaskCommand</class>
-		<success>ui/screens/task_list_employee.jsp</success>
-		<failure>controller?action=employeeDashboard</failure>
+		<success>ui/screens/tasks/task_list_employee.jsp</success>
+		<failure>/controller?action=employeeDashboard</failure>
+	</command>
+	
+	<command name="createTask">
+		<class>com.worklog.commands.CreateTaskCommand</class>
+		<success>ui/screens/tasks/task_create.jsp</success>
+		<failure>ui/screens/auth/login.jsp</failure>
+	</command>
+	
+	<command name="timesheet">
+		<class>com.worklog.commands.TimesheetReviewCommand</class>
+		<success>ui/screens/timsheets/timesheet_review.jsp</success>
+		<failure>ui/screens/timesheets/timesheet_review_list.jsp</failure>
+	</command>
+	
+	<command name="pending">
+		<class>com.worklog.commands.TimesheetPendingCommand</class>
+		<success>ui/screens/timsheets/timesheet_review.jsp</success>
+		<failure>ui/screens/dashboard/manager_dashboard.jsp</failure>
+	</command>
+	
+	<command name="timesheetReview">
+	  <class>com.worklog.commands.TimesheetReviewCommand</class>
+	  <success>ui/screens/timesheets/timesheet_review.jsp</success>
+	  <failure>ui/screens/timesheets/timesheet_review_list.jsp</failure>
+	</command>
+	
+	<command name="approveTimesheet">
+	  <class>com.worklog.commands.ApproveTimesheetCommand</class>
+	  <success>/controller?action=pending</success>
+	  <failure>ui/screens/timesheets/timesheet_review.jsp</failure>
+	</command>
+	
+	<command name="rejectTimesheet">
+	  <class>com.worklog.commands.RejectTimesheetCommand</class>
+	  <success>/controller?action=pending</success>
+	  <failure>ui/screens/timesheets/timesheet_review.jsp</failure>
 	</command>
 	
 </commands>

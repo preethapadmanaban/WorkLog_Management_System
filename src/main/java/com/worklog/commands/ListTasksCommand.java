@@ -35,7 +35,7 @@ public class ListTasksCommand implements Command{
 			TaskDAO dao = new TaskDAO();
 			List<Task> taskList = dao.getAllTasks((int) session.getAttribute("id")).orElse(new ArrayList<Task>());
 			
-			session.setAttribute("tasks", taskList);
+			request.setAttribute("tasks", taskList);
 			return true;
 			
 		}

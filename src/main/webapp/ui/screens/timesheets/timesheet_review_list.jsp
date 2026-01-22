@@ -43,7 +43,7 @@
         <td><%= t.getStatus() %></td>
         <td><%= t.getCreated_at() %></td>
         <td>
-            <a href="controller?command=timesheetReview&id=<%= t.getId() %>">Review</a>
+            <a href="controller?action=timesheetReview&timesheetId=<%= t.getId() %>">Review</a>
         </td>
 	</tr>
 	
