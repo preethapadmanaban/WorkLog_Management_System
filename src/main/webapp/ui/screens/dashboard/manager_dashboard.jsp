@@ -18,11 +18,11 @@
 			</div>
 			
 			<div class="nav_links">
-				<a href="ui/screens/auth/task_create.jsp">Assign New Task</a>
-				<a href="#">View All Tasks</a>
-				<a href="#">Review Timesheets</a>
-				<a href="#">Reports</a>
-				<a href="controller?action=logout">Logout</a>
+				<a href="controller?action=createTaskPage">Assign New Task</a>
+			    <a href="controller?action=listTasks">View All Tasks</a>
+			    <a href="controller?action=pending">Review Timesheets</a>
+			    <a href="controller?action=report">Reports</a>
+			    <a href="controller?action=logout">Logout</a>
 			</div>
 		</nav>
 	</header>
