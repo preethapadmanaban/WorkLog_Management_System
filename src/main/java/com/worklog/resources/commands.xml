@@ -95,16 +95,10 @@
 	  <success>/controller?action=listTasks</success>
 	  <failure>ui/screens/tasks/task_create.jsp</failure>
 	</command>
-
-	<command name="timesheet">
-		<class>com.worklog.commands.TimesheetReviewCommand</class>
-		<success>ui/screens/timsheets/timesheet_review.jsp</success>
-		<failure>ui/screens/timesheets/timesheet_review_list.jsp</failure>
-	</command>
 	
 	<command name="pending">
 		<class>com.worklog.commands.TimesheetPendingCommand</class>
-		<success>ui/screens/timsheets/timesheet_review.jsp</success>
+		<success>ui/screens/timesheets/timesheet_review.jsp</success>
 		<failure>ui/screens/dashboard/manager_dashboard.jsp</failure>
 	</command>
 	
