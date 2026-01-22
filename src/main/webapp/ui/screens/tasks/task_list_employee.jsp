@@ -8,47 +8,76 @@
 <head>
 <meta charset="UTF-8">
 <title>My Tasks</title>
+<link href="/worklog/ui/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="/worklog/ui/css/styles.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-
-	<table border="2">
-		<thead>
-			<tr>
-				<th>S.No</th>
-				<th>Task</th>
-				<th>Description</th>
-				<th>Report To</th>
-				<th>Status</th>
-				<th>Deadline</th>
-				<th>Assigned Date</th>
-			</tr>
-		</thead>
-		<tbody>
-			<% 
-			if(request.getAttribute("tasks") != null)
-			{
-				List<ListTaskDTO> tasks = (List<ListTaskDTO>)request.getAttribute("tasks"); 
-				
-				//for(ListTaskDTO task:tasks)
-				for(int i=0; i<tasks.size(); i++)
+ 	<div class="container-fluid">
+ 		<h1>My Tasks</h1>
+ 	</div>
+ 	<div class="container">
+ 		<table class="table table-hover text-white" id="task_table">
+			<thead>
+				<tr>
+					<th>S.No</th>
+					<th>Task</th>
+					<th>Description</th>
+					<th>Report To</th>
+					<th>
+					<select class="status_select" id="status_select" onchange="selectStatus()">
+					
+						<option selected>Status</option>
+						<option>Completed</option>
+						<option>In Progress</option>
+						<option>Assigned</option>
+			
+					</select></th>
+					<th>Deadline</th>
+					<th>Assigned Date</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% 
+				if(request.getAttribute("tasks") != null)
 				{
-					ListTaskDTO task = tasks.get(i);
+					List<ListTaskDTO> tasks = (List<ListTaskDTO>)request.getAttribute("tasks"); 
+					
+					//for(ListTaskDTO task:tasks)
+					for(int i=0; i<tasks.size(); i++)
+					{
+						ListTaskDTO task = tasks.get(i);
+					%>
+						<tr>
+							<td><%=i+1%></td>
+							<td><%=task.getTitle()%></td>
+							<td><%=task.getDescription()%></td>
+							<td><%=task.getManagerName()%></td>
+							<td><%=task.getStatus()%></td>
+							<td><%=task.getDeadline()%></td>
+							<td><%=task.getCreated_at()%></td>
+						</tr>
+					<%	
+					}	
+				}
 				%>
-					<tr>
-						<td><%=i+1%></td>
-						<td><%=task.getTitle()%></td>
-						<td><%=task.getDescription()%></td>
-						<td><%=task.getManagerName()%></td>
-						<td><%=task.getStatus()%></td>
-						<td><%=task.getDeadline()%></td>
-						<td><%=task.getCreated_at()%></td>
-					</tr>
-				<%	
-				}	
-			}
-			%>
-		</tbody>
-	</table>
+			</tbody>
+		</table>
+ 	</div>
+ 	
+ 	<script>
+ 	
+ 		function selectStatus(){
+ 			let selectTag = document.getElementById("status_select");
+ 			let latestValue = selectTag.value;
+ 			
+ 			selectTag.value = "Status"; 
+ 			console.log("selected value: ", latestValue);
+ 			
+ 			window.location.href = "controller?action=listEmployeeTasks&status=" + latestValue;
+ 		}
+ 		
+ 	</script>
+	
 	
 </body>
 </html>

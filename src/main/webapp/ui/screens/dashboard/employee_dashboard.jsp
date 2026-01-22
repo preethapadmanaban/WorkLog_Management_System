@@ -7,12 +7,12 @@
 <head>
 <meta charset="UTF-8">
 <title>Employee dashboard</title>
-<link rel="stylesheet" href="ui/styles/styles.css" type="text/css">
+<link rel="stylesheet" href="ui/css/styles.css" type="text/css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
 
-<a href="controller?action=listEmployeeTasks">List all tasks</a>
+<a href="controller?action=listEmployeeTasks&status=all">List all tasks</a>
 
 	<div>
 		<%

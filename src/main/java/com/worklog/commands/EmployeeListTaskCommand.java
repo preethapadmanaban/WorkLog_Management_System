@@ -23,9 +23,9 @@ public class EmployeeListTaskCommand implements Command {
 		if (id == -1 || role == null)
 			return false;
 
-
+		String status = request.getParameter("status") == null ? "all" : request.getParameter("status");
 		TaskDAO repo = new TaskDAO();
-		List<ListTaskDTO> tasks = repo.getTasksForEmployee(id).orElse(new ArrayList<ListTaskDTO>());
+		List<ListTaskDTO> tasks = repo.getTasksForEmployee(id, status).orElse(new ArrayList<ListTaskDTO>());
 		request.setAttribute("tasks", tasks);
 
 		return true;

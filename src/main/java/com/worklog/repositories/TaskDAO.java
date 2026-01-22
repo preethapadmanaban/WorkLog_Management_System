@@ -232,12 +232,23 @@ public class TaskDAO {
 
 	}
 
-	public Optional<List<ListTaskDTO>> getTasksForEmployee(int employeeId) {
+	public Optional<List<ListTaskDTO>> getTasksForEmployee(int employeeId, String status) {
 
-		String sql = "select t.title as title, t.description as description, t.status as status, t.deadline as deadline, t.created_at as created_at, e.name as name from tasks t inner join employees e on t.created_by = e.id where t.assigned_to = ?";
+		String sql;
+		if (status.equalsIgnoreCase("All")) {
+			sql = "select t.title as title, t.description as description, t.status as status, t.deadline as deadline, t.created_at as created_at, e.name as name from tasks t inner join employees e on t.created_by = e.id where t.assigned_to = ?";
+		}
+		else {
+			sql = "select t.title as title, t.description as description, t.status as status, t.deadline as deadline, t.created_at as created_at, e.name as name from tasks t inner join employees e on t.created_by = e.id where t.assigned_to = ? and status in (?)";
+		}
+
 		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
 			pstmt.setInt(1, employeeId);
+
+			if (!status.equalsIgnoreCase("All")) {
+				pstmt.setString(2, status);
+			}
 
 			ResultSet rs = pstmt.executeQuery();
 
