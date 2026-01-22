@@ -28,7 +28,7 @@ public class Controller extends HttpServlet {
 		System.out.println("QueryString: " + request.getQueryString());
 		String action = request.getParameter("action");
 
-		System.out.println("current action: " + action);
+		// System.out.println("current action: " + action);
 		if (action == null) {
 			response.sendRedirect("/worklog/");
 			return;

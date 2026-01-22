@@ -22,6 +22,7 @@
 				<a href="#">View All Tasks</a>
 				<a href="#">Review Timesheets</a>
 				<a href="#">Reports</a>
+				<a href="controller?action=logout">Logout</a>
 			</div>
 		</nav>
 	</header>

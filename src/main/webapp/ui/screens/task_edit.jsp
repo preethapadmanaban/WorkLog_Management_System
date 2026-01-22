@@ -9,7 +9,12 @@
 </head>
 <body>
 
-	<%
+	 <%
+	 boolean isEmployee = false;
+	 if(((String)session.getAttribute("role")).equalsIgnoreCase("employee")){
+		 isEmployee = true;
+	 }
+	 
 		Task t = (Task)request.getAttribute("task");
 	%>
 
@@ -21,27 +26,45 @@
 	        <p>No task found.</p>
 	<%
 	    } else {
+	    //System.out.println("from jsp: " + t.getTitle());
 	%>
 	
-	<form action="controller" method="post">
+	<form action="/worklog/controller" method="post">
 	
 	    <input type="hidden" name="action" value="updateTask">
 	    <input type="hidden" name="id" value="<%= t.getId() %>">
 	
 	    Title:
-	    <input type="text" name="title" value="<%= t.getTitle() %>">
+	    <input type="text" name="title" value="<%=t.getTitle()%>" <% if(isEmployee == true){
+	    	%>
+	    	readonly
+	    	<%
+	    		} 
+	    	%> >
 	    <br><br>
 	
 	    Description:
-	    <input type="text" name="description" value="<%= t.getDescription() %>">
+	    <input type="text" name="description" value="<%= t.getDescription() %>" <% if(isEmployee == true){
+	    	%>
+	    	readonly
+	    	<%
+	    } %> >
 	    <br><br>
 	
 	    Assigned To (Employee ID):
-	    <input type="text" name="assigned_to" value="<%= t.getAssigned_to() %>">
+	    <input type="text" name="assigned_to" value="<%= t.getAssigned_to() %>"<% if(isEmployee == true){
+	    	%>
+	    	readonly
+	    	<%
+	    } %> >
 	    <br><br>
 	
 	    Deadline:
-	    <input type="date" name="deadline" value="<%= t.getDeadline() %>">
+	    <input type="date" name="deadline" value="<%= t.getDeadline() %>" <% if(isEmployee == true){
+	    	%>
+	    	readonly
+	    	<%
+	    } %> >
 	    <br><br>
 	
 	    Status:

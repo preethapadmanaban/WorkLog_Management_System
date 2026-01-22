@@ -16,10 +16,24 @@
 		<success>ui/screens/login.jsp</success>
 		<failure>ui/screens/signup.jsp</failure>
 	</command>
+	<command name="logout">
+		<class>com.worklog.commands.LogoutCommand</class>
+		<success>ui/screens/login.jsp</success>
+		<failure>ui/screens/logout.jsp</failure>
+	</command>
+	
+	<!-- ROUTING -->
+	
 	<command name="routing">
 		<class>com.worklog.commands.RoutingCommand</class>
 		<success>/controller?action=managerDashboard</success>
 		<failure>/controller?action=employeeDashboard</failure>
+	</command>
+	
+	<command name="listTaskRouting">
+		<class>com.worklog.commands.ListTaskRoutingCommand</class>
+		<success>ui/screens/task_list_manager.jsp</success>
+		<failure>ui/screens/task_list_employee.jsp</failure>
 	</command>
 	
 	
@@ -28,15 +42,34 @@
 	<command name="managerDashboard">
 		<class>com.worklog.commands.ManagerDashboardCommand</class>
 		<success>ui/screens/manager_dashboard.jsp</success>
-		<failure>failure=ui/screens/login.jsp</failure>
+		<failure>ui/screens/login.jsp</failure>
 	</command>
 	
 	<command name="employeeDashboard">
 		<class>com.worklog.commands.EmployeeDashboardCommand</class>
 		<success>ui/screens/employee_dashboard.jsp</success>
-		<failure>failure=ui/screens/login.jsp</failure>
+		<failure>ui/screens/login.jsp</failure>
 	</command>
 	
 	
+	<!-- TASK -->
+	
+	<command name="editTaskCommand">
+		<class>com.worklog.commands.EditTaskCommand</class>
+		<success>ui/screens/task_edit.jsp</success>
+		<failure>/controller?action=routing</failure>
+	</command>
+	
+	<command name="updateTask">
+		<class>com.worklog.commands.UpdateTaskCommand</class>
+		<success>/controller?action=routing</success>
+		<failure>/controller?action=editTaskCommand</failure>
+	</command>
+	
+	<command name="listEmployeeTasks">
+		<class>com.worklog.commands.EmployeeListTaskCommand</class>
+		<success>ui/screens/task_list_employee.jsp</success>
+		<failure>controller?action=employeeDashboard</failure>
+	</command>
 	
 </commands>

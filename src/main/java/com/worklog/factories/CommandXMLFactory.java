@@ -40,13 +40,13 @@ public class CommandXMLFactory {
 			}
 
 			String commandClassName = configMap.get(action).getCommandClass();
-			System.out.println("commandClassName : " + commandClassName);
+			// System.out.println("commandClassName : " + commandClassName);
 			if (commandClassName == null) {
 				return null;
 			}
 
 			Class<?> clazz = Class.forName(commandClassName);
-			System.out.println("clazz : " + (Command) clazz.getDeclaredConstructor().newInstance());
+			// System.out.println("clazz : " + (Command) clazz.getDeclaredConstructor().newInstance());
 			return (Command) clazz.getDeclaredConstructor().newInstance();
 
 		} catch (Exception e) {

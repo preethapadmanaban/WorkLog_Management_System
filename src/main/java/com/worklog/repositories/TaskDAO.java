@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.worklog.db.DataSourceFactory;
+import com.worklog.dto.ListTaskDTO;
 import com.worklog.entities.Task;
 
 /**
@@ -24,6 +25,15 @@ import com.worklog.entities.Task;
  */
 
 public class TaskDAO {
+
+	private ListTaskDTO mapToListTaskDTO(ResultSet rs) throws SQLException {
+		return new ListTaskDTO.Builder()
+						.withTitle(rs.getString("title"))
+						.withDescription(rs.getString("description"))
+						.withStatus(rs.getString("status")).withDeadline(rs.getDate("deadline").toLocalDate())
+						.withManagerName(rs.getString("name")).createdAt(rs.getTimestamp("created_at").toLocalDateTime())
+						.build();
+	}
 
 	private Task mapToTask(ResultSet rs) throws SQLException {
 		return new Task.Builder().withId(rs.getInt("id")).withTitle(rs.getString("title")).withDescription(rs.getString("description"))
@@ -108,11 +118,12 @@ public class TaskDAO {
 		}
 	}
 	
-	public Optional<List<Task>> getAllTasks() {
+	// changed by vasu for manager only tasks.
+	public Optional<List<Task>> getAllTasks(int employeeId) {
 		
 		List<Task> task = new ArrayList<>();
 		
-		String sql = "select * from tasks";
+		String sql = "select * from tasks where employee_id = ?";
 		
 		try(Connection con = DataSourceFactory.getConnectionInstance();
 						PreparedStatement pstmt = con.prepareStatement(sql)){
@@ -158,7 +169,7 @@ public class TaskDAO {
 
 	public boolean updateTask(int id, String title, String description, int assigned_to, String status, Date deadline) {
 		
-		String sql = "update task set title=?, description=?, assigned_to=?, status=?, deadline=? where id = ?";
+		String sql = "update tasks set title=?, description=?, assigned_to=?, status=?, deadline=? where id = ?";
 		
 		try(Connection con = DataSourceFactory.getConnectionInstance();
 						PreparedStatement pstmt = con.prepareStatement(sql)){
@@ -221,4 +232,25 @@ public class TaskDAO {
 
 	}
 
+	public Optional<List<ListTaskDTO>> getTasksForEmployee(int employeeId) {
+
+		String sql = "select t.title as title, t.description as description, t.status as status, t.deadline as deadline, t.created_at as created_at, e.name as name from tasks t inner join employees e on t.created_by = e.id where t.assigned_to = ?";
+		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			pstmt.setInt(1, employeeId);
+
+			ResultSet rs = pstmt.executeQuery();
+
+			List<ListTaskDTO> tasks = new ArrayList<ListTaskDTO>();
+			while (rs.next()) {
+				tasks.add(mapToListTaskDTO(rs));
+			}
+
+			return Optional.ofNullable(tasks);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return Optional.ofNullable(null);
+	}
 }

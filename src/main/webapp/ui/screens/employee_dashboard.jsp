@@ -12,6 +12,8 @@
 </head>
 <body>
 
+<a href="controller?action=listEmployeeTasks">List all tasks</a>
+
 	<div>
 		<%
 		if(request.getAttribute("message") != null)
@@ -50,7 +52,7 @@
 						</div>
 						
 						<div>
-							<a class="edit_button" id="<%=task.getId()%>" href="/worklog/controller?action=&task_id=updateStatus(<%=task.getId()%>)" >
+							<a class="edit_button" id="<%=task.getId()%>" href="/worklog/controller?action=editTaskCommand&task_id=<%=task.getId()%>" >
 								<i class="fa-solid fa-pen-to-square fa-lg icon-large"></i>
 							</a>
 						</div>
@@ -67,5 +69,6 @@
 
 		</div>
 	</div>
+	<a href="controller?action=logout">Logout</a>
 </body>
 </html>

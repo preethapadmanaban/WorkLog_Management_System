@@ -30,10 +30,10 @@ public class ListTasksCommand implements Command{
 		
 		String role = (String)session.getAttribute("role");
 		
-		if(role != null && role.equalsIgnoreCase("Manager")) {
+		if (role != null) {
 			
 			TaskDAO dao = new TaskDAO();
-			List<Task> taskList = dao.getAllTasks().orElse(new ArrayList<>());
+			List<Task> taskList = dao.getAllTasks((int) session.getAttribute("id")).orElse(new ArrayList<Task>());
 			
 			session.setAttribute("tasks", taskList);
 			return true;

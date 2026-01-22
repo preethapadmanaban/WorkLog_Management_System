@@ -1,13 +1,9 @@
 package com.worklog.commands;
 
-import java.io.IOException;
-
 import com.worklog.entities.Task;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.TaskDAO;
 
-import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -29,9 +25,9 @@ public class EditTaskCommand implements Command{
 		
 		String role = (String)session.getAttribute("role");
 		
-		if(role != null && role.equalsIgnoreCase("Manager")) {
+		if (role != null) {
 			
-			String idStr = request.getParameter("id");
+			String idStr = request.getParameter("task_id");
 
 			if (idStr == null || idStr.trim().isEmpty()) {
 				return false;
@@ -46,14 +42,8 @@ public class EditTaskCommand implements Command{
 				return false;
 			}
 
+			System.out.println("task edit data: " + task.getTitle() + " " + task.getDescription());
 			request.setAttribute("task", task);
-			
-			RequestDispatcher ds = request.getRequestDispatcher("task_edit.jsp");
-			try {
-				ds.forward(request, response);
-			} catch (ServletException | IOException e) {
-				e.printStackTrace();
-			}
 			
 			return true;
 			
