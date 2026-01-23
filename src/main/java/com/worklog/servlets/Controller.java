@@ -47,6 +47,7 @@ public class Controller extends HttpServlet {
 			}
 			request.getRequestDispatcher(forward).forward(request, response);
 		} catch (Exception e) {
+			System.out.println(e);
 			request.setAttribute("message", e.getMessage());
 			request.getRequestDispatcher(cmdConfig.getFailurePage()).include(request, response);
 		}

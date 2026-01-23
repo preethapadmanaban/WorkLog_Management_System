@@ -47,7 +47,6 @@
 	border: none;
 	cursor: pointer;
 }
-<<<<<<< Updated upstream:src/main/webapp/ui/css/styles.css
 .action_button{
 	background: none;
 	border: none;
@@ -69,7 +68,6 @@
 .status_select:focus{
 	outline: none;
 }
-=======
 
 	body{
 	        font-family: Arial, sans-serif;
@@ -174,4 +172,9 @@
     th{
         background: #fafafa;
     }
->>>>>>> Stashed changes:src/main/webapp/ui/styles/styles.css
+
+
+.add_timesheet_icon{
+	cursor: pointer;
+	
+}

@@ -123,11 +123,13 @@ public class TaskDAO {
 		
 		List<Task> task = new ArrayList<>();
 		
-		String sql = "select * from tasks where employee_id = ?";
+		String sql = "select * from tasks where assigned_to = ?";
 		
 		try(Connection con = DataSourceFactory.getConnectionInstance();
 						PreparedStatement pstmt = con.prepareStatement(sql)){
 			
+			pstmt.setInt(1, employeeId);
+
 			ResultSet rs = pstmt.executeQuery();
 			
 			while(rs.next()) {

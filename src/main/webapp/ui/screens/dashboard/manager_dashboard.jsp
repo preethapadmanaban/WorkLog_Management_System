@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Manager Dashboard</title>
-<link rel="stylesheet" href="<%= request.getContextPath() %>/ui/styles/styles.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
 </head>
 
 <body>

@@ -96,6 +96,8 @@
 	  <failure>ui/screens/tasks/task_create.jsp</failure>
 	</command>
 	
+	<!-- TIME SHEET -->
+	
 	<command name="pending">
 		<class>com.worklog.commands.TimesheetPendingCommand</class>
 		<success>ui/screens/timesheets/timesheet_review.jsp</success>
@@ -118,6 +120,21 @@
 	  <class>com.worklog.commands.RejectTimesheetCommand</class>
 	  <success>/controller?action=pending</success>
 	  <failure>ui/screens/timesheets/timesheet_review.jsp</failure>
+	</command>
+	
+	<command name="createTimesheetPage">
+	  <class>com.worklog.commands.timesheets.NavigateCreateTimesheetPageCommand</class>
+	  <success>ui/screens/timesheets/create_timesheet.jsp</success>
+	  <failure>controller?action=access_denied</failure>
+	</command>
+	
+	
+	<!-- ACCESS DENIED -->
+	
+	<command name="access_denied">
+	  <class>com.worklog.commands.AccessDeniedCommand</class>
+	  <success>ui/screens/auth/access_denied.jsp</success>
+	  <failure>ui/screens/auth/access_denied.jsp</failure>
 	</command>
 	
 </commands>

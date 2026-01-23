@@ -12,7 +12,7 @@
 	
 	<p>You are not authorized to access this page.</p>
 	
-	<a href="login.jsp">Go to Login</a>
+	<a href="/worklog/">Go to Login</a>
 
 </body>
 </html>

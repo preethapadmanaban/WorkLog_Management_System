@@ -27,6 +27,7 @@
 					<select class="status_select" id="status_select" onchange="selectStatus()">
 					
 						<option selected>Status</option>
+						<option>All</option>
 						<option>Completed</option>
 						<option>In Progress</option>
 						<option>Assigned</option>

@@ -13,6 +13,7 @@
 <body>
 
 <a href="controller?action=listEmployeeTasks&status=all">List all tasks</a>
+<a href="controller?action=createTimesheetPage">Create timesheet</a>
 
 	<div>
 		<%
