@@ -6,9 +6,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Review List</title>
+<link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
 </head>
 <body>
+<jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
 
 	<%
 		List<TimeSheet> ts = (List<TimeSheet>) request.getAttribute("pending");

@@ -16,7 +16,8 @@
    
    
     <div class="container">
-   		<div><h3>New Timesheet</h3>
+   		<div>
+   		<h3>New Timesheet</h3>
 	        <div class="row">
 	            <div class="col-6 col-sm-3 ">
 	                   <span>Enter work date:</span> <input type="date" name="work_date" id="work_date" class="form-control"> </th>
@@ -39,11 +40,11 @@
 				
             </tbody>
         </table>
-        <button class="btn btn-primary text-center" onclick="add_new_entry_row()">+ Add Row</button>
+        <button class="btn info-button" onclick="add_new_entry_row()">+ Add Row</button>
     </div>
     
     <div class="text-center w-100">
-        <button class="btn btn-success" onclick="collect_data()">
+        <button class="btn submit-button" onclick="collect_data()">
             Submit Timesheet
         </button>
     </div>  
@@ -137,8 +138,11 @@
             cell.classList.add("text-center");
             action_button = document.createElement("button");
             action_button.innerText = "delete";
-            action_button.setAttribute("class", "btn btn-danger");
+            action_button.classList.add("btn");
+            action_button.classList.add("btn-danger");
+            //action_button.classList.add("delete-button-outline");
             action_button.setAttribute("onclick", "delete_entry_row(event)");
+            
             cell.appendChild(action_button);
             
             row.appendChild(cell);

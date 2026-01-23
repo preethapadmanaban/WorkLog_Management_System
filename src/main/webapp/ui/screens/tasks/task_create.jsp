@@ -8,8 +8,11 @@
 <head>
 <meta charset="UTF-8">
 <title>Create task</title>
+<link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
 </head>
 <body>
+<jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
+
 
 	<form action="/worklog/controller" method="post">
 

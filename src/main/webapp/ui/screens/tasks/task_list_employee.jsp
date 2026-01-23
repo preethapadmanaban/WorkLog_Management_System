@@ -9,11 +9,12 @@
 <meta charset="UTF-8">
 <title>My Tasks</title>
 <link href="/worklog/ui/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-<link href="/worklog/ui/css/styles.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
 </head>
 <body>
  	<jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
  	<div class="container">
+ 	<h3>My Tasks</h3>
  		<table class="table table-hover text-white" id="task_table">
 			<thead>
 				<tr>
