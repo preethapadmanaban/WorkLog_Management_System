@@ -12,9 +12,7 @@
 <link href="/worklog/ui/css/styles.css" rel="stylesheet" type="text/css">
 </head>
 <body>
- 	<div class="container-fluid">
- 		<h1>My Tasks</h1>
- 	</div>
+ 	<jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
  	<div class="container">
  		<table class="table table-hover text-white" id="task_table">
 			<thead>
