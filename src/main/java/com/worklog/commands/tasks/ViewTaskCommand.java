@@ -1,4 +1,4 @@
-package com.worklog.commands;
+package com.worklog.commands.tasks;
 
 import com.worklog.entities.Task;
 import com.worklog.interfaces.Command;
@@ -9,14 +9,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 /**
- * EditTaskCommand - This class is used to edit the timesheet
+ * ViewTaskCommand - This class is used to view the task
  * @author Preetha
  * @since 20-01-2026
  */
-public class EditTaskCommand implements Command{
+public class ViewTaskCommand implements Command{
 
 	@Override
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) {
+		
 		HttpSession session = request.getSession(false);
 		
 		if(session == null) {
@@ -25,9 +26,9 @@ public class EditTaskCommand implements Command{
 		
 		String role = (String)session.getAttribute("role");
 		
-		if (role != null) {
-			
-			String idStr = request.getParameter("task_id");
+		if(role != null && role.equalsIgnoreCase("Manager")) {
+			 
+			String idStr = request.getParameter("id");
 
 			if (idStr == null || idStr.trim().isEmpty()) {
 				return false;
@@ -42,12 +43,11 @@ public class EditTaskCommand implements Command{
 				return false;
 			}
 
-			System.out.println("task edit data: " + task.getTitle() + " " + task.getDescription());
 			request.setAttribute("task", task);
 			
 			return true;
-			
 		}
+		
 		return false;
 	}
 

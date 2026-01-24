@@ -200,3 +200,18 @@ th{
 	background-color: #2E8B57;
 	color: white;
 }
+
+.status_success{
+	background-color: #32cd32;
+}
+
+.status_error{
+	background-color: #ff5349;
+}
+
+.alert_message{
+	text-align: center;
+	width: 100%;
+}
+
+

@@ -1,4 +1,4 @@
-package com.worklog.commands;
+package com.worklog.commands.timesheets;
 
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.TimeSheetDAO;
@@ -7,12 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-/**
- * ApproveTimesheetCommand - This class is the logic to approve the timesheet
- * @author Preetha
- * @since 21-01-2026
- */
-public class ApproveTimesheetCommand implements Command{
+public class RejectTimesheetCommand implements Command{
 
 	@Override
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) {
@@ -44,7 +39,7 @@ public class ApproveTimesheetCommand implements Command{
 
 			TimeSheetDAO dao = new TimeSheetDAO();
 
-			boolean updated = dao.updateTimesheetStatus(timesheetId, "approved", managerId, commentStr, true);
+			boolean updated = dao.updateTimesheetStatus(timesheetId, "rejected", managerId, commentStr, false);
 
 			return updated;
 		}

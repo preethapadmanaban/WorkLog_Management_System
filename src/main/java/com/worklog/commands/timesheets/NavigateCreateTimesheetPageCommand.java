@@ -22,12 +22,12 @@ public class NavigateCreateTimesheetPageCommand implements Command {
 	@Override
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) {
 
-		System.out.println("inside navigation.");
+		// System.out.println("inside navigation.");
 
 		HttpSession session = request.getSession(false);
 
 		if (session == null || session.getAttribute("id") == null) {
-			System.out.println("inside navigat to timesheet creation.");
+			// System.out.println("inside navigat to timesheet creation.");
 			return false;
 		}
 
@@ -46,7 +46,7 @@ public class NavigateCreateTimesheetPageCommand implements Command {
 						.create();
 		request.setAttribute("tasks", gson.toJson(tasks));
 
-		System.out.println("succesfully navigat to timesheet creation.");
+		// System.out.println("succesfully navigat to timesheet creation.");
 
 		return true;
 	}

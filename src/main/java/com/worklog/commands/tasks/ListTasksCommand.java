@@ -1,4 +1,7 @@
-package com.worklog.commands;
+package com.worklog.commands.tasks;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.worklog.entities.Task;
 import com.worklog.interfaces.Command;
@@ -9,13 +12,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 /**
- * ViewTaskCommand - This class is used to view the task
+ * ListTasksCommand - This class is used to list all the tasks
  * @author Preetha
  * @since 20-01-2026
  */
-public class ViewTaskCommand implements Command{
 
-	@Override
+public class ListTasksCommand implements Command{
+
+	@Override 
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) {
 		
 		HttpSession session = request.getSession(false);
@@ -26,26 +30,14 @@ public class ViewTaskCommand implements Command{
 		
 		String role = (String)session.getAttribute("role");
 		
-		if(role != null && role.equalsIgnoreCase("Manager")) {
-			 
-			String idStr = request.getParameter("id");
-
-			if (idStr == null || idStr.trim().isEmpty()) {
-				return false;
-			}
-
-			int id = Integer.parseInt(idStr);
-
-			TaskDAO dao = new TaskDAO();
-			Task task = dao.getTaskById(id).orElse(null);
-
-			if (task == null) {
-				return false;
-			}
-
-			request.setAttribute("task", task);
+		if (role != null) {
 			
+			TaskDAO dao = new TaskDAO();
+			List<Task> taskList = dao.getAllTasks((int) session.getAttribute("id")).orElse(new ArrayList<Task>());
+			
+			request.setAttribute("tasks", taskList);
 			return true;
+			
 		}
 		
 		return false;

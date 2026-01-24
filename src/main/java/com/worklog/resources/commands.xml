@@ -7,46 +7,45 @@
 	<!-- AUTH -->
 
 	<command name="login">
-		<class>com.worklog.commands.LoginCommand</class>
+		<class>com.worklog.commands.auth.LoginCommand</class>
 		<success>/controller?action=routing</success>
 		<failure>ui/screens/auth/login.jsp</failure>
 	</command>
 	<command name="signup">
-		<class>com.worklog.commands.SignupCommand</class>
+		<class>com.worklog.commands.auth.SignupCommand</class>
 		<success>ui/screens/auth/login.jsp</success>
 		<failure>ui/screens/auth/signup.jsp</failure>
 	</command>
 	<command name="logout">
-		<class>com.worklog.commands.LogoutCommand</class>
+		<class>com.worklog.commands.auth.LogoutCommand</class>
 		<success>ui/screens/auth/login.jsp</success>
 		<failure>ui/screens/auth/logout.jsp</failure>
 	</command>
 	
+	<command name="access_denied">
+	  <class>com.worklog.commands.auth.AccessDeniedCommand</class>
+	  <success>ui/screens/auth/access_denied.jsp</success>
+	  <failure>ui/screens/auth/access_denied.jsp</failure>
+	</command>
 	<!-- ROUTING -->
 	
 	<command name="routing">
-		<class>com.worklog.commands.RoutingCommand</class>
+		<class>com.worklog.commands.auth.RoutingCommand</class>
 		<success>/controller?action=managerDashboard</success>
 		<failure>/controller?action=employeeDashboard</failure>
-	</command>
-	
-	<command name="listTaskRouting">
-		<class>com.worklog.commands.ListTaskRoutingCommand</class>
-		<success>ui/screens/tasks/task_list_manager.jsp</success>
-		<failure>ui/screens/tasks/task_list_employee.jsp</failure>
 	</command>
 	
 	
 	<!-- DASHBOARD  -->
 	
 	<command name="managerDashboard">
-		<class>com.worklog.commands.ManagerDashboardCommand</class>
+		<class>com.worklog.commands.dashboard.ManagerDashboardCommand</class>
 		<success>ui/screens/dashboard/manager_dashboard.jsp</success>
 		<failure>ui/screens/auth/login.jsp</failure>
 	</command>
 	
 	<command name="employeeDashboard">
-		<class>com.worklog.commands.EmployeeDashboardCommand</class>
+		<class>com.worklog.commands.dashboard.EmployeeDashboardCommand</class>
 		<success>ui/screens/dashboard/employee_dashboard.jsp</success>
 		<failure>ui/screens/auth/login.jsp</failure>
 	</command>
@@ -55,43 +54,43 @@
 	<!-- TASK -->
 	
 	<command name="listTasks">
-	  <class>com.worklog.commands.ListTasksCommand</class>
+	  <class>com.worklog.commands.tasks.ListTasksCommand</class>
 	  <success>ui/screens/tasks/task_list_manager.jsp</success>
 	  <failure>ui/screens/auth/login.jsp</failure>
 	</command>
 	
 	<command name="viewTask">
-	  <class>com.worklog.commands.ViewTaskCommand</class>
+	  <class>com.worklog.commands.tasks.ViewTaskCommand</class>
 	  <success>ui/screens/tasks/view_task_manager.jsp</success>
 	  <failure>ui/screens/tasks/task_list_manager.jsp</failure>
 	</command>
 	
 	<command name="editTaskCommand">
-		<class>com.worklog.commands.EditTaskCommand</class>
+		<class>com.worklog.commands.tasks.EditTaskCommand</class>
 		<success>ui/screens/tasks/task_edit.jsp</success>
 		<failure>/controller?action=routing</failure>
 	</command>
 	
 	<command name="updateTask">
-		<class>com.worklog.commands.UpdateTaskCommand</class>
+		<class>com.worklog.commands.tasks.UpdateTaskCommand</class>
 		<success>/controller?action=routing</success>
 		<failure>/controller?action=editTaskCommand</failure>
 	</command>
 	
 	<command name="listEmployeeTasks">
-		<class>com.worklog.commands.EmployeeListTaskCommand</class>
+		<class>com.worklog.commands.tasks.EmployeeListTaskCommand</class>
 		<success>ui/screens/tasks/task_list_employee.jsp</success>
 		<failure>/controller?action=employeeDashboard</failure>
 	</command>
 	
 	<command name="createTaskPage">
-	  <class>com.worklog.commands.CreateTaskPageCommand</class>
+	  <class>com.worklog.commands.tasks.CreateTaskPageCommand</class>
 	  <success>ui/screens/tasks/task_create.jsp</success>
 	  <failure>ui/screens/auth/login.jsp</failure>
 	</command>
 	
 	<command name="createTask">
-	  <class>com.worklog.commands.CreateTaskCommand</class>
+	  <class>com.worklog.commands.tasks.CreateTaskCommand</class>
 	  <success>/controller?action=listTasks</success>
 	  <failure>ui/screens/tasks/task_create.jsp</failure>
 	</command>
@@ -99,42 +98,39 @@
 	<!-- TIME SHEET -->
 	
 	<command name="pending">
-		<class>com.worklog.commands.TimesheetPendingCommand</class>
+		<class>com.worklog.commands.timesheets.TimesheetPendingCommand</class>
 		<success>ui/screens/timesheets/timesheet_review.jsp</success>
 		<failure>ui/screens/dashboard/manager_dashboard.jsp</failure>
 	</command>
 	
 	<command name="timesheetReview">
-	  <class>com.worklog.commands.TimesheetReviewCommand</class>
+	  <class>com.worklog.commands.timesheets.TimesheetReviewCommand</class>
 	  <success>ui/screens/timesheets/timesheet_review.jsp</success>
 	  <failure>ui/screens/timesheets/timesheet_review_list.jsp</failure>
 	</command>
 	
 	<command name="approveTimesheet">
-	  <class>com.worklog.commands.ApproveTimesheetCommand</class>
+	  <class>com.worklog.commands.timesheets.ApproveTimesheetCommand</class>
 	  <success>/controller?action=pending</success>
 	  <failure>ui/screens/timesheets/timesheet_review.jsp</failure>
 	</command>
 	
 	<command name="rejectTimesheet">
-	  <class>com.worklog.commands.RejectTimesheetCommand</class>
+	  <class>com.worklog.commands.timesheets.RejectTimesheetCommand</class>
 	  <success>/controller?action=pending</success>
 	  <failure>ui/screens/timesheets/timesheet_review.jsp</failure>
+	</command>
+	
+	<command name="createTimesheet">
+	  <class>com.worklog.commands.timesheets.CreateTimeSheetCommand</class>
+	  <success>/controller?action=createTimesheetPage</success>
+	  <failure>/controller?action=createTimesheetPage</failure>
 	</command>
 	
 	<command name="createTimesheetPage">
 	  <class>com.worklog.commands.timesheets.NavigateCreateTimesheetPageCommand</class>
 	  <success>ui/screens/timesheets/create_timesheet.jsp</success>
 	  <failure>controller?action=access_denied</failure>
-	</command>
-	
-	
-	<!-- ACCESS DENIED -->
-	
-	<command name="access_denied">
-	  <class>com.worklog.commands.AccessDeniedCommand</class>
-	  <success>ui/screens/auth/access_denied.jsp</success>
-	  <failure>ui/screens/auth/access_denied.jsp</failure>
 	</command>
 	
 </commands>

@@ -1,4 +1,4 @@
-package com.worklog.commands;
+package com.worklog.commands.reports;
 
 import java.time.LocalDate;
 import java.util.Optional;

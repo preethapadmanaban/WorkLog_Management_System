@@ -14,10 +14,7 @@ import com.worklog.entities.TimeSheetEntry;
 
 public class TimeSheetEntryDAO {
 	private int id;
-	private int timesheet_id;
-	private int task_id;
-	private String notes;
-	private double hours_spent;
+
 
 	private TimeSheetEntry getTimeSheetEntry(ResultSet rs) throws SQLException{
 		TimeSheetEntry timeSheetEntry=new TimeSheetEntry();
@@ -28,12 +25,13 @@ public class TimeSheetEntryDAO {
 		timeSheetEntry.setTimesheet_id(rs.getInt("timesheet_id"));
 		return timeSheetEntry;
 	}
-	private String createQuery(TimeSheetEntryDTO[] entries) {
+
+	private String createQuery(List<TimeSheetEntryDTO> entries) {
 		
 
 		StringBuilder builder = new StringBuilder();
 		builder.append("INSERT INTO timesheet_entries(timesheet_id, task_id, notes, hours_spent) values ");
-		for (int i = 0; i < entries.length; i++) {
+		for (int i = 0; i < entries.size(); i++) {
 			builder.append("(?, ?, ?, ?),");
 		}
 		if (builder.length() > 1)
@@ -42,7 +40,7 @@ public class TimeSheetEntryDAO {
 		return builder.toString();
 	}
 
-	private PreparedStatement bindQuery(int timeSheetId, PreparedStatement pstmt, TimeSheetEntryDTO[] entries) throws SQLException {
+	private PreparedStatement bindQuery(int timeSheetId, PreparedStatement pstmt, List<TimeSheetEntryDTO> entries) throws SQLException {
 
 		// initially set to 1 to bind the value to the sql query. increase to place dynamiclly with respect to the size of the entries
 		// array.
@@ -60,7 +58,7 @@ public class TimeSheetEntryDAO {
 		return pstmt;
 	}
 
-	public boolean createTimeSheetEntries(int timeSheetId, TimeSheetEntryDTO[] entries) {
+	public boolean createTimeSheetEntries(int timeSheetId, List<TimeSheetEntryDTO> entries) {
 
 		String sql = createQuery(entries);
 

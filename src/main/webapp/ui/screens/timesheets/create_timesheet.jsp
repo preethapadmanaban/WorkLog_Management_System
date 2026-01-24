@@ -7,49 +7,53 @@
 <head>
 <meta charset="UTF-8">
 <title>	Create Timesheet</title>
-<link rel="stylesheet" href="/worklog/ui/css/bootstrap.min.css" type="text/css">
-<link rel="stylesheet" href="/worklog/ui/css/styles.css" type="text/css">
+	<link rel="stylesheet" href="/worklog/ui/css/bootstrap.min.css" type="text/css">
+	<link rel="stylesheet" href="/worklog/ui/css/styles.css" type="text/css">
 </head>
 <body>
 
     <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
-   
+    
+   <jsp:include page="/ui/screens/common/message.jsp"></jsp:include>
    
     <div class="container">
-   		<div>
-   		<h3>New Timesheet</h3>
-	        <div class="row">
-	            <div class="col-6 col-sm-3 ">
-	                   <span>Enter work date:</span> <input type="date" name="work_date" id="work_date" class="form-control"> </th>
-	                    <!-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" onclick="add_new_entry_row()" class="size-6 align-self-center add_timesheet_icon">
-	                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-	                        </svg> -->
-	            </div>
+    	<form action="<%=request.getContextPath()%>/controller?action=createTimesheet" method="post" id="timesheet_entry_form">
+    	
+    	<input type="number" name="manager_id" id="manager_id" hidden>
+  	   		<div>
+	   			<h3>New Timesheet</h3>
+		        <div class="row">
+		            <div class="col-6 col-sm-3 ">
+		                   <span>Enter work date:</span> <input type="date" name="work_date" id="work_date" class="form-control"> </th>
+		                    <!-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" onclick="add_new_entry_row()" class="size-6 align-self-center add_timesheet_icon">
+		                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+		                        </svg> -->
+		            </div>
+		        </div>
 	        </div>
-        </div>
-        <table class="table">
-            <thead>
-                <tr class="align-items-center">
-                    <th>Task <span style="color:red;">*</span> </th>
-                    <th>Total hours spend <span style="color:red;">*</span> </th>
-					<th>Comments</th>
-                    <th colspan="2" class="text-center">Action</th>
-                </tr>
-            </thead>
-            <tbody id="entry_table_body">
-				
-            </tbody>
-        </table>
-        <button class="btn info-button" onclick="add_new_entry_row()">+ Add Row</button>
-    </div>
-    
-    <div class="text-center w-100">
-        <button class="btn submit-button" onclick="collect_data()">
-            Submit Timesheet
-        </button>
-    </div>  
-
-	<%System.out.print("inside timesheet creation jsp."); %>
+	        <table class="table">
+	            <thead>
+	                <tr class="align-items-center">
+	                    <th>Task <span style="color:red;">*</span> </th>
+	                    <th>Total hours spend <span style="color:red;">*</span> </th>
+						<th>Comments</th>
+	                    <th colspan="2" class="text-center">Action</th>
+	                </tr>
+	            </thead>
+	            <tbody id="entry_table_body">
+					
+	            </tbody>
+	        </table>
+	        <button class="btn info-button" onclick="add_new_entry_row()">+ Add Row</button>
+	        <div class="text-center w-100">
+		        <button class="btn submit-button"  onclick="validate_data()">
+		            Submit Timesheet
+		        </button>
+	    	</div>  
+	     </form>
+	  </div>
+	    
+	    
     <script>
     
  		// convert the task json object => javascript object directly without any external fun.
@@ -59,6 +63,10 @@
 	 	// function that sets the today as default in the date select menu.
 	    document.addEventListener('DOMContentLoaded', ()=>{
 			document.getElementById("work_date").value = new Date(Date.now()).toISOString().split("T")[0];
+			
+			// setting manager id
+			document.getElementById("manager_id").value = tasks[0].created_by;
+			console.log("managerID => ", tasks[0].created_by);
             //console.log("date set...");
         });
 
@@ -75,6 +83,7 @@
             // tasks selecting tag starts
             let selectTasks = document.createElement("select"); // => here we create select tag.
             selectTasks.setAttribute("id", "select_assigned_task");
+            selectTasks.setAttribute("name", "task_id");
             selectTasks.setAttribute("class", "form-select");
             
             let defaultOption = document.createElement("option");
@@ -101,6 +110,7 @@
             let total_hours_input = document.createElement("input");
             total_hours_input.setAttribute("type", "number"); 
             total_hours_input.setAttribute("id", "hours_spend"); 
+            total_hours_input.setAttribute("name", "hours_spend"); 
             total_hours_input.setAttribute("required", "true");
             total_hours_input.setAttribute("class", "form-control");
 
@@ -114,6 +124,7 @@
             
             let notes = document.createElement("input");
             notes.setAttribute("type", "text");
+            notes.setAttribute("name", "notes");
             notes.classList.add("form-control");
             
             cell.appendChild(notes);
@@ -153,8 +164,11 @@
             e.target.parentNode.parentNode.remove();
         }
         
+        // vasu: alter this method after creation, use only for validation.
+        
         // function that collects the timsheet entry data and validates it.
-        function collect_data(){
+        // function collect_data(){
+       	function validate_data(e){
 			let work_date = document.getElementById("work_date").value;
             if(work_date == null || work_date == "")
             {
@@ -163,7 +177,7 @@
             }   
             
             // collect the timesheet entry data in an object;
-            function Entry(id, hours_spend, notes){
+            /* function Entry(id, hours_spend, notes){
                 this.id = id;
                 this.hours_spend = hours_spend;
                 this.notes = notes;
@@ -176,9 +190,9 @@
                 this.entries = entries;
             }
 
-            let total_hours = 0;
+            let total_hours = 0;*/
             let temp = [];
-            let entry_array = [];
+            // let entry_array = []; 
             let entry_rows = document.querySelectorAll(".entry_row"); // -> <tr>
             let isValid = true;
             //console.log("entry_rows length=> ", entry_rows.length);
@@ -211,10 +225,10 @@
                 	console.log("hours_spend validation failed!, value=>", hours_spend);
                 	return;
                 }   
-                const newEntry = new Entry(parseInt(temp[0]), hours_spend, temp[2]);
+                // const newEntry = new Entry(parseInt(temp[0]), hours_spend, temp[2]);
                 // calculating total hours
-                total_hours = total_hours + parseFloat(temp[1]);
-                entry_array.push(newEntry);
+                // total_hours = total_hours + parseFloat(temp[1]);
+                // entry_array.push(newEntry);
             });
             
             if(isValid == false)
@@ -224,10 +238,12 @@
            	}
 
             //console.log("entry_array =>", entry_array);
-            const requestDto = new EntryRequestDTO(work_date, total_hours, entry_array);
+            //const requestDto = new EntryRequestDTO(work_date, total_hours, entry_array);
             //console.log("entry request dto: ", requestDto);
             if(window.confirm("Confirm to submit timesheet?")){
-                alert("Validation successfull");
+                alert("Validation successfull"); 
+                let timesheet_entry_form = document.getElementById("timesheet_entry_form");
+                timesheet_entry_form.submit();
             }
             else{
 				return;

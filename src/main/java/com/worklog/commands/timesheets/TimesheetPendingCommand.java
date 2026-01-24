@@ -1,27 +1,25 @@
-package com.worklog.commands;
+package com.worklog.commands.timesheets;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.worklog.entities.Task;
+import com.worklog.entities.TimeSheet;
 import com.worklog.interfaces.Command;
-import com.worklog.repositories.TaskDAO;
+import com.worklog.repositories.TimeSheetDAO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 /**
- * ListTasksCommand - This class is used to list all the tasks
+ * TimesheetPendingCommand - This class gives the pending timesheet
  * @author Preetha
- * @since 20-01-2026
+ * @since 21-01-2026
  */
+public class TimesheetPendingCommand implements Command{
 
-public class ListTasksCommand implements Command{
-
-	@Override 
+	@Override
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) {
-		
 		HttpSession session = request.getSession(false);
 		
 		if(session == null) {
@@ -30,16 +28,15 @@ public class ListTasksCommand implements Command{
 		
 		String role = (String)session.getAttribute("role");
 		
-		if (role != null) {
+		if(role != null && role.equalsIgnoreCase("Manager")) {
 			
-			TaskDAO dao = new TaskDAO();
-			List<Task> taskList = dao.getAllTasks((int) session.getAttribute("id")).orElse(new ArrayList<Task>());
 			
-			request.setAttribute("tasks", taskList);
+			TimeSheetDAO dao = new TimeSheetDAO();
+			List<TimeSheet> pendingList = dao.getPendingTimesheet().orElse(new ArrayList<>());
+			request.setAttribute("pending", pendingList);
+			
 			return true;
-			
 		}
-		
 		return false;
 	}
 

@@ -116,4 +116,11 @@ public class TimeSheet {
 		this.created_at = created_at;
 	}
 
+	@Override
+	public String toString() {
+		return "TimeSheet [id=" + id + ", employee_id=" + employee_id + ", work_date=" + work_date + ", total_hours=" + total_hours
+						+ ", status=" + status + ", manager_id=" + manager_id + ", manager_comment=" + manager_comment + ", approved="
+						+ approved + ", created_at=" + created_at + "]";
+	}
+
 }

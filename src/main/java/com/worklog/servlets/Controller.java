@@ -3,6 +3,7 @@ package com.worklog.servlets;
 import java.io.IOException;
 
 import com.worklog.config.CommandXMLConfig;
+import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.factories.CommandXMLFactory;
 import com.worklog.interfaces.Command;
 
@@ -25,7 +26,7 @@ public class Controller extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		System.out.println("QueryString: " + request.getQueryString());
+		// System.out.println("QueryString: " + request.getQueryString());
 		String action = request.getParameter("action");
 
 		// System.out.println("current action: " + action);
@@ -46,6 +47,11 @@ public class Controller extends HttpServlet {
 				forward = cmdConfig.getFailurePage();
 			}
 			request.getRequestDispatcher(forward).forward(request, response);
+		} catch (UnAuthorizedException e) {
+			System.out.println(e);
+			request.setAttribute("message", e.getMessage());
+			request.getRequestDispatcher(CommandXMLFactory.configMap.get("access_denied").getSuccessPage()).include(request, response);
+
 		} catch (Exception e) {
 			System.out.println(e);
 			request.setAttribute("message", e.getMessage());

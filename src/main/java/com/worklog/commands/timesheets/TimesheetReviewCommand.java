@@ -1,4 +1,4 @@
-package com.worklog.commands;
+package com.worklog.commands.timesheets;
 
 import java.util.ArrayList;
 import java.util.List;

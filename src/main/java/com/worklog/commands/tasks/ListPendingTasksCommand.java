@@ -1,4 +1,4 @@
-package com.worklog.commands;
+package com.worklog.commands.tasks;
 
 import java.util.List;
 import java.util.Optional;

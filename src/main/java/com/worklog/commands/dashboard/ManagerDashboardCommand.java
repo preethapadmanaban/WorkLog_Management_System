@@ -1,4 +1,4 @@
-package com.worklog.commands;
+package com.worklog.commands.dashboard;
 
 import java.util.HashMap;
 import java.util.List;

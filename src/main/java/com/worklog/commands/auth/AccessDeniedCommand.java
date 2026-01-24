@@ -1,4 +1,4 @@
-package com.worklog.commands;
+package com.worklog.commands.auth;
 
 import com.worklog.interfaces.Command;
 
