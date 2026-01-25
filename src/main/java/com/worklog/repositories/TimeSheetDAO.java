@@ -29,11 +29,11 @@ public class TimeSheetDAO {
 		TimeSheet timeSheet = new TimeSheet();
 		while(rs.next()) {
 			timeSheet.setApproved(rs.getBoolean("approved"));
-			timeSheet.setCreated_at(rs.getTimestamp("reated_at"));
+			timeSheet.setCreated_at(rs.getTimestamp("created_at"));
 			timeSheet.setEmployee_id(rs.getInt("employee_id"));
 			timeSheet.setId(rs.getInt("id"));
 			timeSheet.setStatus(rs.getString("status"));
-			timeSheet.setManager_comment(rs.getString("Manager_comment"));
+			timeSheet.setManager_comment(rs.getString("manager_comment"));
 			timeSheet.setTotal_hours(rs.getDouble("total_hours"));
 			timeSheet.setManager_id(rs.getInt("manager_id"));
 			Date date=rs.getDate("work_date");
@@ -115,7 +115,7 @@ public class TimeSheetDAO {
 	public Optional<List<TimeSheet>> getPendingTimesheet() {
 
 		String sql = "select id, employee_id, work_date, total_hours, status, manager_id, manager_comment, "
-				+ "approved, created_at from timesheets where status = 'pending' order by work_date desc";
+				+ "approved, created_at from timesheets where status = 'PENDING' order by work_date desc";
 
 		List<TimeSheet> list = new ArrayList<>();
 

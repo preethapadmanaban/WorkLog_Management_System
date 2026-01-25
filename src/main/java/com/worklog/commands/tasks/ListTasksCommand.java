@@ -32,10 +32,13 @@ public class ListTasksCommand implements Command{
 		
 		if (role != null) {
 			
+			int managerId = (int) session.getAttribute("id");
+			
 			TaskDAO dao = new TaskDAO();
-			List<Task> taskList = dao.getAllTasks((int) session.getAttribute("id")).orElse(new ArrayList<Task>());
+			List<Task> taskList = dao.getTasksCreatedByManager(managerId).orElse(new ArrayList<>());
 			
 			request.setAttribute("tasks", taskList);
+			
 			return true;
 			
 		}

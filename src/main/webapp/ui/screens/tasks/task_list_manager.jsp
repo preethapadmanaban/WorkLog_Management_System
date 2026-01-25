@@ -13,7 +13,7 @@
 <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
 
 	<%
-    List<Task> list = (List<Task>) request.getAttribute("List_Of_Tasks");
+    List<Task> list = (List<Task>) request.getAttribute("tasks");
     %>
 
 	<form action="controller" method="get">

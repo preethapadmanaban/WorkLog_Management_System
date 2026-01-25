@@ -30,12 +30,11 @@ public class TimesheetPendingCommand implements Command{
 		
 		if(role != null && role.equalsIgnoreCase("Manager")) {
 			
-			
 			TimeSheetDAO dao = new TimeSheetDAO();
-			List<TimeSheet> pendingList = dao.getPendingTimesheet().orElse(new ArrayList<>());
-			request.setAttribute("pending", pendingList);
-			
+			List<TimeSheet> list = dao.getPendingTimesheet().orElse(new ArrayList<>());
+			request.setAttribute("pendingTimesheets", list);
 			return true;
+
 		}
 		return false;
 	}

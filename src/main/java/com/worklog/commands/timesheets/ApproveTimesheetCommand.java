@@ -45,6 +45,10 @@ public class ApproveTimesheetCommand implements Command{
 			TimeSheetDAO dao = new TimeSheetDAO();
 
 			boolean updated = dao.updateTimesheetStatus(timesheetId, "approved", managerId, commentStr, true);
+			
+			if(updated) {
+				request.getSession().setAttribute("message", "Timesheet approved successfully");			
+			}
 
 			return updated;
 		}

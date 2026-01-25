@@ -1,71 +1,61 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
 <%@ page import="com.worklog.entities.TimeSheet" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Review List</title>
+<title>Pending Timesheets</title>
 <link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
 </head>
 <body>
+
 <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
 
-	<%
-		List<TimeSheet> ts = (List<TimeSheet>) request.getAttribute("pending");
-	%>
-	
-	<h2>Pending Timesheet</h2>
-	
-	<table border="1" cellpadding="6">
-		<tr>
-		
-			<th>ID</th>
-			<th>Employee ID</th>
-			<th>Work Date</th>
-			<th>Total hours</th>
-			<th>Status</th>
-			<th>Created</th>
-			<th>Action</th>
-			
-		</tr>
-	
-	<% 
-		if(ts!=null && !ts.isEmpty()){
-			for(TimeSheet t : ts){
-		
-	%>
-	
-	<tr>
-		<td><%= t.getId() %></td>
-		<td><%= t.getEmployee_id() %></td>
-		<td><%= t.getWork_date() %></td>
-        <td><%= t.getTotal_hours() %></td>
-        <td><%= t.getStatus() %></td>
-        <td><%= t.getCreated_at() %></td>
+<h2>Pending Timesheets</h2>
+
+<%
+    List<TimeSheet> list = (List<TimeSheet>) request.getAttribute("pendingTimesheets");
+%>
+
+<table border="1" cellpadding="6">
+    <tr>
+        <th>ID</th>
+        <th>Employee</th>
+        <th>Work Date</th>
+        <th>Total Hours</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+
+<%
+    if(list != null && !list.isEmpty()){
+        for(TimeSheet ts : list){
+%>
+    <tr>
+        <td><%= ts.getId() %></td>
+        <td><%= ts.getEmployee_id() %></td>
+        <td><%= ts.getWork_date() %></td>
+        <td><%= ts.getTotal_hours() %></td>
+        <td><%= ts.getStatus() %></td>
         <td>
-            <a href="controller?action=timesheetReview&timesheetId=<%= t.getId() %>">Review</a>
+            <a href="<%=request.getContextPath()%>/controller?action=timesheetReview&timesheetId=<%=ts.getId()%>">
+                Review
+            </a>
         </td>
-	</tr>
-	
-	<%
+    </tr>
+<%
         }
     } else {
-	%>
-	
-	<tr>
-        <td colspan="7">No pending timesheets</td>
+%>
+    <tr>
+        <td colspan="6">No pending timesheets found</td>
     </tr>
-    
-	<%
-    	}
-	%>
-	
-	</table>
-	
-	<br>
-	<a href=""controller?action=managerDashboard"">Back to Dashboard</a>
+<%
+    }
+%>
+
+</table>
 
 </body>
 </html>

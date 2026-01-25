@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-
-
 <commands>
 
 	<!-- AUTH -->
@@ -98,17 +95,17 @@
 	<!-- TIME SHEET -->
 	
 	<command name="pending">
-		<class>com.worklog.commands.timesheets.TimesheetPendingCommand</class>
-		<success>ui/screens/timesheets/timesheet_review.jsp</success>
-		<failure>ui/screens/dashboard/manager_dashboard.jsp</failure>
+	  <class>com.worklog.commands.timesheets.TimesheetPendingCommand</class>
+	  <success>ui/screens/timesheets/timesheet_review_list.jsp</success>
+	  <failure>ui/screens/auth.login.jsp</failure>
 	</command>
-	
+
 	<command name="timesheetReview">
 	  <class>com.worklog.commands.timesheets.TimesheetReviewCommand</class>
 	  <success>ui/screens/timesheets/timesheet_review.jsp</success>
-	  <failure>ui/screens/timesheets/timesheet_review_list.jsp</failure>
+	  <failure>/controller?action=pending</failure>
 	</command>
-	
+
 	<command name="approveTimesheet">
 	  <class>com.worklog.commands.timesheets.ApproveTimesheetCommand</class>
 	  <success>/controller?action=pending</success>

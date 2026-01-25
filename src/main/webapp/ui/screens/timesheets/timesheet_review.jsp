@@ -97,7 +97,7 @@
 	<br>
 	
 	<br>
-	<a href="controller?command=timesheetPending">Back to Pending List</a>
+	<a href="<%=request.getContextPath() %>/controller?action=pending">Back to Pending List</a>
 	
 	<%
 	    }

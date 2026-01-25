@@ -8,7 +8,9 @@
 <head>
 <meta charset="UTF-8">
 <title>Manager Dashboard</title>
-<link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
+
+<link rel="stylesheet" href="<%= request.getContextPath() %>/ui/styles/styles.css">
+
 </head>
 
 <body>
@@ -22,7 +24,24 @@
         Integer completed = (Integer) request.getAttribute("Completed");
     %>
 
+
     <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
+    <div class="navbar">
+
+        <!-- LOGO ONLY -->
+        <div class="nav_left">
+            <img src="<%= request.getContextPath() %>/ui/images/worklog_logo.png" class="nav_logo" alt="worklog">
+        </div>
+
+        <div class="navLinks">
+            <a href="<%=request.getContextPath()%>/controller?action=createTaskPage">Assign Task</a>
+            <a href="<%=request.getContextPath()%>/controller?action=listTasks">View Tasks</a>
+            <a href="<%=request.getContextPath()%>/controller?action=pending">Review Timesheets</a>
+            <a href="<%=request.getContextPath()%>/controller?action=report">Reports</a>
+            <a href="<%=request.getContextPath()%>/controller?action=logout">Logout</a>
+        </div>
+
+    </div>
 
     <div class="container">
 

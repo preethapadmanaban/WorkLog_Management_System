@@ -34,7 +34,7 @@ public class TimesheetReviewCommand implements Command{
 		
 		if(role != null && role.equalsIgnoreCase("Manager")) {
 			
-			String idStr = request.getParameter("id");
+			String idStr = request.getParameter("timesheetId");
 			if(idStr == null) {
 				return false;
 			}
