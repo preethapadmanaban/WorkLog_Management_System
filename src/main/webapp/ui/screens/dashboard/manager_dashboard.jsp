@@ -23,6 +23,7 @@
     %>
 
     <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
+    <jsp:include page="/ui/screens/common/message.jsp"></jsp:include>
 
     <div class="container">
 

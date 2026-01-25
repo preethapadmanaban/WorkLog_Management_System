@@ -11,6 +11,7 @@
 </head>
 <body>
 <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
+<jsp:include page="/ui/screens/common/message.jsp"></jsp:include>
 
 	<%
 		List<TimeSheet> ts = (List<TimeSheet>) request.getAttribute("pending");
@@ -43,7 +44,7 @@
 		<td><%= t.getWork_date() %></td>
         <td><%= t.getTotal_hours() %></td>
         <td><%= t.getStatus() %></td>
-        <td><%= t.getCreated_at() %></td>
+        <td><%= t.getCreated_at().toString().split("T")[0] %></td>
         <td>
             <a href="controller?action=timesheetReview&timesheetId=<%= t.getId() %>">Review</a>
         </td>
@@ -61,11 +62,10 @@
 	<%
     	}
 	%>
-	
+
 	</table>
 	
 	<br>
-	<a href=""controller?action=managerDashboard"">Back to Dashboard</a>
 
 </body>
 </html>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="WARN">
+
+    <Appenders>
+        <RollingFile name="AppLogger"
+                     fileName="D:/worklog_management_system/access.log"
+                     filePattern="D:/worklog_management_system/worklog-%d{yyyy-MM-dd}.log">
+
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %c - %m%n"/>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+        </RollingFile>
+        
+        <!-- Error_log  -->
+        <RollingFile name="Error_Logger"
+                     fileName="D:/worklog_management_system/.log"
+                     filePattern="D:/worklog_management_system/worklog-%d{yyyy-MM-dd}.log">
+
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level %c - %m%n"/>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            
+            <Filters>
+        		<ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY" />
+        	</Filters>
+        	
+        </RollingFile>
+        
+        
+    </Appenders>
+
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="AppLogger"/>'
+        	 <AppenderRef ref="Error_Logger"/>
+        </Root>
+  
+    </Loggers>
+
+</Configuration>

@@ -27,19 +27,18 @@ public class TimeSheetDAO {
 
 	private TimeSheet mapToTimeSheet(ResultSet rs) throws SQLException {
 		TimeSheet timeSheet = new TimeSheet();
-		while(rs.next()) {
-			timeSheet.setApproved(rs.getBoolean("approved"));
-			timeSheet.setCreated_at(rs.getTimestamp("reated_at"));
-			timeSheet.setEmployee_id(rs.getInt("employee_id"));
-			timeSheet.setId(rs.getInt("id"));
-			timeSheet.setStatus(rs.getString("status"));
-			timeSheet.setManager_comment(rs.getString("Manager_comment"));
-			timeSheet.setTotal_hours(rs.getDouble("total_hours"));
-			timeSheet.setManager_id(rs.getInt("manager_id"));
-			Date date=rs.getDate("work_date");
-			LocalDate localDate=date.toLocalDate();
-			timeSheet.setWork_date(localDate);
-		}
+		timeSheet.setApproved(rs.getBoolean("approved"));
+		timeSheet.setCreated_at(rs.getTimestamp("created_at"));
+		timeSheet.setEmployee_id(rs.getInt("employee_id"));
+		timeSheet.setId(rs.getInt("id"));
+		timeSheet.setStatus(rs.getString("status"));
+		timeSheet.setManager_comment(rs.getString("Manager_comment"));
+		timeSheet.setTotal_hours(rs.getDouble("total_hours"));
+		timeSheet.setManager_id(rs.getInt("manager_id"));
+		Date date = rs.getDate("work_date");
+		LocalDate localDate = date.toLocalDate();
+		timeSheet.setWork_date(localDate);
+
 		return timeSheet;
 	}
 
@@ -90,21 +89,23 @@ public class TimeSheetDAO {
 		}
 	}
 	
-	public Optional<List<TimeSheet>> getAllApprovedTimeSheet(int id){
-		String sql="select * from Timesheet where employee_id=? and approved=?";
+	public Optional<List<TimeSheet>> getAllTimeSheetsForEmployee(int id) {
+		String sql = "select * from timesheets where employee_id=?";
 		try(Connection conn=DataSourceFactory.getConnectionInstance();
 			PreparedStatement pstmt=conn.prepareStatement(sql);
 			){
+
 			pstmt.setInt(1, id);
-			pstmt.setBoolean(2,true);
+
 			List<TimeSheet> timeSheets=new ArrayList<>();
 			ResultSet rs=pstmt.executeQuery();
+
 			while(rs.next()) {
-				TimeSheet timeSheet=mapToTimeSheet(rs);
-				timeSheets.add(timeSheet);
-				
+				timeSheets.add(mapToTimeSheet(rs));
 			}
+
 			return Optional.ofNullable(timeSheets);
+
 		}catch(SQLException e) {
 			e.printStackTrace();
 			return Optional.ofNullable(null);
@@ -115,7 +116,7 @@ public class TimeSheetDAO {
 	public Optional<List<TimeSheet>> getPendingTimesheet() {
 
 		String sql = "select id, employee_id, work_date, total_hours, status, manager_id, manager_comment, "
-				+ "approved, created_at from timesheets where status = 'pending' order by work_date desc";
+						+ "approved, created_at from timesheets where status ilike 'pending' order by work_date desc";
 
 		List<TimeSheet> list = new ArrayList<>();
 
@@ -141,7 +142,7 @@ public class TimeSheetDAO {
 				list.add(timesheet);
 			}
 
-			return Optional.of(list);
+			return Optional.ofNullable(list);
 
 		} catch (SQLException e) {
 			e.printStackTrace();

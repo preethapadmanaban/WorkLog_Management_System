@@ -19,7 +19,7 @@
 	<command name="logout">
 		<class>com.worklog.commands.auth.LogoutCommand</class>
 		<success>ui/screens/auth/login.jsp</success>
-		<failure>ui/screens/auth/logout.jsp</failure>
+		<failure>controller?action=access_denied</failure>
 	</command>
 	
 	<command name="access_denied">
@@ -99,7 +99,7 @@
 	
 	<command name="pending">
 		<class>com.worklog.commands.timesheets.TimesheetPendingCommand</class>
-		<success>ui/screens/timesheets/timesheet_review.jsp</success>
+		<success>ui/screens/timesheets/timesheet_review_list.jsp</success>
 		<failure>ui/screens/dashboard/manager_dashboard.jsp</failure>
 	</command>
 	
@@ -132,5 +132,12 @@
 	  <success>ui/screens/timesheets/create_timesheet.jsp</success>
 	  <failure>controller?action=access_denied</failure>
 	</command>
+	
+	<command name="timesheetHistory">
+	  <class>com.worklog.commands.timesheets.EmployeeTimeSheetHistoryCommand</class>
+	  <success>ui/screens/timesheets/timesheet_history.jsp</success>
+	  <failure>controller>action=employeeDashboard</failure>
+	</command>
+	
 	
 </commands>

@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import com.worklog.db.DataSourceFactory;
 import com.worklog.dto.TimeSheetEntryDTO;
+import com.worklog.dto.TimeSheetEntryForReviewDTO;
 import com.worklog.entities.TimeSheetEntry;
 
 public class TimeSheetEntryDAO {
@@ -97,12 +98,20 @@ public class TimeSheetEntryDAO {
 			return Optional.ofNullable(null);
 		}
 	}
+
+	// changed by vasudevan, to provide exact result for the jsp.
+	public Optional<List<TimeSheetEntryForReviewDTO>> getEntriesByTimesheetId(int timesheetId) {
 		
-	public Optional<List<TimeSheetEntry>> getEntriesByTimesheetId(int timesheetId) {
+		// old
+		// String sql = "select * from timesheet_entries where timesheetId = ?";
 		
-		String sql = "select * from timesheet_entries where timesheetId = ?";
-		
-		List<TimeSheetEntry> list = new ArrayList<>();
+		String sql ="""
+							select tse.id, t.title, tse.hours_spent, tse.notes
+							from timesheet_entries tse inner join tasks t on tse.task_id = t.id
+							where tse.timesheet_id = ?;
+						""";
+				
+		List<TimeSheetEntryForReviewDTO> list = new ArrayList<>();
 		
 		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			
@@ -111,20 +120,11 @@ public class TimeSheetEntryDAO {
 			ResultSet rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
-				
-				TimeSheetEntry sheet_entry = new TimeSheetEntry(
-								rs.getInt("id"),
-								rs.getInt("timesheetId"),
-								rs.getInt("task_id"),
-								rs.getString("notes"),
-								rs.getDouble("hours_spent")
-								);
-				
-				list.add(sheet_entry);
-				
+				list.add(new TimeSheetEntryForReviewDTO.Builder().withId(rs.getInt("id")).withTaskTitle(rs.getString("title"))
+								.hoursSpent(rs.getDouble("hours_spent")).withTaskNotes(rs.getString("notes")).build());
 			}
 			
-			return Optional.of(list);
+			return Optional.ofNullable(list);
 			
 		}catch(SQLException e) {
 			e.printStackTrace();

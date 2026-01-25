@@ -22,6 +22,7 @@
             <a href="controller?action=employeeDashboard">Home</a>
             <a href="controller?action=listEmployeeTasks">View all tasks</a>
             <a href="controller?action=createTimesheetPage">Create Timesheets</a>
+            <a href="controller?action=timesheetHistory">Timesheet History</a>
             <% } %>
             
             
