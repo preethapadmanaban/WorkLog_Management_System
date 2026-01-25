@@ -9,6 +9,9 @@
         <% if(session.getAttribute("role") != null){ %>
         <div class="navLinks">
         	<% if(((String)session.getAttribute("role")).equalsIgnoreCase("manager")){ %>
+        	
+        	<a href="controller?action=managerDashboard">Home</a>
+        	
             <a href="controller?action=createTaskPage">Assign Task</a>
             <a href="controller?action=listTasks">View Tasks</a>
             <a href="controller?action=pending">Review Timesheets</a>
@@ -16,9 +19,12 @@
             <% } %>
             
             <% if(((String)session.getAttribute("role")).equalsIgnoreCase("employee")){ %>
+            <a href="controller?action=employeeDashboard">Home</a>
             <a href="controller?action=listEmployeeTasks">View all tasks</a>
             <a href="controller?action=createTimesheetPage">Create Timesheets</a>
             <% } %>
+            
+            
             
             <a href="controller?action=logout">Logout</a>
         </div>

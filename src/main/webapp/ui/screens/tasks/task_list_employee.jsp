@@ -13,7 +13,7 @@
 </head>
 <body>
  	<jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
- 	<div class="container">
+ 	<div class="container_70">
  	<h3>My Tasks</h3>
  		<table class="table table-hover text-white" id="task_table">
 			<thead>
@@ -54,7 +54,7 @@
 							<td><%=task.getManagerName()%></td>
 							<td><%=task.getStatus()%></td>
 							<td><%=task.getDeadline()%></td>
-							<td><%=task.getCreated_at()%></td>
+							<td><%=task.getCreated_at().toString().split("T")[0]%></td>
 						</tr>
 					<%	
 					}	

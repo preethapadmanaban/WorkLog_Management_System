@@ -1,8 +1,10 @@
 package com.worklog.commands.tasks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.worklog.entities.Employee;
+import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.EmployeeDAO;
 
@@ -13,12 +15,12 @@ import jakarta.servlet.http.HttpSession;
 public class CreateTaskPageCommand implements Command{
 
 	@Override
-	public boolean execute(HttpServletRequest request, HttpServletResponse response) {
+	public boolean execute(HttpServletRequest request, HttpServletResponse response) throws UnAuthorizedException {
 		
 		HttpSession session = request.getSession(false);
 		
         if (session == null) {
-        	return false;
+			throw new UnAuthorizedException("access_denied");
         }
 
         String role = (String) session.getAttribute("role");
@@ -27,7 +29,7 @@ public class CreateTaskPageCommand implements Command{
         	 return false;
         }
 
-        List<Employee> members = EmployeeDAO.getAllMembers();
+		List<Employee> members = EmployeeDAO.getAllMembers().orElse(new ArrayList<Employee>());
         request.setAttribute("Members", members);
         
 		return true;

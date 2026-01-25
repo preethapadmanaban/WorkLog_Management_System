@@ -36,36 +36,36 @@ public class UpdateTaskCommand implements Command{
 			String assignedStr = request.getParameter("assigned_to");
 			String deadlineStr = request.getParameter("deadline");
 			
-			System.out.println("Update task data: " + idStr + " " + title + " " + description + " " + assignedStr + " " + deadlineStr);
+			// System.out.println("Update task data: " + idStr + " " + title + " " + description + " " + assignedStr + " " + deadlineStr);
 
 			if(idStr == null) {
-				System.out.println("leaving update task 2");
+				// System.out.println("leaving update task 2");
 				return false;
 			}
 			int id = Integer.parseInt(idStr);
 			
 			if(title == null) {
 				request.setAttribute("message", "Invalid title!");
-				System.out.println("leaving update task 3");
+				// System.out.println("leaving update task 3");
 				return false;
 			}
 			
 			if(description == null) {
 				request.setAttribute("message", "Invalid description!");
-				System.out.println("leaving update task 4");
+				// System.out.println("leaving update task 4");
 				return false;
 			} 
 			
 			if(assignedStr == null) {
 				request.setAttribute("message", "Invalid assignment employee!");
-				System.out.println("leaving update task 5");
+				// System.out.println("leaving update task 5");
 				return false;
 			}
 			int assigned_to = Integer.parseInt(assignedStr);
 			
 			if(deadlineStr == null) {
 				request.setAttribute("message", "Invalid deadline!");
-				System.out.println("leaving update task 6");
+				// System.out.println("leaving update task 6");
 				return false;
 			}
 			Date deadline = Date.valueOf(deadlineStr);
@@ -73,7 +73,7 @@ public class UpdateTaskCommand implements Command{
 			String status = request.getParameter("status");
 			if(status == null) {
 				request.setAttribute("message", "Invalid task status!");
-				System.out.println("leaving update task 7");
+				// System.out.println("leaving update task 7");
 				return false;
 			}
 			
@@ -84,11 +84,11 @@ public class UpdateTaskCommand implements Command{
 				return true;
 			} else {
 				request.setAttribute("message", "Task Updation failed!");
-				System.out.println("leaving update task 8");
+				// System.out.println("leaving update task 8");
 				return false;
 			}
 		}
-		System.out.println("leaving update task 9");
+		// System.out.println("leaving update task 9");
 		return false;
 	}
 

@@ -13,17 +13,8 @@
 <body>
 
 <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
+<jsp:include page="/ui/screens/common/message.jsp"></jsp:include>
 
-	<div>
-		<%
-		if(request.getAttribute("message") != null)
-			{
-		%>
-			<span class="message"><%=request.getAttribute("message")%></span>				
-		<%	
-			}
-		%>
-	</div>
 	<div class="container">
 		<h1>Hello, <%=request.getSession().getAttribute("name")%></h1>
 		<div class="task_section">
@@ -52,8 +43,8 @@
 						</div>
 						
 						<div>
-							<a class="edit_button" id="<%=task.getId()%>" href="/worklog/controller?action=editTaskCommand&task_id=<%=task.getId()%>" >
-								<i class="fa-solid fa-pen-to-square fa-lg icon-large"></i>
+							<a class="edit_button" href="/worklog/controller?action=editTaskCommand&task_id=<%=task.getId()%>" >
+								<i class="fa-solid fa-pen-to-square fa-lg"></i>
 							</a>
 						</div>
 									

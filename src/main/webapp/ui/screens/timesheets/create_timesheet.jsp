@@ -16,7 +16,7 @@
     
    <jsp:include page="/ui/screens/common/message.jsp"></jsp:include>
    
-    <div class="container">
+    <div class="container_70">
     	<form action="<%=request.getContextPath()%>/controller?action=createTimesheet" method="post" id="timesheet_entry_form">
     	
     	<input type="number" name="manager_id" id="manager_id" hidden>
@@ -46,7 +46,7 @@
 	        </table>
 	        <button class="btn info-button" onclick="add_new_entry_row()">+ Add Row</button>
 	        <div class="text-center w-100">
-		        <button class="btn submit-button"  onclick="validate_data()">
+		        <button class="submit_button"  onclick="validate_data()">
 		            Submit Timesheet
 		        </button>
 	    	</div>  
@@ -67,6 +67,8 @@
 			// setting manager id
 			document.getElementById("manager_id").value = tasks[0].created_by;
 			console.log("managerID => ", tasks[0].created_by);
+			
+			add_new_entry_row();
             //console.log("date set...");
         });
 
@@ -84,10 +86,10 @@
             let selectTasks = document.createElement("select"); // => here we create select tag.
             selectTasks.setAttribute("id", "select_assigned_task");
             selectTasks.setAttribute("name", "task_id");
-            selectTasks.setAttribute("class", "form-select");
+            selectTasks.setAttribute("class", "nice-form-input");
             
             let defaultOption = document.createElement("option");
-            defaultOption.innerText = "Select task."
+            defaultOption.innerText = "--Select task--"
             selectTasks.appendChild(defaultOption);
 
             // let tasks_options = document.querySelectorAll(".assigned_task_options");
@@ -112,7 +114,8 @@
             total_hours_input.setAttribute("id", "hours_spend"); 
             total_hours_input.setAttribute("name", "hours_spend"); 
             total_hours_input.setAttribute("required", "true");
-            total_hours_input.setAttribute("class", "form-control");
+            total_hours_input.setAttribute("placeholder", "Hours spend for this task");
+            total_hours_input.setAttribute("class", "nice-form-input");
 
             cell.appendChild(total_hours_input);
 
@@ -125,7 +128,8 @@
             let notes = document.createElement("input");
             notes.setAttribute("type", "text");
             notes.setAttribute("name", "notes");
-            notes.classList.add("form-control");
+            notes.setAttribute("placeholder", "Notes if any...");
+            notes.classList.add("nice-form-input");
             
             cell.appendChild(notes);
 

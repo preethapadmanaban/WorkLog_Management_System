@@ -42,7 +42,7 @@ public class EditTaskCommand implements Command{
 				return false;
 			}
 
-			System.out.println("task edit data: " + task.getTitle() + " " + task.getDescription());
+			// System.out.println("task edit data: " + task.getTitle() + " " + task.getDescription());
 			request.setAttribute("task", task);
 			
 			return true;

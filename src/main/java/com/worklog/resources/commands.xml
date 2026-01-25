@@ -91,7 +91,7 @@
 	
 	<command name="createTask">
 	  <class>com.worklog.commands.tasks.CreateTaskCommand</class>
-	  <success>/controller?action=listTasks</success>
+	  <success>/controller?action=createTaskPage</success>
 	  <failure>ui/screens/tasks/task_create.jsp</failure>
 	</command>
 	

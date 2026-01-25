@@ -1,5 +1,6 @@
 package com.worklog.commands.dashboard;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class ManagerDashboardCommand implements Command{
 		
 		if(role != null && role.equalsIgnoreCase("Manager")) {
 			
-			List<Employee> emp_list =  EmployeeDAO.getAllMembers();
+			List<Employee> emp_list = EmployeeDAO.getAllMembers().orElse(new ArrayList<Employee>());
 			request.setAttribute("Members", emp_list);
 			
 			int timesheet_count = PendingTimesheetCount.pendingTimeSheet();

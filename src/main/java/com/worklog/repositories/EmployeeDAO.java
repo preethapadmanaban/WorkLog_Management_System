@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.worklog.db.DataSourceFactory;
 import com.worklog.entities.Employee;
@@ -42,11 +43,11 @@ public class EmployeeDAO {
 
 	}
 	
-	public static List<Employee> getAllMembers() {
+	public static Optional<List<Employee>> getAllMembers() {
 
-		List<Employee> list = new ArrayList<>();
+		List<Employee> employeeList = new ArrayList<>();
 			
-		String sql = "select id,name,role from employees where role = 'Employee' ";
+		String sql = "select id,name,role from employees where role ilike 'Employee' ";
 			
 		try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
 
@@ -57,12 +58,15 @@ public class EmployeeDAO {
 				String name = rs.getString("name");
 				String role = rs.getString("role");
 				// list.add(new Employee(id,name,role));
+				employeeList.add(new Employee.Builder().withId(id).withName(name).withrole(role).build());
 			}
+
+			return Optional.ofNullable(employeeList);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return Optional.ofNullable(null);
 			}
-		return list;
 
 		}
 
