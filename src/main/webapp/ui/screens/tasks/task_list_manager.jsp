@@ -65,7 +65,7 @@
 
         <td>
             <a href="controller?action=viewTask&id=<%= t.getId() %>">View</a>
-            <a href="controller?action=editTask&id=<%= t.getId() %>">Edit</a>
+            <a href="controller?action=editTask&task_id=<%= t.getId() %>">Edit</a>
         </td>
     </tr>
 

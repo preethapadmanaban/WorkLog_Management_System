@@ -43,7 +43,7 @@
 						</div>
 						
 						<div>
-							<a class="edit_button" href="/worklog/controller?action=editTaskCommand&task_id=<%=task.getId()%>" >
+							<a class="edit_button" href="/worklog/controller?action=editTask&task_id=<%=task.getId()%>" >
 								<i class="fa-solid fa-pen-to-square fa-lg"></i>
 							</a>
 						</div>

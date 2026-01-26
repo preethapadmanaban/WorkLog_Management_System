@@ -26,22 +26,9 @@
 
 
     <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
-    <div class="navbar">
 
-        <!-- LOGO ONLY -->
-        <div class="nav_left">
-            <img src="<%= request.getContextPath() %>/ui/images/worklog_logo.png" class="nav_logo" alt="worklog">
-        </div>
+    <jsp:include page="/ui/screens/common/message.jsp"></jsp:include>
 
-        <div class="navLinks">
-            <a href="<%=request.getContextPath()%>/controller?action=createTaskPage">Assign Task</a>
-            <a href="<%=request.getContextPath()%>/controller?action=listTasks">View Tasks</a>
-            <a href="<%=request.getContextPath()%>/controller?action=pending">Review Timesheets</a>
-            <a href="<%=request.getContextPath()%>/controller?action=report">Reports</a>
-            <a href="<%=request.getContextPath()%>/controller?action=logout">Logout</a>
-        </div>
-
-    </div>
 
     <div class="container">
 

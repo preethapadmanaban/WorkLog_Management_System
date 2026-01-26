@@ -32,7 +32,7 @@ public class TimesheetPendingCommand implements Command{
 			
 			TimeSheetDAO dao = new TimeSheetDAO();
 			List<TimeSheet> list = dao.getPendingTimesheet().orElse(new ArrayList<>());
-			request.setAttribute("pendingTimesheets", list);
+			request.setAttribute("pending", list);
 			return true;
 
 		}

@@ -44,12 +44,10 @@
 					
 	            </tbody>
 	        </table>
-	        <button class="btn info-button" onclick="add_new_entry_row()">+ Add Row</button>
-	        <div class="text-center w-100">
-		        <button class="submit_button"  onclick="validate_data()">
-		            Submit Timesheet
-		        </button>
-	    	</div>  
+	        <button type="button" class="btn info-button" onclick="add_new_entry_row()">+ Add Row</button>
+			<button type="button" class="submit_button" onclick="validate_data()">
+			    Submit 
+			</button>
 	     </form>
 	  </div>
 	    

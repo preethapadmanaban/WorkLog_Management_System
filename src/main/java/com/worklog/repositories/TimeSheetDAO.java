@@ -26,21 +26,23 @@ import com.worklog.entities.TimeSheet;
 public class TimeSheetDAO {
 
 	private TimeSheet mapToTimeSheet(ResultSet rs) throws SQLException {
-		TimeSheet timeSheet = new TimeSheet();
-		while(rs.next()) {
-			timeSheet.setApproved(rs.getBoolean("approved"));
-			timeSheet.setCreated_at(rs.getTimestamp("created_at"));
-			timeSheet.setEmployee_id(rs.getInt("employee_id"));
-			timeSheet.setId(rs.getInt("id"));
-			timeSheet.setStatus(rs.getString("status"));
-			timeSheet.setManager_comment(rs.getString("manager_comment"));
-			timeSheet.setTotal_hours(rs.getDouble("total_hours"));
-			timeSheet.setManager_id(rs.getInt("manager_id"));
-			Date date=rs.getDate("work_date");
-			LocalDate localDate=date.toLocalDate();
-			timeSheet.setWork_date(localDate);
-		}
-		return timeSheet;
+	    TimeSheet timeSheet = new TimeSheet();
+
+	    timeSheet.setApproved(rs.getBoolean("approved"));
+	    timeSheet.setCreated_at(rs.getTimestamp("created_at"));
+	    timeSheet.setEmployee_id(rs.getInt("employee_id"));
+	    timeSheet.setId(rs.getInt("id"));
+	    timeSheet.setStatus(rs.getString("status"));
+	    timeSheet.setManager_comment(rs.getString("manager_comment")); // correct column name
+	    timeSheet.setTotal_hours(rs.getDouble("total_hours"));
+	    timeSheet.setManager_id(rs.getInt("manager_id"));
+
+	    Date date = rs.getDate("work_date");
+	    if (date != null) {
+	        timeSheet.setWork_date(date.toLocalDate());
+	    }
+
+	    return timeSheet;
 	}
 
 
@@ -90,64 +92,68 @@ public class TimeSheetDAO {
 		}
 	}
 	
-	public Optional<List<TimeSheet>> getAllApprovedTimeSheet(int id){
-		String sql="select * from Timesheet where employee_id=? and approved=?";
-		try(Connection conn=DataSourceFactory.getConnectionInstance();
-			PreparedStatement pstmt=conn.prepareStatement(sql);
-			){
-			pstmt.setInt(1, id);
-			pstmt.setBoolean(2,true);
-			List<TimeSheet> timeSheets=new ArrayList<>();
-			ResultSet rs=pstmt.executeQuery();
-			while(rs.next()) {
-				TimeSheet timeSheet=mapToTimeSheet(rs);
-				timeSheets.add(timeSheet);
-				
-			}
-			return Optional.ofNullable(timeSheets);
-		}catch(SQLException e) {
-			e.printStackTrace();
-			return Optional.ofNullable(null);
-		}
-		
+	public Optional<List<TimeSheet>> getAllTimeSheetsForEmployee(int id) {
+	    String sql = "select * from timesheets where employee_id=?";
+
+	    List<TimeSheet> timeSheets = new ArrayList<>();
+
+	    try (Connection conn = DataSourceFactory.getConnectionInstance();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+	        pstmt.setInt(1, id);
+
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            while (rs.next()) {
+	                timeSheets.add(mapToTimeSheet(rs));
+	            }
+	        }
+
+	        return Optional.of(timeSheets);
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return Optional.empty();
+	    }
 	}
+
 
 	public Optional<List<TimeSheet>> getPendingTimesheet() {
 
-		String sql = "select id, employee_id, work_date, total_hours, status, manager_id, manager_comment, "
-				+ "approved, created_at from timesheets where status = 'PENDING' order by work_date desc";
+	    String sql =
+	        "select id, employee_id, work_date, total_hours, status, manager_id, manager_comment, approved, created_at " +
+	        "from timesheets " +
+	        "where status ILIKE 'pending' " +
+	        "order by work_date DESC, created_at desc";
 
-		List<TimeSheet> list = new ArrayList<>();
+	    List<TimeSheet> list = new ArrayList<>();
 
-		try (Connection conn = DataSourceFactory.getConnectionInstance();
-				PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	    try (Connection conn = DataSourceFactory.getConnectionInstance();
+	         PreparedStatement pstmt = conn.prepareStatement(sql);
+	         ResultSet rs = pstmt.executeQuery()) {
 
-			ResultSet rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            TimeSheet timesheet = new TimeSheet(
+	                rs.getInt("id"),
+	                rs.getInt("employee_id"),
+	                rs.getDate("work_date").toLocalDate(),
+	                rs.getDouble("total_hours"),
+	                rs.getString("status"),
+	                rs.getInt("manager_id"),
+	                rs.getString("manager_comment"),
+	                rs.getBoolean("approved"),
+	                rs.getTimestamp("created_at")
+	            );
+	            list.add(timesheet);
+	        }
 
-			while (rs.next()) {
+	        return Optional.of(list);
 
-				TimeSheet timesheet = new TimeSheet(
-						rs.getInt("id"),
-						rs.getInt("employee_id"),
-						rs.getDate("work_date").toLocalDate(),   
-						rs.getDouble("total_hours"),
-						rs.getString("status"),
-						rs.getInt("manager_id"),
-						rs.getString("manager_comment"),
-						rs.getBoolean("approved"),
-						rs.getTimestamp("created_at")
-				);
-
-				list.add(timesheet);
-			}
-
-			return Optional.of(list);
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return Optional.ofNullable(null);
-		}
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return Optional.empty();
+	    }
 	}
+
 	// tommorrow seen this reportdao
 	public Optional<Report> getReportDailyworkhours(LocalDate fromDate,LocalDate toDate,int id){
 		String sql="select  employee_id, work_date,total_hours,status from timesheet where (work_date=? between work_date=? )and manager_id=?";

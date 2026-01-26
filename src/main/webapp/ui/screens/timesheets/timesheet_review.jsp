@@ -1,3 +1,4 @@
+<%@page import="com.worklog.dto.TimeSheetEntryForReviewDTO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
@@ -12,11 +13,12 @@
 </head>
 <body>
 <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
+<jsp:include page="/ui/screens/common/message.jsp"></jsp:include>
 
 	<%
 	
     TimeSheet ts = (TimeSheet) request.getAttribute("timesheet");
-    List<TimeSheetEntry> entries = (List<TimeSheetEntry>) request.getAttribute("entries");
+    List<TimeSheetEntryForReviewDTO> entries = (List<TimeSheetEntryForReviewDTO>) request.getAttribute("entries");
     
 	%>
 	
@@ -57,11 +59,11 @@
 	    
 	    <%
     if(entries != null && !entries.isEmpty()){
-        for(TimeSheetEntry e : entries){
+        for(TimeSheetEntryForReviewDTO e : entries){
 	%>
 	    <tr>
 	        <td><%= e.getId() %></td>
-	        <td><%= e.getTask_id() %></td>
+	        <td><%= e.getTitle() %></td>
 	        <td><%= e.getNotes() %></td>
 	        <td><%= e.getHours_spent() %></td>
 	    </tr>
@@ -78,6 +80,10 @@
 	
 	</table>
 	
+	<% 
+		if(((String)session.getAttribute("role")).equalsIgnoreCase("manager"))
+		{
+	%>
 	<h3>Manager Action</h3>
 
 	<form action="controller" method="post">
@@ -100,7 +106,8 @@
 	<a href="<%=request.getContextPath() %>/controller?action=pending">Back to Pending List</a>
 	
 	<%
-	    }
+		}
+	  }
 	%>
 
 </body>

@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<commands>
 
 	<!-- AUTH -->
+<command>
 
 	<command name="login">
 		<class>com.worklog.commands.auth.LoginCommand</class>
 		<success>/controller?action=routing</success>
 		<failure>ui/screens/auth/login.jsp</failure>
 	</command>
+	
 	<command name="signup">
 		<class>com.worklog.commands.auth.SignupCommand</class>
 		<success>ui/screens/auth/login.jsp</success>
 		<failure>ui/screens/auth/signup.jsp</failure>
 	</command>
+	
 	<command name="logout">
 		<class>com.worklog.commands.auth.LogoutCommand</class>
 		<success>ui/screens/auth/login.jsp</success>
-		<failure>ui/screens/auth/logout.jsp</failure>
+		<failure>controller?action=access_denied</failure>
 	</command>
 	
 	<command name="access_denied">
@@ -24,6 +26,7 @@
 	  <success>ui/screens/auth/access_denied.jsp</success>
 	  <failure>ui/screens/auth/access_denied.jsp</failure>
 	</command>
+	
 	<!-- ROUTING -->
 	
 	<command name="routing">
@@ -62,18 +65,18 @@
 	  <failure>ui/screens/tasks/task_list_manager.jsp</failure>
 	</command>
 	
-	<command name="editTaskCommand">
-		<class>com.worklog.commands.tasks.EditTaskCommand</class>
-		<success>ui/screens/tasks/task_edit.jsp</success>
-		<failure>/controller?action=routing</failure>
+	<command name="editTask">
+	    <class>com.worklog.commands.tasks.EditTaskCommand</class>
+	    <success>ui/screens/tasks/task_edit.jsp</success>
+	    <failure>/controller?action=routing</failure>
 	</command>
 	
 	<command name="updateTask">
-		<class>com.worklog.commands.tasks.UpdateTaskCommand</class>
-		<success>/controller?action=routing</success>
-		<failure>/controller?action=editTaskCommand</failure>
+	    <class>com.worklog.commands.tasks.UpdateTaskCommand</class>
+	    <success>/controller?action=routing</success>
+	    <failure>/controller?action=editTask</failure>
 	</command>
-	
+
 	<command name="listEmployeeTasks">
 		<class>com.worklog.commands.tasks.EmployeeListTaskCommand</class>
 		<success>ui/screens/tasks/task_list_employee.jsp</success>
@@ -93,19 +96,19 @@
 	</command>
 	
 	<!-- TIME SHEET -->
-	
+
 	<command name="pending">
 	  <class>com.worklog.commands.timesheets.TimesheetPendingCommand</class>
 	  <success>ui/screens/timesheets/timesheet_review_list.jsp</success>
-	  <failure>ui/screens/auth.login.jsp</failure>
+	  <failure>ui/screens/auth/login.jsp</failure>
 	</command>
-
+	
 	<command name="timesheetReview">
 	  <class>com.worklog.commands.timesheets.TimesheetReviewCommand</class>
 	  <success>ui/screens/timesheets/timesheet_review.jsp</success>
 	  <failure>/controller?action=pending</failure>
 	</command>
-
+	
 	<command name="approveTimesheet">
 	  <class>com.worklog.commands.timesheets.ApproveTimesheetCommand</class>
 	  <success>/controller?action=pending</success>
@@ -127,7 +130,13 @@
 	<command name="createTimesheetPage">
 	  <class>com.worklog.commands.timesheets.NavigateCreateTimesheetPageCommand</class>
 	  <success>ui/screens/timesheets/create_timesheet.jsp</success>
-	  <failure>controller?action=access_denied</failure>
+	  <failure>/controller?action=access_denied</failure>
 	</command>
 	
-</commands>
+	<command name="timesheetHistory">
+	  <class>com.worklog.commands.timesheets.EmployeeTimeSheetHistoryCommand</class>
+	  <success>ui/screens/timesheets/timesheet_history.jsp</success>
+	  <failure>/controller?action=employeeDashboard</failure>
+	</command>
+
+</command>

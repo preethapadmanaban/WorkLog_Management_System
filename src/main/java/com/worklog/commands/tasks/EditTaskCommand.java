@@ -17,38 +17,36 @@ public class EditTaskCommand implements Command{
 
 	@Override
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) {
-		HttpSession session = request.getSession(false);
-		
-		if(session == null) {
-			return false;
-		}
-		
-		String role = (String)session.getAttribute("role");
-		
-		if (role != null) {
-			
-			String idStr = request.getParameter("task_id");
 
-			if (idStr == null || idStr.trim().isEmpty()) {
-				return false;
-			}
+	    HttpSession session = request.getSession(false);
+	    
+	    if (session == null){
+	    	return false;
+	    }
 
-			int id = Integer.parseInt(idStr);
+	    String role = (String) session.getAttribute("role");
+	    
+	    if (role == null) {
+	    	return false;
+	    }
 
-			TaskDAO dao = new TaskDAO();
-			Task task = dao.getTaskById(id).orElse(null);
+	    String idStr = request.getParameter("task_id");
+	    
+	    if (idStr == null || idStr.isEmpty()) {
+	    	return false;
+	    }
 
-			if (task == null) {
-				return false;
-			}
+	    int id = Integer.parseInt(idStr);
 
-			// System.out.println("task edit data: " + task.getTitle() + " " + task.getDescription());
-			request.setAttribute("task", task);
-			
-			return true;
-			
-		}
-		return false;
+	    TaskDAO dao = new TaskDAO();
+	    Task task = dao.getTaskById(id).orElse(null);
+	    
+	    if (task == null) {
+	    	return false;
+	    }
+
+	    request.setAttribute("task", task);
+	    
+	    return true;
 	}
-
 }
