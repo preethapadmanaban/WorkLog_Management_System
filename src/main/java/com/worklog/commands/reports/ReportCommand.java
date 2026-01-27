@@ -1,5 +1,7 @@
 package com.worklog.commands.reports;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,23 +49,43 @@ public class ReportCommand implements Command{
 		if ((toDate.isAfter(fromDate))) {
 
 			TimeSheetDAO timeSheetDAO=new TimeSheetDAO();
-			// if(name.equalsIgnoreCase("employee")) {
-			// optional=timeSheetDAO.getReportDailyworkhours(fromDate,toDate, managerId);
-			// }else if(name.equalsIgnoreCase("task")){
-			// optional=timeSheetDAO.getReportDailyworkhours(fromDate,toDate, managerId);
-			// }
 
 			List<ReportEmployeeDTO> reports = timeSheetDAO.getReportDailyworkhours(fromDate, toDate, managerId)
 							.orElse(new ArrayList<ReportEmployeeDTO>());
 
-			if (reports != null) {
-				request.setAttribute("report", reports);
-				return true;
-			}else {
-				request.setAttribute("message","id and date is no work");
-				return true;
+			if (request.getParameter("download") == null) {
+				if (reports != null) {
+					request.setAttribute("report", reports);
+					return true;
+				} else {
+					request.setAttribute("message", "id and date is no work");
+					return true;
+				}
+			}
+			else {
+				try {
+					// set the header
+					response.setContentType("text/csv");
+					response.setCharacterEncoding("UTF-8");
+					response.setHeader("Content-Disposition", "attachment; filename=\"employee_report.csv\"");
+
+					PrintWriter out = response.getWriter();
+					out.println("Employee Name, Work Date, Task Title, Task Duration, Task Notes");
+
+					for (ReportEmployeeDTO report : reports) {
+						out.printf("%s, %s, %s, %s, %s\n", report.getEmp_name(), report.getWork_date(), report.getTitle(),
+										(report.getTask_duration() + " hours"), report.getNotes());
+					}
+					out.flush();
+					return true;
+				} catch (IOException e) {
+					e.printStackTrace();
+					return false;
+				}
+
 			}
 			
+
 		}else {
 			request.setAttribute("message","invalid date");
 			return false;

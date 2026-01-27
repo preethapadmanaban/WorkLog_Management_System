@@ -65,7 +65,7 @@
 	</div>
 	<table border="1" cellpadding="6">
     <tr>
-        <th>ID</th>
+<!--         <th>ID</th> -->
         <th>Title</th>
         <th>Assigned To</th>
         <th>Status</th>
@@ -79,7 +79,7 @@
     %>
 
     <tr>
-        <td><%= t.getId() %></td>
+<%--         <td><%= t.getId() %></td> --%>
         <td><%= t.getTitle() %></td>
         <td><%= t.getAssigned_to() %></td>
         <td><%= t.getStatus() %></td>

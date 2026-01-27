@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.Map;
 
 import com.worklog.config.CommandXMLConfig;
+import com.worklog.exceptions.CommandNotFoundException;
 import com.worklog.interfaces.Command;
 
 public class CommandXMLFactory {
@@ -11,7 +12,7 @@ public class CommandXMLFactory {
 	static {
 		// Load properties only once when class is loaded
 		// try (InputStream is = CommandFactory.class.getClassLoader().getResourceAsStream("com/worklog/resources/commands.properties")) {
-		try (InputStream is = CommandFactory.class.getClassLoader().getResourceAsStream("com/worklog/resources/commands.xml")) {
+		try (InputStream is = CommandXMLFactory.class.getClassLoader().getResourceAsStream("com/worklog/resources/commands.xml")) {
 
 			if (is == null) {
 				throw new RuntimeException("commands.xml file not found in classpath");
@@ -31,7 +32,7 @@ public class CommandXMLFactory {
 		// Prevent object creation
 	}
 
-	public static Command getCommand(String action) {
+	public static Command getCommand(String action) throws CommandNotFoundException {
 
 		try {
 			if (action == null) {
@@ -51,7 +52,7 @@ public class CommandXMLFactory {
 
 		} catch (Exception e) {
 			// logger.error("Unable to create command for action: " + action, e.getMessage());
-			throw new RuntimeException(("Unable to create command for action: " + action), e);
+			throw new CommandNotFoundException(("Unable to create command for action: " + action), e);
 		}
 	}
 }

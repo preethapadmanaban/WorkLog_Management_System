@@ -77,6 +77,17 @@ public class ListTasksCommand implements Command{
 
 				return true;
 			}
+			else {
+
+				TaskDAO dao = new TaskDAO();
+
+				List<Task> taskList = dao.getTasksCreatedByManager(managerId).orElse(new ArrayList<>());
+
+				request.setAttribute("members", EmployeeDAO.getAllMembers().orElse(new ArrayList<Employee>()));
+				request.setAttribute("tasks", taskList);
+
+				return true;
+			}
 		}
 		
 		return false;

@@ -68,11 +68,24 @@
             	</tr>
             	<%
         	}
+   		 }else{
+   		%>
+   		
+   		<tr style="text-align: center;"><td colspan="5">No records!</td></tr>
+   		
+   		<%
    		 }
+				    
 		%>
 			</table>
+			<%
+			if (reportEmployees != null && reportEmployees.size() != 0) {
+			%>
+				<div style="width: 100%; text-align: center;"> 
+				 	<a href="<%=(request.getContextPath() + "/controller?" + request.getQueryString())%>&download=true"><button class="submit_button">Download Report</button></a>
+				</div>
+			<% } %>
 		</div>
-	</div>
 </body>
 </html>
     

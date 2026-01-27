@@ -3,6 +3,7 @@ package com.worklog.servlets;
 import java.io.IOException;
 
 import com.worklog.config.CommandXMLConfig;
+import com.worklog.exceptions.CommandNotFoundException;
 import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.factories.CommandXMLFactory;
 import com.worklog.interfaces.Command;
@@ -35,10 +36,14 @@ public class Controller extends HttpServlet {
 			return;
 		}
 
-		Command cmd = CommandXMLFactory.getCommand(action);
 		CommandXMLConfig cmdConfig = CommandXMLFactory.configMap.get(action);
 
 		try {
+			if (cmdConfig == null) {
+				throw new CommandNotFoundException("Undeifned action.");
+			}
+
+			Command cmd = CommandXMLFactory.getCommand(action);
 			boolean flag = cmd.execute(request, response);
 			String forward;
 			if (flag) {
@@ -46,12 +51,22 @@ public class Controller extends HttpServlet {
 			} else {
 				forward = cmdConfig.getFailurePage();
 			}
-			request.getRequestDispatcher(forward).forward(request, response);
+
+			// we implement the download option here instead of putting it as an separate servlet
+			if (request.getParameter("download") == null) {
+				request.getRequestDispatcher(forward).forward(request, response);
+			} else {
+				// when the request comes here, then it send as an download not a response. See the respective command for more details.
+				return;
+			}
+
+		} catch (CommandNotFoundException e) {
+			e.printStackTrace();
+			request.getRequestDispatcher("/worklog/").forward(request, response);
 		} catch (UnAuthorizedException e) {
 			System.out.println(e);
 			request.setAttribute("message", e.getMessage());
 			request.getRequestDispatcher(CommandXMLFactory.configMap.get("access_denied").getSuccessPage()).include(request, response);
-
 		} catch (Exception e) {
 			System.out.println(e);
 			request.setAttribute("message", e.getMessage());
