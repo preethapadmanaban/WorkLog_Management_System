@@ -1,5 +1,6 @@
 package com.worklog.commands.tasks;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,8 +37,34 @@ public class ListTasksCommand implements Command{
 			
 			int managerId = (int) session.getAttribute("id");
 			
+			String empIdStr = request.getParameter("empId");
+			String status = request.getParameter("status");
+			String fromDateStr = request.getParameter("fromDate");
+			String toDateStr = request.getParameter("toDate");
+			
+			Integer empId = null;          
+			LocalDate fromDate = null;    
+			LocalDate toDate = null;
+			
+			if(empIdStr != null && !empIdStr.trim().isEmpty()) {
+				empId = Integer.parseInt(empIdStr);
+			}
+			
+			if(status != null && status.trim().isEmpty()) {
+			    status = null;
+			}
+			
+			if(fromDateStr != null) {
+				fromDate = LocalDate.parse(fromDateStr);
+			}
+			
+			if(toDateStr != null) {
+				toDate = LocalDate.parse(toDateStr);
+			}
+			
 			TaskDAO dao = new TaskDAO();
-			List<Task> taskList = dao.getTasksCreatedByManager(managerId).orElse(new ArrayList<>());
+			
+			List<Task> taskList = dao.getTasksCreatedByManager(managerId, empId, status, fromDate, toDate).orElse(new ArrayList<>());
 			
 			request.setAttribute("members", EmployeeDAO.getAllMembers().orElse(new ArrayList<Employee>()));
 			request.setAttribute("tasks", taskList);

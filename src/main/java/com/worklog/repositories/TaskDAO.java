@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -267,26 +268,35 @@ public class TaskDAO {
 		return Optional.ofNullable(null);
 	}
 	
-	public Optional<List<Task>> getTasksCreatedByManager(int managerId) {
+	public Optional<List<Task>> getTasksCreatedByManager(int managerId, int empId, String status, LocalDate fromDate, LocalDate toDate) {
 
-	    List<Task> tasks = new ArrayList<>();
-	    String sql = "select * from tasks where created_by = ? order by deadline";
+			    List<Task> tasks = new ArrayList<>();
 
-	    try (Connection con = DataSourceFactory.getConnectionInstance();
-	         PreparedStatement pstmt = con.prepareStatement(sql)) {
+			    String sql = "select * from tasks " +
+			                 "where created_by = ? and assigned_to = ? and status = ? " +
+			                 "and deadline >= ? and deadline <= ? " +
+			                 "order by deadline";
 
-	        pstmt.setInt(1, managerId);
-	        ResultSet rs = pstmt.executeQuery();
+			    try (Connection con = DataSourceFactory.getConnectionInstance();
+			         PreparedStatement pstmt = con.prepareStatement(sql)) {
 
-	        while (rs.next()) {
-	            tasks.add(mapToTask(rs));
-	        }
+			        pstmt.setInt(1, managerId);
+			        pstmt.setInt(2, empId);
+			        pstmt.setString(3, status);
+			        pstmt.setDate(4, Date.valueOf(fromDate));
+			        pstmt.setDate(5, Date.valueOf(toDate));
 
-	        return Optional.of(tasks);
+			        ResultSet rs = pstmt.executeQuery();
+			        
+			        while (rs.next()) {
+			            tasks.add(mapToTask(rs));
+			        }
 
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        return Optional.empty();
-	    }
-	}
+			        return Optional.of(tasks);
+
+			    } catch (SQLException e) {
+			        e.printStackTrace();
+			        return Optional.empty();
+			    }
+			}
 }
