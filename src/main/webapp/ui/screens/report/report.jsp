@@ -13,33 +13,36 @@
 
 <jsp:include page="/ui/screens/common/navbar.jsp"/>
 <jsp:include page="/ui/screens/common/message.jsp"/>
+
+<div class="filter_section">
 	
-	<div class="container">
 		<h1>Work Log</h1>
+		
 		<form action="controller" method="get" class="header-form">
 		
-			<input type="hidden" name="action" value="report">
-		  	<input type="hidden" name="filter" value="true">
-		  	
-		    
-		    <select name="type">
-			    <option value="">Select</option>
-			    <option value="employee">Employee</option>
-			    <option value="task">Task</option>
-			</select>
+		<div class="filter_section">
+				<input type="hidden" name="action" value="report">
+			  	<input type="hidden" name="filter" value="true">
+			  	
+			    
+			    <select name="type" class="nice-form-input">
+				    <option value="">Select</option>
+				    <option value="employee">Employee</option>
+				    <option value="task">Task</option>
+				</select>
 
 		   
 		    
-		    <input type="date" name="fromDate">
+			    <input type="date" name="fromDate" class="nice-form-input">
+			
+			    
+			    <input type="date" name="toDate" class="nice-form-input">
 		
 		    
-		    <input type="date" name="toDate">
-		
-		    
-		    <button type="submit">generate report</button>
-		
+		   		<button type="submit" class="submit_button">generate report</button>
+			</div>
 		</form>
-		
+</div>
 		<div class="records">
 			<table>
 				<tr>

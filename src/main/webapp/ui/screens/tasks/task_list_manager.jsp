@@ -16,51 +16,53 @@
 	<%
     List<Task> list = (List<Task>) request.getAttribute("tasks");
     %>
-
-	<form action="controller" method="get">
-    
-	    <input type="hidden" name="action" value="listTasks">
-
-	    <input type="hidden" name="filter" value="true">
 	
-	    Employee ID:
-	   	<select name="employee_id">
-	   		<% List<Employee> employees = (List<Employee>) request.getAttribute("members");
-	   			if(employees != null || employees.size() != 0)
-	   			{
-	   				for(Employee emp : employees)
-	   				{
-	   		%>
-	   			<option value="<%=emp.getId()%>"><%=emp.getName()%></option>
-	   		<%
-	   				}
-	   			}
-	   			else{
-	   		%>
-	   				<option selected>No Employee</option>
-	   		<%		
-	   			}
-	   		%>
-	   	</select>
+	<div class="filter_section">
+		<h3>List of Tasks</h3>
+		<form action="controller" method="get">
+	    	<div class="filter_section">
+		    <input type="hidden" name="action" value="listTasks">
 	
-	    Status:
-	    <select name="status">
-	        <option value="all">-- All --</option>
-	        <option value="Assigned">Assigned</option>
-	        <option value="In Progress">In Progress</option>
-	        <option value="Completed">Completed</option>
-	    </select>
-	
-	    From:
-	    <input type="date" name="fromDate">
-	
-	    To:
-	    <input type="date" name="toDate">
-	
-	    <input type="submit" value="Filter">
-	    
-	</form>
-	
+		    <input type="hidden" name="filter" value="true">
+		
+		    Employee ID:
+		   	<select name="employee_id" class="nice-form-input">
+		   		<% List<Employee> employees = (List<Employee>) request.getAttribute("members");
+		   			if(employees != null || employees.size() != 0)
+		   			{
+		   				for(Employee emp : employees)
+		   				{
+		   		%>
+		   			<option value="<%=emp.getId()%>"><%=emp.getName()%></option>
+		   		<%
+		   				}
+		   			}
+		   			else{
+		   		%>
+		   				<option selected>No Employee</option>
+		   		<%		
+		   			}
+		   		%>
+		   	</select>
+		
+		    Status:
+		    <select name="status" class="nice-form-input">
+		        <option value="all">-- All --</option>
+		        <option value="Assigned">Assigned</option>
+		        <option value="In Progress">In Progress</option>
+		        <option value="Completed">Completed</option>
+		    </select>
+		
+		    From:
+		    <input type="date" name="fromDate" class="nice-form-input">
+		
+		    To:
+		    <input type="date" name="toDate" class="nice-form-input">
+		
+		    <input type="submit" value="Filter" class="submit_button">
+		    </div>
+		</form>
+	</div>
 	<table border="1" cellpadding="6">
     <tr>
         <th>ID</th>
