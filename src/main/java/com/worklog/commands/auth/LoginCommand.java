@@ -31,43 +31,62 @@ public class LoginCommand implements Command{
 		}		
 	}
 
+	private boolean isValidLoginRequest(HttpSession session) {
+		Integer num_attempts = (Integer) session.getAttribute("num_attempts");
+		if (num_attempts == null) {
+			num_attempts = 1;
+		}
+
+		if (num_attempts < MAX_ATTEMPTS) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public void addAttempt(HttpSession session) {
+		Integer num_attempts = (Integer) session.getAttribute("num_attempts");
+		if (num_attempts != null) {
+			session.setAttribute("num_attempts", ++num_attempts);
+		} else {
+			session.setAttribute("num_attempts", 0);
+		}
+	}
+
 	@Override
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) {
-		String email=request.getParameter("email");
-		String password=request.getParameter("password");
+
 		HttpSession session=request.getSession();
-		Integer num_attempts=(Integer)session.getAttribute("num_attempts");
-		if(num_attempts==null) {
-			num_attempts=0;
-		}
-		if(email!=null && password!=null) {
-			LoginDAO loginDAO=new LoginDAO();
-			Optional<Employee> emp=loginDAO.getDetails(email);
-			if(emp.isPresent() && (PasswordProtector.checkPassword(password, emp.get().getPassword()))) {
-				Employee employee=emp.get();
-				setInfoInSession(session,employee);
-				// for route this into routing command.
-				request.setAttribute("action", "routing");
-				// request.set
-				return true;
+		if (isValidLoginRequest(session)) {
+			String email = request.getParameter("email");
+			String password = request.getParameter("password");
+			if (email != null && password != null) {
+				LoginDAO loginDAO = new LoginDAO();
+				Optional<Employee> emp = loginDAO.getDetails(email);
+				if (emp.isPresent() && (PasswordProtector.checkPassword(password, emp.get().getPassword()))) {
+					Employee employee = emp.get();
+					setInfoInSession(session, employee);
+					// for route this into routing command.
+					request.setAttribute("action", "routing");
+					// request.set
+					return true;
+				} else {
+					request.setAttribute("message", "Invalid credentials!");
+					addAttempt(session);
+					return false;
+				}
 			}
 			else {
-//				num_attempts++;
-//				
-//				if(num_attempts<MAX_ATTEMPTS) {
-//					return false;
-//					
-//				}else {
-//					
-//				}
 				request.setAttribute("message","Invalid credentials!");
+				addAttempt(session);
 				return false;
 			}
 		}
 		else {
-			request.setAttribute("message","invalid credentials");
+			request.setAttribute("message", "Account locked, Max Attempts reached.");
 			return false;
 		}
+
 	}
 	 
 

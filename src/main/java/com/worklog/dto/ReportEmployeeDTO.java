@@ -1,23 +1,20 @@
 package com.worklog.dto;
 
+import java.time.LocalDate;
 
 public class ReportEmployeeDTO {
 	private int emp_id;
 	private String emp_name;
+	private LocalDate work_date;
 	private int task_id;
 	private String title;
+	private String notes;
 	private double task_duration;
-	public ReportEmployeeDTO(int emp_id, String emp_name, int task_id, String title, double task_duration) {
-		super();
-		this.emp_id = emp_id; 
-		this.emp_name = emp_name;
-		this.task_id = task_id;
-		this.title = title;
-		this.task_duration = task_duration;
-	}
+
 	public ReportEmployeeDTO() {
 		super();
 	}
+
 	public int getEmp_id() {
 		return emp_id;
 	}
@@ -47,6 +44,22 @@ public class ReportEmployeeDTO {
 	}
 	public void setTask_duration(double task_duration) {
 		this.task_duration = task_duration;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
+	public LocalDate getWork_date() {
+		return work_date;
+	}
+
+	public void setWork_date(LocalDate work_date) {
+		this.work_date = work_date;
 	}
 	
 

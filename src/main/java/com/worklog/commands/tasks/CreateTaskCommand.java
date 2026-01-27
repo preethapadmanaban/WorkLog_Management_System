@@ -62,6 +62,8 @@ import jakarta.servlet.http.HttpSession;
 				boolean inserted = dao.createTask(title, description, assigned_to, status, deadline, createdBy);
 				
 				if(inserted) {
+					request.setAttribute("status", "success");
+					request.setAttribute("status", "Task assigned successfully!");
 					return true;
 				}
 				return false;

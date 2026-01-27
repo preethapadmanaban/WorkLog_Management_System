@@ -243,7 +243,7 @@
             //const requestDto = new EntryRequestDTO(work_date, total_hours, entry_array);
             //console.log("entry request dto: ", requestDto);
             if(window.confirm("Confirm to submit timesheet?")){
-                alert("Validation successfull"); 
+                // alert("Validation successfull"); 
                 let timesheet_entry_form = document.getElementById("timesheet_entry_form");
                 timesheet_entry_form.submit();
             }

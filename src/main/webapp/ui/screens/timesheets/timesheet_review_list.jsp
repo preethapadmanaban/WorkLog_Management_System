@@ -23,7 +23,6 @@
 
 <table border="1" cellpadding="6">
     <tr>
-        <th>ID</th>
         <th>Employee ID</th>
         <th>Work Date</th>
         <th>Total Hours</th>
@@ -37,12 +36,11 @@
         for (TimeSheet t : pendingList) {
 %>
     <tr>
-        <td><%= t.getId() %></td>
         <td><%= t.getEmployee_id() %></td>
         <td><%= t.getWork_date() %></td>
         <td><%= t.getTotal_hours() %></td>
         <td><%= t.getStatus() %></td>
-        <td><%= t.getCreated_at().toString().split("hh")[0] %></td>
+        <td><%= t.getCreated_at().toLocalDateTime().toString().split("T")[0] %></td>
         <td>
             <a href="<%=request.getContextPath()%>/controller?action=timesheetReview&timesheetId=<%= t.getId() %>">
                 Review

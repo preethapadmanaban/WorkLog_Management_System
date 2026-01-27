@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import com.worklog.entities.Employee;
+import com.worklog.exceptions.DuplicateUserException;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.EmployeeDAO;
 import com.worklog.utils.PasswordProtector;
@@ -33,11 +34,17 @@ public class SignupCommand implements Command {
 
 
 		EmployeeDAO employeeRepo = new EmployeeDAO();
-		boolean flag = employeeRepo.createEmployee(employee);
+		boolean flag;
+		try {
+			flag = employeeRepo.createEmployee(employee);
+		} catch (DuplicateUserException e) {
+			flag = false;
+			request.setAttribute("message", e.getMessage());
+		}
+
 		if (flag == true) {
 			return true;
 		} else {
-			request.setAttribute("message", "Employee creation failed!");
 			return false;
 		}
 	}

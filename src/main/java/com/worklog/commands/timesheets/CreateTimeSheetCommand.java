@@ -99,31 +99,16 @@ public class CreateTimeSheetCommand implements Command {
 
 		TimeSheetEntryDAO entryRepo = new TimeSheetEntryDAO();
 
-<<<<<<< Updated upstream
 		flag = entryRepo.createTimeSheetEntries(timeSheetId, timeSheetRequest.getEntries());
-=======
                 
-                entries.add(new TimeSheetEntryDTO(taskId, notes, hours));
->>>>>>> Stashed changes
 
 		if (flag == false) {
 			request.setAttribute("message", "Time sheet entry creation failed, please try again!");
 			return false;
 		}
 
-<<<<<<< Updated upstream
 		request.setAttribute("status", "success");
 		request.setAttribute("message", "Timesheet created and send for approval.");
 		return true;
-=======
-        
-        TimeSheetRequestDTO timeSheetRequest = new TimeSheetRequestDTO(
-                Integer.parseInt(managerIdStr),
-                LocalDate.parse(workDateString),
-                totalHours,
-                entries
-        );
->>>>>>> Stashed changes
-
     }
 }

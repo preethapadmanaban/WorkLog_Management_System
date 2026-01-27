@@ -268,12 +268,14 @@ public class TaskDAO {
 		return Optional.ofNullable(null);
 	}
 	
+
 	public Optional<List<Task>> getTasksCreatedByManager(int managerId, int empId, String status, LocalDate fromDate, LocalDate toDate) {
 
 			    List<Task> tasks = new ArrayList<>();
 
 			    String sql = "select * from tasks " +
-			                 "where created_by = ? and assigned_to = ? and status = ? " +
+								"where created_by = ? and assigned_to = ? and status ilike ? "
+								+
 			                 "and deadline >= ? and deadline <= ? " +
 			                 "order by deadline";
 
@@ -299,4 +301,28 @@ public class TaskDAO {
 			        return Optional.empty();
 			    }
 			}
+
+			public Optional<List<Task>> getTasksCreatedByManager(int managerId) {
+
+				List<Task> tasks = new ArrayList<>();
+
+				String sql = "select * from tasks where created_by = ? ";
+
+				try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+					pstmt.setInt(1, managerId);
+
+					ResultSet rs = pstmt.executeQuery();
+
+					while (rs.next()) {
+						tasks.add(mapToTask(rs));
+					}
+
+					return Optional.of(tasks);
+
+				} catch (SQLException e) {
+					e.printStackTrace();
+					return Optional.empty();
+			}
+		}
 }

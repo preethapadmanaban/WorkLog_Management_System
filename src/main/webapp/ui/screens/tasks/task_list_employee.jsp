@@ -20,6 +20,7 @@
  			<div class="filter_section">
  				<h3>Filter by Status - </h3>
  				<select class="nice-form-input" id="status_select" onchange="selectStatus()">
+ 				
 	 					<option value="all">All tasks</option>
 						<option value="Completed">Completed</option>
 						<option value="In Progress">In Progress</option>

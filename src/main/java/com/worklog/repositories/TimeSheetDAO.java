@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.worklog.db.DataSourceFactory;
-import com.worklog.entities.Report;
+import com.worklog.dto.ReportEmployeeDTO;
 import com.worklog.entities.TimeSheet;
 
 /**
@@ -166,30 +166,45 @@ public class TimeSheetDAO {
 	}
 
 	// tommorrow seen this reportdao
-	public Optional<Report> getReportDailyworkhours(LocalDate fromDate,LocalDate toDate,int id){
-		String sql="select  employee_id, work_date,total_hours,status from timesheet where (work_date=? between work_date=? )and manager_id=?";
+	public Optional<List<ReportEmployeeDTO>> getReportDailyworkhours(LocalDate fromDate, LocalDate toDate, int manager_id) {
+		String sql = """
+						select t.assigned_to as "employee_id",e.name as "employee_name", ts.work_date as "work_date" , t.id as "task_id",
+						t.title as title,sum(tse.hours_spent) as "task_duration", tse.notes as notes
+						from tasks t inner join timesheet_entries tse on t.id=tse.task_id
+						inner join timesheets ts on tse.timesheet_id=ts.id
+						inner join employees e on t.assigned_to=e.id
+						where t.created_by=? or ts.manager_id = ? and ts.work_date >= ? or ts.work_date < ?
+						group by t.id, t.title, e.name, tse.notes, ts.work_date
+						order by ts.work_date;
+						""";
 		try(Connection conn=DataSourceFactory.getConnectionInstance();
 			PreparedStatement pstmt=conn.prepareStatement(sql)
 						){
-			pstmt.setDate(1, Date.valueOf(fromDate));
-			pstmt.setDate(1, Date.valueOf(toDate));
-			pstmt.setInt(3, id);
-			Report report=new Report();
+							pstmt.setInt(1, manager_id);
+							pstmt.setInt(2, manager_id);
+							pstmt.setDate(3, Date.valueOf(fromDate));
+							pstmt.setDate(4, Date.valueOf(toDate));
 			ResultSet rs=pstmt.executeQuery();
+			List<ReportEmployeeDTO> list = new ArrayList<>();
 			while(rs.next()) {
-				report.setEmp_id(rs.getInt("employee_id"));
-				report.setTotalHours(rs.getDouble("totalHours"));
-				report.setWorkDate(rs.getDate("work_date").toLocalDate());
-				
+				ReportEmployeeDTO reportEmployeeDTO = new ReportEmployeeDTO();
+				reportEmployeeDTO.setEmp_id(rs.getInt("employee_id"));
+				reportEmployeeDTO.setEmp_name(rs.getString("employee_name"));
+				reportEmployeeDTO.setWork_date(rs.getDate("work_date").toLocalDate());
+				reportEmployeeDTO.setTask_id(rs.getInt("task_id"));
+				reportEmployeeDTO.setTitle(rs.getString("title"));
+				reportEmployeeDTO.setNotes(rs.getString("notes"));
+				reportEmployeeDTO.setTask_duration(rs.getDouble("task_duration"));
+				list.add(reportEmployeeDTO);
 			}
-			return Optional.of(report);
 			
+			return Optional.ofNullable(list);
+
 		}catch(SQLException e) {
 			e.printStackTrace();
 			return Optional.ofNullable(null);
 		}
 	}
-
 
 	public Optional<TimeSheet> getTimesheetByid(int id){
 		

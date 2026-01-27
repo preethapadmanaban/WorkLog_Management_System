@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import com.worklog.db.DataSourceFactory;
 import com.worklog.entities.Employee;
+import com.worklog.exceptions.DuplicateUserException;
 
 /**
  * This a employee dao class that adds employee list
@@ -20,7 +21,7 @@ import com.worklog.entities.Employee;
 
 public class EmployeeDAO {
 
-	public boolean createEmployee(Employee employee) {
+	public boolean createEmployee(Employee employee) throws DuplicateUserException {
 
 		String sql = "INSERT INTO employees(name, email, password, role) VALUES(?, ?, ?, ?)";
 
@@ -37,6 +38,9 @@ public class EmployeeDAO {
 
 			return true;
 		} catch (SQLException e) {
+			if (e.getMessage().contains("employees_email_key") || e.getMessage().contains(("duplicate"))) {
+				throw new DuplicateUserException("Username already exists");
+			}
 			e.printStackTrace();
 			return false;
 		}

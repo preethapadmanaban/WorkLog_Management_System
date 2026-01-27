@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.worklog.entities.Employee;
 import com.worklog.entities.Task;
+import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.EmployeeDAO;
 import com.worklog.repositories.TaskDAO;
@@ -23,54 +24,69 @@ import jakarta.servlet.http.HttpSession;
 public class ListTasksCommand implements Command{
 
 	@Override 
-	public boolean execute(HttpServletRequest request, HttpServletResponse response) {
+	public boolean execute(HttpServletRequest request, HttpServletResponse response) throws UnAuthorizedException {
 		
 		HttpSession session = request.getSession(false);
 		
 		if(session == null) {
-			return false;
+			throw new UnAuthorizedException("access_denied");
 		}
 		
+
 		String role = (String)session.getAttribute("role");
 		
 		if (role != null) {
 			
+			boolean filter = Boolean.valueOf(request.getParameter("filter"));
+
 			int managerId = (int) session.getAttribute("id");
+
 			
-			String empIdStr = request.getParameter("empId");
-			String status = request.getParameter("status");
-			String fromDateStr = request.getParameter("fromDate");
-			String toDateStr = request.getParameter("toDate");
-			
-			Integer empId = null;          
-			LocalDate fromDate = null;    
-			LocalDate toDate = null;
-			
-			if(empIdStr != null && !empIdStr.trim().isEmpty()) {
-				empId = Integer.parseInt(empIdStr);
+			if (filter == true) {
+
+				String empIdStr = request.getParameter("employee_id");
+				String status = request.getParameter("status");
+				String fromDateStr = request.getParameter("fromDate");
+				String toDateStr = request.getParameter("toDate");
+
+				Integer empId = null;
+				LocalDate fromDate = null;
+				LocalDate toDate = null;
+
+				if (empIdStr != null && !empIdStr.trim().isEmpty()) {
+					empId = Integer.parseInt(empIdStr);
+				}
+
+				if (status != null && status.trim().isEmpty()) {
+					status = null;
+				}
+
+				if (fromDateStr != null) {
+					fromDate = LocalDate.parse(fromDateStr);
+				}
+
+				if (toDateStr != null) {
+					toDate = LocalDate.parse(toDateStr);
+				}
+
+				TaskDAO dao = new TaskDAO();
+
+				List<Task> taskList = dao.getTasksCreatedByManager(managerId, empId, status, fromDate, toDate).orElse(new ArrayList<>());
+
+				request.setAttribute("members", EmployeeDAO.getAllMembers().orElse(new ArrayList<Employee>()));
+				request.setAttribute("tasks", taskList);
+
+				return true;
 			}
-			
-			if(status != null && status.trim().isEmpty()) {
-			    status = null;
+			else {
+				TaskDAO dao = new TaskDAO();
+
+				List<Task> taskList = dao.getTasksCreatedByManager(managerId).orElse(new ArrayList<Task>());
+
+				request.setAttribute("members", EmployeeDAO.getAllMembers().orElse(new ArrayList<Employee>()));
+				request.setAttribute("tasks", taskList);
+				return true;
 			}
-			
-			if(fromDateStr != null) {
-				fromDate = LocalDate.parse(fromDateStr);
-			}
-			
-			if(toDateStr != null) {
-				toDate = LocalDate.parse(toDateStr);
-			}
-			
-			TaskDAO dao = new TaskDAO();
-			
-			List<Task> taskList = dao.getTasksCreatedByManager(managerId, empId, status, fromDate, toDate).orElse(new ArrayList<>());
-			
-			request.setAttribute("members", EmployeeDAO.getAllMembers().orElse(new ArrayList<Employee>()));
-			request.setAttribute("tasks", taskList);
-			
-			return true;
-			
 		}
 		
 		return false;

@@ -138,5 +138,14 @@
 	  <success>ui/screens/timesheets/timesheet_history.jsp</success>
 	  <failure>/controller?action=employeeDashboard</failure>
 	</command>
+	
+	
+	<!-- REPORT -->
+	
+	<command name="report">
+	  <class>com.worklog.commands.reports.ReportCommand</class>
+	  <success>ui/screens/report/report.jsp</success>
+	  <failure>ui/screens/report/report.jsp</failure>
+	</command>
 
 </command>

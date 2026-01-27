@@ -20,6 +20,8 @@
 	<form action="controller" method="get">
     
 	    <input type="hidden" name="action" value="listTasks">
+
+	    <input type="hidden" name="filter" value="true">
 	
 	    Employee ID:
 	   	<select name="employee_id">
