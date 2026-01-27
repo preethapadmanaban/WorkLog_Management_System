@@ -8,9 +8,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Manager Dashboard</title>
-
+<jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
 <link rel="stylesheet" href="<%= request.getContextPath() %>/ui/styles/styles.css">
-
 </head>
 
 <body>

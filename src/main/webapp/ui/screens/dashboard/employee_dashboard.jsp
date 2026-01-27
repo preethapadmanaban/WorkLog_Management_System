@@ -7,6 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Employee dashboard</title>
+<jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
 <link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
@@ -19,6 +20,7 @@
 		<h1>Hello, <%=request.getSession().getAttribute("name")%></h1>
 		<div class="task_section">
 			<h2>My Tasks</h2>
+			<div class="task_card_array" id="task_card_array">
 			<% if(request.getAttribute("pending_tasks_array") != null)
 			{
 				List<Task> tasks = (List<Task>)request.getAttribute("pending_tasks_array");
@@ -26,7 +28,7 @@
 				 {
 				 %>
 					<div class="task_card">
-					
+				
 						<div>
 							<div class="task_card_row">
 								<span class="task_card_label">Title: </span>
@@ -54,10 +56,13 @@
 				%>
 			<%	 
 			 }
+			else{
 			%>
-		</div>
-		<div class="timesheet_section">
-
+				<div>Hey there, Welcome to your dashboard!</div>
+			<%
+			}
+			%>
+			</div>
 		</div>
 	</div>
 </body>

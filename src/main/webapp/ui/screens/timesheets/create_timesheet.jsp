@@ -7,6 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>	Create Timesheet</title>
+<jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
 	<link rel="stylesheet" href="/worklog/ui/css/bootstrap.min.css" type="text/css">
 	<link rel="stylesheet" href="/worklog/ui/css/styles.css" type="text/css">
 </head>

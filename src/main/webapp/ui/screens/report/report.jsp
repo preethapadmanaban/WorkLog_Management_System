@@ -8,13 +8,14 @@
 <head>
 <title>Worklog Report</title>
 	<link rel="stylesheet" href="/worklog/ui/css/styles.css" type="text/css">
+	<jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
+
 </head>
 <body>
 
 <jsp:include page="/ui/screens/common/navbar.jsp"/>
 <jsp:include page="/ui/screens/common/message.jsp"/>
-
-<div class="filter_section">
+	<div class="filter_section">
 	
 		<h1>Work Log</h1>
 		
@@ -43,6 +44,8 @@
 			</div>
 		</form>
 </div>
+
+<div class="container_70">
 		<div class="records">
 			<table>
 				<tr>
@@ -85,6 +88,7 @@
 				 	<a href="<%=(request.getContextPath() + "/controller?" + request.getQueryString())%>&download=true"><button class="submit_button">Download Report</button></a>
 				</div>
 			<% } %>
+		</div>
 		</div>
 </body>
 </html>

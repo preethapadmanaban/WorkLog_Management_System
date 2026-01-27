@@ -5,7 +5,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>View Task</title>
+<jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
 <link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
 </head>
 <body>

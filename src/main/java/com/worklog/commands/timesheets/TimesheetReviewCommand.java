@@ -25,10 +25,10 @@ public class TimesheetReviewCommand implements Command {
             throw new UnAuthorizedException("access_denied");
         }
 
-        String role = (String) session.getAttribute("role");
-        if (!"Manager".equalsIgnoreCase(role)) {
-            throw new UnAuthorizedException("access_denied");
-        }
+		// String role = (String) session.getAttribute("role");
+		// if (!"Manager".equalsIgnoreCase(role)) {
+		// throw new UnAuthorizedException("access_denied");
+		// }
 
         String idStr = request.getParameter("timesheetId");   // MUST match URL param
         if (idStr == null || idStr.trim().isEmpty()) {

@@ -75,7 +75,7 @@ public class CreateTimeSheetCommand implements Command {
 		TimeSheet timesheet = new TimeSheet();
 		timesheet.setManager_id(Integer.parseInt(managerIdStr));
 		timesheet.setWork_date(LocalDate.parse(workDateString));
-		timesheet.setStatus("PENDING");
+		timesheet.setStatus("pending");
 		timesheet.setEmployee_id(employeeId);
 		timesheet.setTotal_hours(total_hours_spend);
 

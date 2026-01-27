@@ -7,11 +7,15 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Task List</title>
+<jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
 <link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
 </head>
 <body>
 <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
+<jsp:include page="/ui/screens/common/message.jsp"></jsp:include>
+
+
 
 	<%
     List<Task> list = (List<Task>) request.getAttribute("tasks");
@@ -63,6 +67,7 @@
 		    </div>
 		</form>
 	</div>
+	<div class="container_70">
 	<table border="1" cellpadding="6">
     <tr>
 <!--         <th>ID</th> -->
@@ -79,7 +84,7 @@
     %>
 
     <tr>
-<%--         <td><%= t.getId() %></td> --%>
+<%--    <td><%= t.getId() %></td> --%>
         <td><%= t.getTitle() %></td>
         <td><%= t.getAssigned_to() %></td>
         <td><%= t.getStatus() %></td>
@@ -104,7 +109,6 @@
 	        }
 	    %>
 	</table>
-	
-	
+	</div>
 </body>
 </html>

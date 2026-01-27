@@ -98,10 +98,10 @@ public class TimeSheetDAO {
 
 	public Optional<List<TimeSheet>> getAllTimeSheetsForEmployee(int id, String status) {
 		String sql;
-		if (status.equalsIgnoreCase("All")) {
+		if (status.equalsIgnoreCase("all")) {
 			sql = "select * from timesheets where employee_id=?";
 		} else {
-			sql = "select * from timesheets where employee_id=? and status in (?)";
+			sql = "select * from timesheets where employee_id=? and status ilike ?";
 		}
 
 		try(Connection conn=DataSourceFactory.getConnectionInstance();
@@ -111,7 +111,7 @@ public class TimeSheetDAO {
 				List<TimeSheet> timeSheets = new ArrayList<>();
 
 			pstmt.setInt(1, id);
-			if (!status.equalsIgnoreCase("All")) {
+			if (!status.equalsIgnoreCase("all")) {
 				pstmt.setString(2, status);
 			}
 

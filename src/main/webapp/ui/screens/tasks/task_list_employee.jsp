@@ -8,27 +8,33 @@
 <head>
 <meta charset="UTF-8">
 <title>My Tasks</title>
+<jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
 <link href="/worklog/ui/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
 </head>
 <body>
  	<jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
  	<jsp:include page="/ui/screens/common/message.jsp"></jsp:include>
- 	<div class="container_70">
  		<div class = "filter_section">
  			<h3>My Tasks</h3>
- 			<div class="filter_section">
- 				<h3>Filter by Status - </h3>
- 				<select class="nice-form-input" id="status_select" onchange="selectStatus()">
- 				
-	 					<option value="all">All tasks</option>
-						<option value="Completed">Completed</option>
-						<option value="In Progress">In Progress</option>
-						<option value="Assigned">Assigned</option>
-					</select>
- 			</div>
+ 			
+ 				<form action="controller" method="post">
+	 					<div class="filter_section">
+				 		<h3>Filter by Status - </h3>
+		 				<input type="hidden" name="action" value="listEmployeeTasks">
+		 				<select class="nice-form-input" name="status" id="status_select">
+			 					<option value="all">All tasks</option>
+								<option value="Completed">Completed</option>
+								<option value="In Progress">In Progress</option>
+								<option value="Assigned">Assigned</option>
+							</select>
+							
+						<input type="submit" value="Filter" class="submit_button">
+					</div>
+				</form>
+ 			
  		</div>
- 	
+ 	<div class="container_70">
  		<table class="table table-hover text-white" id="task_table">
 			<thead>
 				<tr>

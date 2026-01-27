@@ -1,5 +1,20 @@
 @charset "UTF-8";
 
+.container_70{
+	width: 80%;
+	justify-self: center; 
+	background-color: white;
+	padding: 20px 50px;
+	border-radius: 10px;
+	margin-top: 40px;
+}
+
+#task_card_array{
+	display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
 .task_card{
 /* 	border: 1px solid grey; */
 	border-radius: 5px;
@@ -214,16 +229,8 @@ th{
 	width: 100%;
 }
 
-.container_70{
-	width: 70%;
-	justify-self: center; 
-	background-color: white;
-	padding: 20px 50px;
-	border-radius: 10px;
-}
-
-
 .nice-form{
+  margin-top: 40px;
   width: 50%;
   justify-self: center;
   background-color: white;

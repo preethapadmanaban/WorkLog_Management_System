@@ -8,6 +8,8 @@
 <meta charset="UTF-8">
 <title>Edit Task</title>
 <link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
+<jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
+
 </head>
 
 <body>
