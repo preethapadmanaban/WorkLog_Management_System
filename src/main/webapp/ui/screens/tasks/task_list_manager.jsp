@@ -1,3 +1,4 @@
+<%@page import="com.worklog.entities.Employee"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
@@ -21,11 +22,28 @@
 	    <input type="hidden" name="action" value="listTasks">
 	
 	    Employee ID:
-	    <input type="text" name="empId" placeholder="e.g. 101">
+	   	<select name="employee_id">
+	   		<% List<Employee> employees = (List<Employee>) request.getAttribute("members");
+	   			if(employees != null || employees.size() != 0)
+	   			{
+	   				for(Employee emp : employees)
+	   				{
+	   		%>
+	   			<option value="<%=emp.getId()%>"><%=emp.getName()%></option>
+	   		<%
+	   				}
+	   			}
+	   			else{
+	   		%>
+	   				<option selected>No Employee</option>
+	   		<%		
+	   			}
+	   		%>
+	   	</select>
 	
 	    Status:
 	    <select name="status">
-	        <option value="">-- All --</option>
+	        <option value="all">-- All --</option>
 	        <option value="Assigned">Assigned</option>
 	        <option value="In Progress">In Progress</option>
 	        <option value="Completed">Completed</option>

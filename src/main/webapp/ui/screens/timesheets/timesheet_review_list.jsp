@@ -42,7 +42,7 @@
         <td><%= t.getWork_date() %></td>
         <td><%= t.getTotal_hours() %></td>
         <td><%= t.getStatus() %></td>
-        <td><%= t.getCreated_at().toString().split("T")[0] %></td>
+        <td><%= t.getCreated_at().toString().split("hh")[0] %></td>
         <td>
             <a href="<%=request.getContextPath()%>/controller?action=timesheetReview&timesheetId=<%= t.getId() %>">
                 Review

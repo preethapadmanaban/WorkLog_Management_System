@@ -3,8 +3,10 @@ package com.worklog.commands.tasks;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.worklog.entities.Employee;
 import com.worklog.entities.Task;
 import com.worklog.interfaces.Command;
+import com.worklog.repositories.EmployeeDAO;
 import com.worklog.repositories.TaskDAO;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,6 +39,7 @@ public class ListTasksCommand implements Command{
 			TaskDAO dao = new TaskDAO();
 			List<Task> taskList = dao.getTasksCreatedByManager(managerId).orElse(new ArrayList<>());
 			
+			request.setAttribute("members", EmployeeDAO.getAllMembers().orElse(new ArrayList<Employee>()));
 			request.setAttribute("tasks", taskList);
 			
 			return true;

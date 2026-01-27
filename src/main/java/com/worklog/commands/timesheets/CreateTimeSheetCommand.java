@@ -1,5 +1,6 @@
 package com.worklog.commands.timesheets;
 
+import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,104 +28,87 @@ public class CreateTimeSheetCommand implements Command {
     @Override
     public boolean execute(HttpServletRequest request, HttpServletResponse response) throws UnAuthorizedException {
 
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("id") == null) {
-            throw new UnAuthorizedException("access_denied");
-        }
+		HttpSession session = request.getSession(false);
+		if (session == null || session.getAttribute("id") == null) {
+			throw new UnAuthorizedException("Access denied.");
+		}
 
-        int employeeId = (int) session.getAttribute("id");
+		int employeeId = (int) session.getAttribute("id");
 
-        String managerIdStr = request.getParameter("manager_id");
-        String workDateString = request.getParameter("work_date");
-        String[] taskIdArray = request.getParameterValues("task_id");
-        String[] hoursSpendArray = request.getParameterValues("hours_spend");
-        String[] notesArray = request.getParameterValues("notes");
+		// maangerId, work_date, list(task_id, hours_spend, notes)
+		String managerIdStr = request.getParameter("manager_id");
+		String workDateString = request.getParameter("work_date");
+		String[] taskIdArray = request.getParameterValues("task_id");
+		String[] hoursSpendArray = request.getParameterValues("hours_spend");
+		String[] notesArray = request.getParameterValues("notes");
 
-        if (managerIdStr == null || managerIdStr.trim().isEmpty() ||
-            workDateString == null || workDateString.trim().isEmpty() ||
-            taskIdArray == null || hoursSpendArray == null || notesArray == null ||
-            taskIdArray.length != hoursSpendArray.length ||
-            taskIdArray.length != notesArray.length) {
+		if (managerIdStr == null || workDateString == null || taskIdArray == null || hoursSpendArray == null || notesArray == null
+						|| taskIdArray.length != hoursSpendArray.length || taskIdArray.length != notesArray.length) {
+			request.setAttribute("message", "Invalid information.");
+			return false;
+		}
+		double total_hours_spend = 0;
 
-            request.getSession().setAttribute("message", "Invalid information.");
-            return false;
-        }
+		// create list of entries.
+		List<TimeSheetEntryDTO> entries = new ArrayList<TimeSheetEntryDTO>();
+		for (int array_pointer = 0; array_pointer < taskIdArray.length; array_pointer++) {
+			if (taskIdArray[array_pointer] == null || hoursSpendArray[array_pointer] == null) {
+				throw new InvalidParameterException("Invalid timesheet entry value.");
+			} else {
+				try {
+					double hours_spend_for_one_task = Double.parseDouble(hoursSpendArray[array_pointer]);
+					total_hours_spend += hours_spend_for_one_task;
+					entries.add(new TimeSheetEntryDTO(Integer.parseInt(taskIdArray[array_pointer]), notesArray[array_pointer],
+									total_hours_spend));
+				} catch (NumberFormatException e) {
+					request.setAttribute("message", "Invalid information.");
+					return false;
+				}
+			}
+		} // now we have have entries list.
 
-        double totalHours = 0.0;
-        List<TimeSheetEntryDTO> entries = new ArrayList<>();
+		TimeSheetRequestDTO timeSheetRequest = new TimeSheetRequestDTO(Integer.parseInt(managerIdStr), LocalDate.parse(workDateString),
+						total_hours_spend, entries);
 
-        for (int i = 0; i < taskIdArray.length; i++) {
 
-            String taskIdStr = taskIdArray[i];
-            String hoursStr = hoursSpendArray[i];
-            String notes = notesArray[i]; // can be empty
+		// create a new timesheet entity object from timesheet request dto
+		TimeSheet timesheet = new TimeSheet();
+		timesheet.setManager_id(Integer.parseInt(managerIdStr));
+		timesheet.setWork_date(LocalDate.parse(workDateString));
+		timesheet.setStatus("PENDING");
+		timesheet.setEmployee_id(employeeId);
+		timesheet.setTotal_hours(total_hours_spend);
 
-            if (taskIdStr == null || taskIdStr.trim().isEmpty() ||
-                hoursStr == null || hoursStr.trim().isEmpty()) {
+		// System.out.println("timesheet => " + timesheet);
+		//
+		// System.out.println("timeSheetRequest => " + timeSheetRequest);
 
-                request.getSession().setAttribute("message", "Please fill all required fields.");
-                return false;
-            }
+		TimeSheetDAO repo = new TimeSheetDAO();
+		boolean flag = repo.createTimeSheet(timesheet);
+		if (flag == false) {
+			request.setAttribute("message", "Time sheet creation failed, please try again!");
+			return false;
+		}
 
-            try {
-                int taskId = Integer.parseInt(taskIdStr);
-                double hours = Double.parseDouble(hoursStr);
+		int timeSheetId = repo.getTimeSheetId(timesheet);
 
-                if (hours <= 0 || hours > 10) {
-                    request.getSession().setAttribute("message", "Hours must be between 0 and 10.");
-                    return false;
-                }
+		if (timeSheetId == -1) {
+			request.setAttribute("message", "Time sheet creation failed, please try again!");
+			return false;
+		}
 
-                totalHours += hours;
+		TimeSheetEntryDAO entryRepo = new TimeSheetEntryDAO();
 
-                // ✅ IMPORTANT: store hours of THIS task, not totalHours
-                entries.add(new TimeSheetEntryDTO(taskId, notes, hours));
+		flag = entryRepo.createTimeSheetEntries(timeSheetId, timeSheetRequest.getEntries());
 
-            } catch (NumberFormatException e) {
-                request.getSession().setAttribute("message", "Invalid task or hours value.");
-                return false;
-            }
-        }
+		if (flag == false) {
+			request.setAttribute("message", "Time sheet entry creation failed, please try again!");
+			return false;
+		}
 
-        // Create request DTO (optional, but fine)
-        TimeSheetRequestDTO timeSheetRequest = new TimeSheetRequestDTO(
-                Integer.parseInt(managerIdStr),
-                LocalDate.parse(workDateString),
-                totalHours,
-                entries
-        );
+		request.setAttribute("status", "success");
+		request.setAttribute("message", "Timesheet created and send for approval.");
+		return true;
 
-        // Create timesheet entity
-        TimeSheet timesheet = new TimeSheet();
-        timesheet.setManager_id(Integer.parseInt(managerIdStr));
-        timesheet.setWork_date(LocalDate.parse(workDateString));
-        timesheet.setStatus("PENDING"); // ✅ makes it visible for manager
-        timesheet.setEmployee_id(employeeId);
-        timesheet.setTotal_hours(totalHours);
-
-        TimeSheetDAO repo = new TimeSheetDAO();
-
-        boolean created = repo.createTimeSheet(timesheet);
-        if (!created) {
-            request.getSession().setAttribute("message", "Timesheet creation failed, please try again!");
-            return false;
-        }
-
-        int timeSheetId = repo.getTimeSheetId(timesheet);
-        if (timeSheetId == -1) {
-            request.getSession().setAttribute("message", "Timesheet creation failed, please try again!");
-            return false;
-        }
-
-        TimeSheetEntryDAO entryRepo = new TimeSheetEntryDAO();
-        boolean entriesCreated = entryRepo.createTimeSheetEntries(timeSheetId, timeSheetRequest.getEntries());
-
-        if (!entriesCreated) {
-            request.getSession().setAttribute("message", "Timesheet entries creation failed, please try again!");
-            return false;
-        }
-
-        request.getSession().setAttribute("message", "Timesheet submitted for approval.");
-        return true;
     }
 }

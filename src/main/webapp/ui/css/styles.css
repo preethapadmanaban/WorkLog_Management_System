@@ -263,4 +263,9 @@ th{
   justify-self: center;
   margin: 10px 0px;;
 }
-
+.filter_section{	
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 10px;
+}

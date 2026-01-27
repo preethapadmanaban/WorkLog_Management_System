@@ -92,28 +92,39 @@ public class TimeSheetDAO {
 		}
 	}
 	
-	public Optional<List<TimeSheet>> getAllTimeSheetsForEmployee(int id) {
-	    String sql = "select * from timesheets where employee_id=?";
+//	public Optional<List<TimeSheet>> getAllTimeSheetsForEmployee(int id) {
+//	    String sql = "select * from timesheets where employee_id=?";
+//
 
-	    List<TimeSheet> timeSheets = new ArrayList<>();
+	public Optional<List<TimeSheet>> getAllTimeSheetsForEmployee(int id, String status) {
+		String sql;
+		if (status.equalsIgnoreCase("All")) {
+			sql = "select * from timesheets where employee_id=?";
+		} else {
+			sql = "select * from timesheets where employee_id=? and status in (?)";
+		}
 
-	    try (Connection conn = DataSourceFactory.getConnectionInstance();
-	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+		try(Connection conn=DataSourceFactory.getConnectionInstance();
+			PreparedStatement pstmt=conn.prepareStatement(sql);
+			){
 
-	        pstmt.setInt(1, id);
+				List<TimeSheet> timeSheets = new ArrayList<>();
 
-	        try (ResultSet rs = pstmt.executeQuery()) {
-	            while (rs.next()) {
-	                timeSheets.add(mapToTimeSheet(rs));
-	            }
-	        }
+			pstmt.setInt(1, id);
+			if (!status.equalsIgnoreCase("All")) {
+				pstmt.setString(2, status);
+			}
 
-	        return Optional.of(timeSheets);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				timeSheets.add(mapToTimeSheet(rs));
+			}
 
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        return Optional.empty();
-	    }
+			return Optional.of(timeSheets);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Optional.empty();
+		}
 	}
 
 
