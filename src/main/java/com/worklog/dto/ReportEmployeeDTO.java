@@ -9,7 +9,7 @@ public class ReportEmployeeDTO {
 	private double task_duration;
 	public ReportEmployeeDTO(int emp_id, String emp_name, int task_id, String title, double task_duration) {
 		super();
-		this.emp_id = emp_id;
+		this.emp_id = emp_id; 
 		this.emp_name = emp_name;
 		this.task_id = task_id;
 		this.title = title;
