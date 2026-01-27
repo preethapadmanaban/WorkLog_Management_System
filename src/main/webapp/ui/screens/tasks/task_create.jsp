@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
 <%@ page import="com.worklog.entities.Employee" %>
+<%@ page import="java.time.LocalDate" %>
  
 <!DOCTYPE html>
 <html>
@@ -55,7 +56,10 @@
 
       <div class="nice-form-group">
         <label for="deadline">Deadline</label>
-        <input class="nice-form-input" type="date" id="deadline" name="deadline" placeholder="Your password" required/>
+        <%
+    		String today = LocalDate.now().toString();
+		%>    
+        <input class="nice-form-input" type="date" id="deadline" name="deadline" placeholder="Your password" min="<%= today %>" required/>
       </div>
       
       <button class="submit_button">Submit</button>

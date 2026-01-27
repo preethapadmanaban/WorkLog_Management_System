@@ -100,7 +100,6 @@ public class CreateTimeSheetCommand implements Command {
 		TimeSheetEntryDAO entryRepo = new TimeSheetEntryDAO();
 
 		flag = entryRepo.createTimeSheetEntries(timeSheetId, timeSheetRequest.getEntries());
-                
 
 		if (flag == false) {
 			request.setAttribute("message", "Time sheet entry creation failed, please try again!");
@@ -110,5 +109,7 @@ public class CreateTimeSheetCommand implements Command {
 		request.setAttribute("status", "success");
 		request.setAttribute("message", "Timesheet created and send for approval.");
 		return true;
+
+        
     }
 }

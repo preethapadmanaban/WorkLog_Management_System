@@ -41,7 +41,6 @@ public class ListTasksCommand implements Command{
 
 			int managerId = (int) session.getAttribute("id");
 
-			
 			if (filter == true) {
 
 				String empIdStr = request.getParameter("employee_id");
@@ -76,15 +75,6 @@ public class ListTasksCommand implements Command{
 				request.setAttribute("members", EmployeeDAO.getAllMembers().orElse(new ArrayList<Employee>()));
 				request.setAttribute("tasks", taskList);
 
-				return true;
-			}
-			else {
-				TaskDAO dao = new TaskDAO();
-
-				List<Task> taskList = dao.getTasksCreatedByManager(managerId).orElse(new ArrayList<Task>());
-
-				request.setAttribute("members", EmployeeDAO.getAllMembers().orElse(new ArrayList<Employee>()));
-				request.setAttribute("tasks", taskList);
 				return true;
 			}
 		}

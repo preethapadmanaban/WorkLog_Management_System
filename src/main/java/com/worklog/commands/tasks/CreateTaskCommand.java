@@ -1,6 +1,7 @@
 package com.worklog.commands.tasks;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.TaskDAO;
@@ -47,7 +48,17 @@ import jakarta.servlet.http.HttpSession;
 				if(deadlineStr == null || deadlineStr.trim().isEmpty()) {
 					return false;
 				}
-				Date deadline = Date.valueOf(deadlineStr);
+				
+				LocalDate localDeadline = LocalDate.parse(deadlineStr);
+				LocalDate today = LocalDate.now();
+
+				if (localDeadline.isBefore(today)) {
+				    request.setAttribute("message", "Deadline cannot be in the past. Choose today or a future date.");
+				    return false;
+				}
+
+				Date deadline = Date.valueOf(localDeadline);
+
 				
 				String status = request.getParameter("status");
 				

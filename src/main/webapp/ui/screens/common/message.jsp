@@ -6,3 +6,12 @@
 	<h3><%=request.getAttribute("message") %></h3>	
 </div>
 <% } %>
+
+<%
+String msg = (String) request.getAttribute("message");
+if (msg != null) {
+%>
+    <p style="color:red;"><%= msg %></p>
+<%
+}
+%>
