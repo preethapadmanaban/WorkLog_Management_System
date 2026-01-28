@@ -75,7 +75,7 @@ public class CreateTimeSheetCommand implements Command {
 		TimeSheet timesheet = new TimeSheet();
 		timesheet.setManager_id(Integer.parseInt(managerIdStr));
 		timesheet.setWork_date(LocalDate.parse(workDateString));
-		timesheet.setStatus("PENDING");
+		timesheet.setStatus("pending");
 		timesheet.setEmployee_id(employeeId);
 		timesheet.setTotal_hours(total_hours_spend);
 
@@ -101,15 +101,9 @@ public class CreateTimeSheetCommand implements Command {
 
 		flag = entryRepo.createTimeSheetEntries(timeSheetId, timeSheetRequest.getEntries());
 
-		if (flag == false) {
-			request.setAttribute("message", "Time sheet entry creation failed, please try again!");
-			return false;
-		}
-
 		request.setAttribute("status", "success");
 		request.setAttribute("message", "Timesheet created and send for approval.");
 		return true;
-
         
     }
 }

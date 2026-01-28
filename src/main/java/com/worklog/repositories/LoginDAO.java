@@ -19,7 +19,7 @@ public class LoginDAO {
 			PreparedStatement pstmt=conn.prepareStatement(sql)){
 			pstmt.setString(1, emailId);
 			ResultSet rs=pstmt.executeQuery();
-			while(rs.next()) {
+			if(rs.next()) {
 				int id=rs.getInt("id");
 				String name=rs.getString("name");
 				String email=rs.getString("email");

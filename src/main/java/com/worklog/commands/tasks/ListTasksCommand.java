@@ -1,5 +1,4 @@
 package com.worklog.commands.tasks;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,82 +14,73 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-/**
- * ListTasksCommand - This class is used to list all the tasks
- * @author Preetha
- * @since 20-01-2026
- */
+public class ListTasksCommand implements Command {
 
-public class ListTasksCommand implements Command{
+    @Override
+    public boolean execute(HttpServletRequest request, HttpServletResponse response) throws UnAuthorizedException {
 
-	@Override 
-	public boolean execute(HttpServletRequest request, HttpServletResponse response) throws UnAuthorizedException {
-		
-		HttpSession session = request.getSession(false);
-		
-		if(session == null) {
-			throw new UnAuthorizedException("access_denied");
-		}
-		
+        HttpSession session = request.getSession(false);
 
-		String role = (String)session.getAttribute("role");
-		
-		if (role != null) {
-			
-			boolean filter = Boolean.valueOf(request.getParameter("filter"));
+        if (session == null) {
+            throw new UnAuthorizedException("access_denied");
+        }
 
-			int managerId = (int) session.getAttribute("id");
+        String role = (String) session.getAttribute("role");
 
-			if (filter == true) {
+        if (role != null) {
 
-				String empIdStr = request.getParameter("employee_id");
-				String status = request.getParameter("status");
-				String fromDateStr = request.getParameter("fromDate");
-				String toDateStr = request.getParameter("toDate");
+            boolean filter = Boolean.valueOf(request.getParameter("filter"));
+            int managerId = (int) session.getAttribute("id");
 
-				Integer empId = null;
-				LocalDate fromDate = null;
-				LocalDate toDate = null;
+            TaskDAO dao = new TaskDAO();
 
-				if (empIdStr != null && !empIdStr.trim().isEmpty()) {
-					empId = Integer.parseInt(empIdStr);
-				}
+            if (filter) {
 
-				if (status != null && status.trim().isEmpty()) {
-					status = null;
-				}
+                String empIdStr = request.getParameter("employee_id");
+                String status = request.getParameter("status");
+                String fromDateStr = request.getParameter("fromDate");
+                String toDateStr = request.getParameter("toDate");
 
-				if (fromDateStr != null) {
-					fromDate = LocalDate.parse(fromDateStr);
-				}
+                Integer empId = null;
+                LocalDate fromDate = null;
+                LocalDate toDate = null;
 
-				if (toDateStr != null) {
-					toDate = LocalDate.parse(toDateStr);
-				}
+                if (empIdStr != null && !empIdStr.trim().isEmpty()) {
+                    empId = Integer.parseInt(empIdStr);
+                }
 
-				TaskDAO dao = new TaskDAO();
+                if (status != null && status.trim().isEmpty()) {
+                    status = null;
+                }
 
-				List<Task> taskList = dao.getTasksCreatedByManager(managerId, empId, status, fromDate, toDate).orElse(new ArrayList<>());
+                if (fromDateStr != null && !fromDateStr.trim().isEmpty()) {
+                    fromDate = LocalDate.parse(fromDateStr);
+                }
 
-				request.setAttribute("members", EmployeeDAO.getAllMembers().orElse(new ArrayList<Employee>()));
-				request.setAttribute("tasks", taskList);
+                if (toDateStr != null && !toDateStr.trim().isEmpty()) {
+                    toDate = LocalDate.parse(toDateStr);
+                }
 
-				return true;
-			}
-			else {
+                List<Task> taskList = dao
+                        .getTasksCreatedByManager(managerId, empId, status, fromDate, toDate)
+                        .orElse(new ArrayList<>());
 
-				TaskDAO dao = new TaskDAO();
+                request.setAttribute("members", EmployeeDAO.getAllMembers().orElse(new ArrayList<Employee>()));
+                request.setAttribute("tasks", taskList);
 
-				List<Task> taskList = dao.getTasksCreatedByManager(managerId).orElse(new ArrayList<>());
+                return true;
 
-				request.setAttribute("members", EmployeeDAO.getAllMembers().orElse(new ArrayList<Employee>()));
-				request.setAttribute("tasks", taskList);
+            } else {
 
-				return true;
-			}
-		}
-		
-		return false;
-	}
+                List<Task> taskList = dao.getTasksCreatedByManager(managerId).orElse(new ArrayList<>());
 
+                request.setAttribute("members", EmployeeDAO.getAllMembers().orElse(new ArrayList<Employee>()));
+                request.setAttribute("tgit asks", taskList);
+
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

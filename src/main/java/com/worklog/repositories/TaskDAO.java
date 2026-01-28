@@ -216,7 +216,7 @@ public class TaskDAO {
 
 	public Optional<List<Task>> getAllPendingTasks(int employeeId) {
 
-		String sql = "SELECT * FROM tasks WHERE assigned_to=? and status='Assigned' or status='In Progress'";
+		String sql = "SELECT * FROM tasks WHERE assigned_to=? and ( status='Assigned' or status='In Progress' )";
 
 		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(sql);) {
 			pstmt.setInt(1, employeeId);

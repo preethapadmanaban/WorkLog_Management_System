@@ -49,7 +49,7 @@ public class LoginCommand implements Command{
 		if (num_attempts != null) {
 			session.setAttribute("num_attempts", ++num_attempts);
 		} else {
-			session.setAttribute("num_attempts", 0);
+			session.setAttribute("num_attempts", 1);
 		}
 	}
 

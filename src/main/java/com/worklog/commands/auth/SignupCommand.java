@@ -29,7 +29,6 @@ public class SignupCommand implements Command {
 		String hashedPassword = PasswordProtector.getHashedPassword(password);
 
 		Employee employee = new Employee.Builder().withName(name).withEmail(email).withPassword(hashedPassword).withrole(role)
-						.withActive(true)
 						.withCreatedAt(Timestamp.valueOf(LocalDateTime.now())).withActive(true).build();
 
 

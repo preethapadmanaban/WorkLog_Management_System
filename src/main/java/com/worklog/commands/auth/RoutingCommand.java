@@ -25,7 +25,7 @@ public class RoutingCommand implements Command{
 			return false;
 		}
 
-		// see command.properties to success and failure commands for login
+		// see commands.xml to success and failure commands for login
 		if (role.equalsIgnoreCase("manager")) {
 			return true;
 		} else {
