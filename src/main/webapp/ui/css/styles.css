@@ -11,14 +11,21 @@
 
 #task_card_array{
 	display: flex;
+	flex-direction: column;
     flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#task_section{
+	display: flex;
     justify-content: space-around;
 }
 
 .task_card{
 /* 	border: 1px solid grey; */
 	border-radius: 5px;
-    width: 350px;
+    width: 300px;
     padding: 10px 15px;
     margin: 10px 10px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -61,6 +68,7 @@
 	background: none;
 	border: none;
 	cursor: pointer;
+	color: #10b981;
 }
 .action_button{
 	background: none;

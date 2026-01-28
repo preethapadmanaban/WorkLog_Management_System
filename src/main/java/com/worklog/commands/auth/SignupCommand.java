@@ -3,6 +3,9 @@ package com.worklog.commands.auth;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.worklog.entities.Employee;
 import com.worklog.exceptions.DuplicateUserException;
 import com.worklog.interfaces.Command;
@@ -13,16 +16,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class SignupCommand implements Command {
+	private static final Logger logger = LogManager.getLogger(SignupCommand.class);
 
 	@Override
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) {
 		String name = request.getParameter("name");
 		String email = request.getParameter("email");
 		String role = request.getParameter("role");
+		role = "employee";
 		String password = request.getParameter("password");
 
 		if (name == null || email == null || role == null || password == null) {
 			request.setAttribute("message", "Invalid info, please enter correct information!");
+			logger.error("Exception, signup request failed: inputs - name : " + name + ", email: " + email + ", role: " + role
+							+ ", passowrd: " + password);
 			return false;
 		}
 
@@ -43,6 +50,7 @@ public class SignupCommand implements Command {
 		}
 
 		if (flag == true) {
+			logger.info("New User created, email:" + email);
 			return true;
 		} else {
 			return false;

@@ -42,6 +42,7 @@ public class TimesheetReviewCommand implements Command {
         TimeSheet ts = tsDao.getTimesheetByid(timesheetId).orElse(null);
 
         if (ts == null) {
+			request.setAttribute("status", "error");
             request.setAttribute("message", "Invalid timesheet id!");
             return false;
         }

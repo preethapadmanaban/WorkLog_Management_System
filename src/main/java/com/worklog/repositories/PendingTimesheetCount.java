@@ -15,14 +15,16 @@ import com.worklog.db.DataSourceFactory;
 
 public class PendingTimesheetCount {
 	
-	public static int pendingTimeSheet() {
+	public static int pendingTimeSheet(int managerId) {
 		
 		int count = 0;
 		
-		String sql = "select count(*) from timesheets where status = 'pending' ";
+		String sql = "select count(*) from timesheets where status = 'pending' and manager_id = ? ";
 		
 		try(Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
 			
+			pstmt.setInt(1, managerId);
+
 			ResultSet rs = pstmt.executeQuery();
 
 			if(rs.next()) {

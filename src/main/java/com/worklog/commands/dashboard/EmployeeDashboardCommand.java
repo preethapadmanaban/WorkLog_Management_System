@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.worklog.entities.Task;
+import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.TaskDAO;
 
@@ -23,8 +24,13 @@ import jakarta.servlet.http.HttpSession;
 public class EmployeeDashboardCommand implements Command {
 
 	@Override
-	public boolean execute(HttpServletRequest request, HttpServletResponse response) {
-		HttpSession session = request.getSession();
+	public boolean execute(HttpServletRequest request, HttpServletResponse response) throws UnAuthorizedException {
+		HttpSession session = request.getSession(false);
+
+		if (session == null) {
+			throw new UnAuthorizedException("access_denied");
+		}
+
 		Integer employeeId = session.getAttribute("id") != null ? (Integer) session.getAttribute("id") : -1;
 		if (employeeId == -1) {
 			request.setAttribute("message", "Access denied!");

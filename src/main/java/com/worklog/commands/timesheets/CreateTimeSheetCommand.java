@@ -59,7 +59,7 @@ public class CreateTimeSheetCommand implements Command {
 					double hours_spend_for_one_task = Double.parseDouble(hoursSpendArray[array_pointer]);
 					total_hours_spend += hours_spend_for_one_task;
 					entries.add(new TimeSheetEntryDTO(Integer.parseInt(taskIdArray[array_pointer]), notesArray[array_pointer],
-									total_hours_spend));
+									hours_spend_for_one_task));
 				} catch (NumberFormatException e) {
 					request.setAttribute("message", "Invalid information.");
 					return false;
@@ -86,6 +86,7 @@ public class CreateTimeSheetCommand implements Command {
 		TimeSheetDAO repo = new TimeSheetDAO();
 		boolean flag = repo.createTimeSheet(timesheet);
 		if (flag == false) {
+			request.setAttribute("status", "success");
 			request.setAttribute("message", "Time sheet creation failed, please try again!");
 			return false;
 		}
@@ -93,6 +94,7 @@ public class CreateTimeSheetCommand implements Command {
 		int timeSheetId = repo.getTimeSheetId(timesheet);
 
 		if (timeSheetId == -1) {
+			request.setAttribute("status", "success");
 			request.setAttribute("message", "Time sheet creation failed, please try again!");
 			return false;
 		}
@@ -102,6 +104,7 @@ public class CreateTimeSheetCommand implements Command {
 		flag = entryRepo.createTimeSheetEntries(timeSheetId, timeSheetRequest.getEntries());
 
 		if (flag == false) {
+			request.setAttribute("status", "error");
 			request.setAttribute("message", "Time sheet entry creation failed, please try again!");
 			return false;
 		}

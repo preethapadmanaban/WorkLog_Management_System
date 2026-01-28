@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.worklog.entities.Employee;
+import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.EmployeeDAO;
 import com.worklog.repositories.PendingTimesheetCount;
@@ -24,12 +25,12 @@ import jakarta.servlet.http.HttpSession;
 public class ManagerDashboardCommand implements Command{
 
 	@Override
-	public boolean execute(HttpServletRequest request, HttpServletResponse response) {
+	public boolean execute(HttpServletRequest request, HttpServletResponse response) throws UnAuthorizedException {
 		
 		HttpSession session = request.getSession(false);
 		
 		if(session == null) {
-			return false;
+			throw new UnAuthorizedException("access_denied");
 		} 
 		
 		String role = (String) session.getAttribute("role");
@@ -39,11 +40,11 @@ public class ManagerDashboardCommand implements Command{
 			List<Employee> emp_list = EmployeeDAO.getAllMembers().orElse(new ArrayList<Employee>());
 			request.setAttribute("Members", emp_list);
 			
-			int timesheet_count = PendingTimesheetCount.pendingTimeSheet();
+			int timesheet_count = PendingTimesheetCount.pendingTimeSheet((int) session.getAttribute("id"));
 			request.setAttribute("PendingTimesheetCount", timesheet_count);
 			
 			TaskDAO dao = new TaskDAO();
-			Map<String, Integer> status = dao.getTaskCountByStatus().orElse(new HashMap<>());
+			Map<String, Integer> status = dao.getTaskCountByStatus((int) session.getAttribute("id")).orElse(new HashMap<>());
 			request.setAttribute("Assigned", status.getOrDefault("Assigned", 0));
 			request.setAttribute("InProgress", status.getOrDefault("In Progress", 0));
 			request.setAttribute("Completed", status.getOrDefault("Completed", 0));

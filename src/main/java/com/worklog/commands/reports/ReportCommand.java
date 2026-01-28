@@ -58,7 +58,8 @@ public class ReportCommand implements Command{
 					request.setAttribute("report", reports);
 					return true;
 				} else {
-					request.setAttribute("message", "id and date is no work");
+					request.setAttribute("status", "error");
+					request.setAttribute("message", "Exception occured");
 					return true;
 				}
 			}
@@ -66,7 +67,7 @@ public class ReportCommand implements Command{
 				try {
 					// set the header
 					response.setContentType("text/csv");
-					response.setCharacterEncoding("UTF-8");
+					response.setCharacterEncoding("UTF-8"); // default - inline
 					response.setHeader("Content-Disposition", "attachment; filename=\"employee_report.csv\"");
 
 					PrintWriter out = response.getWriter();
@@ -87,7 +88,8 @@ public class ReportCommand implements Command{
 			
 
 		}else {
-			request.setAttribute("message","invalid date");
+			request.setAttribute("status", "error");
+			request.setAttribute("message", "Invalid date");
 			return false;
 		}
 	}

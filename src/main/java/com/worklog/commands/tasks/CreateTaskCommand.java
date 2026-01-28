@@ -74,9 +74,10 @@ import jakarta.servlet.http.HttpSession;
 				
 				if(inserted) {
 					request.setAttribute("status", "success");
-					request.setAttribute("status", "Task assigned successfully!");
+					request.setAttribute("message", "Task assigned successfully!");
 					return true;
 				}
+
 				return false;
 		
 			}

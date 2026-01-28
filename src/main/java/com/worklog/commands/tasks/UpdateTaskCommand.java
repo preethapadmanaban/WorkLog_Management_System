@@ -80,9 +80,11 @@ public class UpdateTaskCommand implements Command{
 			TaskDAO dao = new TaskDAO();
 			boolean updated = dao.updateTask(id, title, description, assigned_to, status, deadline);
 			if (updated == true) {
-				request.setAttribute("message", "Task Updated");
+				request.setAttribute("status", "success");
+				request.setAttribute("message", "Task updated successfully!");
 				return true;
 			} else {
+				request.setAttribute("status", "error");
 				request.setAttribute("message", "Task Updation failed!");
 				// System.out.println("leaving update task 8");
 				return false;

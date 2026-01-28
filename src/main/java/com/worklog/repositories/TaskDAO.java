@@ -68,12 +68,14 @@ public class TaskDAO {
 
 	}
 	
-	public Optional<Map<String, Integer>> getTaskCountByStatus() {
+	public Optional<Map<String, Integer>> getTaskCountByStatus(int managerId) {
 		
-		String sql = "select status, count(*) from tasks group by status";
+		String sql = "select status, count(*) from tasks where created_by = ? group by status";
 		
 		try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
 			
+			pstmt.setInt(1, managerId);
+
 			ResultSet rs = pstmt.executeQuery();
 			
 			Map<String, Integer> map = new HashMap<>();
@@ -172,7 +174,7 @@ public class TaskDAO {
 
 	public boolean updateTask(int id, String title, String description, int assigned_to, String status, Date deadline) {
 		
-		String sql = "update tasks set title=?, description=?, assigned_to=?, status=?, deadline=? where id = ?";
+		String sql = "update tasks set title=?, description=?, assigned_to=?, status=?, deadline=?, updated_at = current_timestamp where id = ?";
 		
 		try(Connection con = DataSourceFactory.getConnectionInstance();
 						PreparedStatement pstmt = con.prepareStatement(sql)){
@@ -216,7 +218,14 @@ public class TaskDAO {
 
 	public Optional<List<Task>> getAllPendingTasks(int employeeId) {
 
-		String sql = "SELECT * FROM tasks WHERE assigned_to=? and status='Assigned' or status='In Progress'";
+		// String sql = "SELECT * FROM tasks WHERE assigned_to=? and (status ilike 'Assigned' or status ilike 'In Progress');";
+
+		String sql = """
+
+						select * from tasks where assigned_to = ?
+						and (status in ('Assigned' , 'In Progress')
+						or to_char(updated_at, 'YYYY-MM-DD') = to_char(current_timestamp, 'YYYY-MM-DD'));
+							""";
 
 		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(sql);) {
 			pstmt.setInt(1, employeeId);
@@ -272,21 +281,38 @@ public class TaskDAO {
 	public Optional<List<Task>> getTasksCreatedByManager(int managerId, int empId, String status, LocalDate fromDate, LocalDate toDate) {
 
 			    List<Task> tasks = new ArrayList<>();
+				String sql;
+				if (status.equalsIgnoreCase("all")) {
+					sql = """
+												select * from tasks
+									where (created_by = ? and assigned_to = ?)
+									and TO_CHAR(created_at,'YYYY-MM-DD') between ? and ?
+									order by deadline
+									""";
+				} else {
+					sql = """
 
-			    String sql = "select * from tasks " +
-								"where created_by = ? and assigned_to = ? and status ilike ? "
-								+
-			                 "and deadline >= ? and deadline <= ? " +
-			                 "order by deadline";
+									select * from tasks
+									where (created_by = ? and assigned_to = ?) and status ilike ?
+									and TO_CHAR(created_at,'YYYY-MM-DD') between ? and ?
+									order by deadline
+													""";
+				}
 
 			    try (Connection con = DataSourceFactory.getConnectionInstance();
 			         PreparedStatement pstmt = con.prepareStatement(sql)) {
 
 			        pstmt.setInt(1, managerId);
 			        pstmt.setInt(2, empId);
-			        pstmt.setString(3, status);
-			        pstmt.setDate(4, Date.valueOf(fromDate));
-			        pstmt.setDate(5, Date.valueOf(toDate));
+
+					if (status.equalsIgnoreCase("all")) {
+						pstmt.setString(3, fromDate.toString());
+						pstmt.setString(4, toDate.toString());
+					} else {
+						pstmt.setString(3, status);
+						pstmt.setString(4, fromDate.toString());
+						pstmt.setString(5, toDate.toString());
+					}
 
 			        ResultSet rs = pstmt.executeQuery();
 			        
@@ -294,11 +320,11 @@ public class TaskDAO {
 			            tasks.add(mapToTask(rs));
 			        }
 
-			        return Optional.of(tasks);
+					return Optional.ofNullable(tasks);
 
 			    } catch (SQLException e) {
 			        e.printStackTrace();
-			        return Optional.empty();
+					return Optional.ofNullable(null);
 			    }
 			}
 

@@ -18,13 +18,24 @@
 
 	<div class="container">
 		<h1>Hello, <%=request.getSession().getAttribute("name")%></h1>
-		<div class="task_section">
-			<h2>My Tasks</h2>
-			<div class="task_card_array" id="task_card_array">
+		<div>
+		 <div id="task_section">
 			<% if(request.getAttribute("pending_tasks_array") != null)
 			{
 				List<Task> tasks = (List<Task>)request.getAttribute("pending_tasks_array");
-				 for(Task task:tasks)
+				
+				List<Task> pendingTasks =  tasks.stream().filter(t->t.getStatus().equalsIgnoreCase("assigned")).toList();
+				
+				List<Task> progressTasks = tasks.stream().filter(t->t.getStatus().contains("In")).toList();
+				
+				List<Task> completedTasks = tasks.stream().filter(t->t.getStatus().equalsIgnoreCase("completed")).toList();
+			
+			%>
+			<div class="pending_task_array task_card_array">
+				<h3>Pending tasks</h3>
+				<% if(pendingTasks.size() > 0)
+				{
+				for(Task task:pendingTasks)
 				 {
 				 %>
 					<div class="task_card">
@@ -53,7 +64,90 @@
 					</div>
 				<%	 
 				 }
+				}else{
 				%>
+					<p>No Tasks</p>
+				<%
+				}
+				%>
+			
+			</div>
+			
+			<div class="progress_task_array task_card_array">
+				<h3>In Progress tasks</h3>
+				<% if(progressTasks.size() > 0)
+				{
+					for(Task task:progressTasks)
+				 {
+				 %>
+					<div class="task_card">
+				
+						<div>
+							<div class="task_card_row">
+								<span class="task_card_label">Title: </span>
+								<span class="task_card_value"><%=task.getTitle()%></span>	
+							</div>
+							<div class="task_card_row">
+								<span class="task_card_label">Status: </span>
+								<span class="task_card_value"><%=task.getStatus()%></span>	
+							</div>
+							<div class="task_card_row">
+								<span class="task_card_label">Deadline: </span>
+								<span class="task_card_value deadline"><%=task.getDeadline()%></span>	
+							</div>	
+						</div>
+						
+						<div>
+							<a class="edit_button" href="/worklog/controller?action=editTask&task_id=<%=task.getId()%>" >
+								<i class="fa-solid fa-pen-to-square fa-lg"></i>
+							</a>
+						</div>
+									
+					</div>
+				<%	 
+				 }
+				}else{
+				%>
+					<p>No Tasks</p>
+				<%
+				}
+				%>
+			</div>
+			
+			<div class="completed_task_array task_card_array">
+				<h3>Completed tasks</h3>
+				<% if(completedTasks.size() > 0)
+				{
+					for(Task task:completedTasks)
+				 {
+				 %>
+					<div class="task_card">
+				
+						<div>
+							<div class="task_card_row">
+								<span class="task_card_label">Title: </span>
+								<span class="task_card_value"><%=task.getTitle()%></span>	
+							</div>
+							<div class="task_card_row">
+								<span class="task_card_label">Status: </span>
+								<span class="task_card_value"><%=task.getStatus()%></span>	
+							</div>
+							<div class="task_card_row">
+								<span class="task_card_label">Deadline: </span>
+								<span class="task_card_value deadline"><%=task.getDeadline()%></span>	
+							</div>	
+						</div>
+					</div>
+				<%	 
+				 }
+				}else{
+				%>
+					<p>No Tasks</p>
+				<%
+				}
+				%>
+			</div>
+			
 			<%	 
 			 }
 			else{

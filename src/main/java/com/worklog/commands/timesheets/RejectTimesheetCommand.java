@@ -41,8 +41,9 @@ public class RejectTimesheetCommand implements Command{
 
 			boolean updated = dao.updateTimesheetStatus(timesheetId, "rejected", managerId, commentStr, false);
 			
-			if(updated) {
-				request.getSession().setAttribute("message", "Timesheet rejected successfully");			
+			if (updated == true) {
+				request.setAttribute("status", "success");
+				request.setAttribute("message", "Timesheet rejected successfully");
 			}
 
 			return updated;

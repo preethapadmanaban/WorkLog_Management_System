@@ -9,10 +9,15 @@
 <meta charset="UTF-8">
 <title>Manager Dashboard</title>
 <jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
-<link rel="stylesheet" href="<%= request.getContextPath() %>/ui/styles/styles.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
 </head>
 
 <body>
+
+
+    <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
+    <jsp:include page="/ui/screens/common/message.jsp"></jsp:include>
+
 
     <%
         List<Employee> members = (List<Employee>) request.getAttribute("Members");
@@ -22,12 +27,6 @@
         Integer inProgress = (Integer) request.getAttribute("InProgress");
         Integer completed = (Integer) request.getAttribute("Completed");
     %>
-
-
-    <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
-
-    <jsp:include page="/ui/screens/common/message.jsp"></jsp:include>
-
 
     <div class="container">
 

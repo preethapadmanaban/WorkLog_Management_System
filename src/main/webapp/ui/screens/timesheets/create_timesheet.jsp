@@ -221,9 +221,8 @@
                 }
                 // hours_spend validation must be <=10
                 const hours_spend = parseFloat(temp[1]);
-                if(hours_spend < 0.0 || hours_spend > 10.00)
+                if(hours_spend <= 0.0 || hours_spend > 10.00)
                 {
-		
                 	isValid = false;
                 	console.log("hours_spend validation failed!, value=>", hours_spend);
                 	return;

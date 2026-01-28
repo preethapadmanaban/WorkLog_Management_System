@@ -32,6 +32,7 @@ public class ListPendingTasksCommand implements Command {
 		if (listOfPendingTasks.isPresent()) {
 			return true;
 		} else {
+			request.setAttribute("success", "success");
 			request.setAttribute("message", "You have no pending tasks!");
 			return false;
 		}
