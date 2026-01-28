@@ -36,8 +36,8 @@
 	    <tr><th>Status</th><td><%= t.getStatus() %></td></tr>
 	    <tr><th>Deadline</th><td><%= t.getDeadline() %></td></tr>
 	   <%--  <tr><th>Created By</th><td><%= t.getCreated_by() %></td></tr> --%>
-	    <tr><th>Created At</th><td><%= t.getCreated_at().toLocalDateTime().toString().split("T")[0]%></td></tr>
-	    <tr><th>Updated At</th><td><%= t.getUpdated_at().toLocalDateTime().toString().split("T")[0] %></td></tr>
+	    <tr><th>Created Date</th><td><%= t.getCreated_at().toLocalDateTime().toString().split("T")[0]%></td></tr>
+	    <tr><th>Last Updated Date</th><td><%= t.getUpdated_at().toLocalDateTime().toString().split("T")[0] %></td></tr>
 	</table>
 	
 	<br>

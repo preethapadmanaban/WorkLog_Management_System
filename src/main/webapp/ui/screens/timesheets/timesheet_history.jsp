@@ -24,8 +24,8 @@
 	 				<h3>Filter by Status - </h3>
 	 				
 	 				<select class="nice-form-input" name="status" id="status_select">
-		 					<option selected>Select</option>
-		 					<option value="all">All tasks</option>
+		 					<!-- <option selected>Select</option> -->
+		 					<option value="all" selected>All status</option>
 							<option value="pending">Pending</option>
 							<option value="approved">Approved</option>
 							<option  value="rejected">Rejected</option>
@@ -62,7 +62,7 @@
 					String managerComment = timesheet.getManager_comment() == null ? "No Comment" : timesheet.getManager_comment();
 				%>
 						<td><%=managerComment%></td>
-						<td><a class="info_anchor" href="controller?action=timesheetReview&timesheetId=<%=timesheet.getId()%>">View details</a></td>
+						<td class="action_button_array"><a class="info_anchor" href="controller?action=timesheetReview&timesheetId=<%=timesheet.getId()%>">View details</a></td>
 					</tr>
 				<%
 					}
@@ -86,6 +86,15 @@
  	</div>
  	
  	<script>
+ 	
+ 		document.addEventListener('DOMContentLoaded', () => {
+			<%
+				String selectStatus = request.getParameter("status") == null ? "all": request.getParameter("status").toLowerCase();
+			%>
+			let status = "<%=selectStatus%>";
+			document.getElementById('status_select').value = status;
+			/* console.log("status => ", status); */
+ 		});
  	
  		function selectStatus(){
  			let selectTag = document.getElementById("status_select");

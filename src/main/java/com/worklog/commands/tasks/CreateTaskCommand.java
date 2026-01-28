@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.TaskDAO;
 
@@ -24,13 +25,13 @@ import jakarta.servlet.http.HttpSession;
 		private static final Logger logger = LogManager.getLogger(CreateTaskCommand.class);
 
 		@Override
-		public boolean execute(HttpServletRequest request, HttpServletResponse response) {
+		public boolean execute(HttpServletRequest request, HttpServletResponse response) throws UnAuthorizedException {
 			
 			HttpSession session = request.getSession(false);
 			
 			if(session == null) {
 				logger.warn("CreateTask failed: No active session.");
-				return false;
+				throw new UnAuthorizedException("access_denied");
 			}
 			
 			String role = (String) session.getAttribute("role");

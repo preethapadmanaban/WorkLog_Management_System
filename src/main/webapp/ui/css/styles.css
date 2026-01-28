@@ -210,6 +210,8 @@ th:last-child{
 }
 
 
+
+
 .add_timesheet_icon{
 	cursor: pointer;
 }
@@ -347,4 +349,15 @@ th:last-child{
 
 .access_denied_body{
 	padding-right: 20px;
+}
+
+.timesheet_review_detail_with_image{
+	display: grid;
+    grid-template-columns: 3fr 1fr;
+}
+.timesheet_status_img_div{
+	align-self: center;
+}
+.timesheet_status_img{
+	width: 50%;
 }

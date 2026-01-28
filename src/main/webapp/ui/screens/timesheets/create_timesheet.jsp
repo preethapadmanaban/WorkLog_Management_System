@@ -17,12 +17,13 @@
     
    <jsp:include page="/ui/screens/common/message.jsp"></jsp:include>
    
+   <h3>New Timesheet</h3>
+   
     <div class="container_70">
     	<form action="<%=request.getContextPath()%>/controller?action=createTimesheet" method="post" id="timesheet_entry_form">
     	
     	<input type="number" name="manager_id" id="manager_id" hidden>
   	   		<div>
-	   			<h3>New Timesheet</h3>
 		        <div class="row">
 		            <div class="col-6 col-sm-3 ">
 		                   <span>Enter work date:</span> <input type="date" name="work_date" id="work_date" class="form-control"> </th>
