@@ -35,7 +35,7 @@
  			
  		</div>
  	<div class="container_70">
- 		<table class="table table-hover text-white" id="task_table">
+ 		<table class="table table-striped table-hover" id="task_table">
 			<thead>
 				<tr>
 					<th>S.No</th>

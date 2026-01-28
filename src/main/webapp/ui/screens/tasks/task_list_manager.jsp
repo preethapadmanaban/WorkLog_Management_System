@@ -10,6 +10,7 @@
 <title>Task List</title>
 <jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
 <link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
+<link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/bootstrap.min.css">
 </head>
 <body>
 <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
@@ -68,7 +69,7 @@
 		</form>
 	</div>
 	<div class="container_70">
-	<table border="1" cellpadding="6">
+	<table class="table table-striped table-hover">
     <tr>
 <!--         <th>ID</th> -->
         <th>Title</th>
@@ -90,9 +91,9 @@
         <td><%= t.getStatus() %></td>
         <td><%= t.getDeadline() %></td>
 
-        <td>
-            <a href="controller?action=viewTask&id=<%= t.getId() %>">View</a>
-            <a href="controller?action=editTask&task_id=<%= t.getId() %>">Edit</a>
+        <td class="action_button_array">
+            <a class="info_anchor" href="controller?action=viewTask&id=<%= t.getId() %>">View</a>
+            <a class="edit_anchor" href="controller?action=editTask&task_id=<%= t.getId() %>">Edit</a>
         </td>
     </tr>
 

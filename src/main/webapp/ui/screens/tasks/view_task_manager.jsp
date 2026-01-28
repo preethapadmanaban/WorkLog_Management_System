@@ -26,8 +26,8 @@
 	<%
 	    } else {
 	%>
-	
-	<table border="1" cellpadding="6">
+	<div class="container_70">
+	<table class="table table-striped table-hover">
 <%-- 	    <tr><th>ID</th><td><%= t.getId() %></td></tr>
  --%>	   
  		 <tr><th>Title</th><td><%= t.getTitle() %></td></tr>
@@ -42,11 +42,11 @@
 	
 	<br>
 	
-	<a href="controller?action=listTasks">Back to Task List</a>
+	<a class="info_anchor" href="controller?action=listTasks">Back to Task List</a>
 	
 	<%
 	    }
 	%>
-
+	</div>
 </body>
 </html>

@@ -23,7 +23,7 @@
         (List<TimeSheet>) request.getAttribute("pending");
 %>
 <div class="container_70">
-<table border="1" cellpadding="6">
+<table class="table table-striped table-hover">
     <tr>
         <th>Employee ID</th>
         <th>Work Date</th>
@@ -43,8 +43,8 @@
         <td><%= t.getTotal_hours() %></td>
         <td><%= t.getStatus() %></td>
         <td><%= t.getCreated_at().toLocalDateTime().toString().split("T")[0] %></td>
-        <td>
-            <a href="<%=request.getContextPath()%>/controller?action=timesheetReview&timesheetId=<%= t.getId() %>">
+        <td class="action_button_array">
+            <a class="info_anchor" href="<%=request.getContextPath()%>/controller?action=timesheetReview&timesheetId=<%= t.getId() %>">
                 Review
             </a>
         </td>

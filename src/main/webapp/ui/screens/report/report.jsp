@@ -48,7 +48,7 @@
 
 <div class="container_70">
 		<div class="records">
-			<table>
+			<table class="table table-striped table-hover">
 				<tr>
 					<th>Employee Name</th>
 					<th>Date Of Work</th>

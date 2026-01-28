@@ -89,6 +89,7 @@
             
             let defaultOption = document.createElement("option");
             defaultOption.innerText = "--Select task--"
+            defaultOption.value = null;
             selectTasks.appendChild(defaultOption);
 
             // let tasks_options = document.querySelectorAll(".assigned_task_options");
@@ -212,13 +213,14 @@
                         if(i == 2){ // i = 2, 0-task, 1-hours_spend, 2-notes.
 							break; // here we skips validation for notes, its optional.
                         }
-                        if(temp[i] == null || temp[i].trim() === ""){
+                        if(temp[i] == null || temp[i] == 'null' || temp[i].trim() === ""){
 							isValid = false;
 		                	console.log("no value validation failed!");
 							break;
                         }
                     }
                 }
+                console.log("temp => ", temp)
                 // hours_spend validation must be <=10
                 const hours_spend = parseFloat(temp[1]);
                 if(hours_spend <= 0.0 || hours_spend > 10.00)

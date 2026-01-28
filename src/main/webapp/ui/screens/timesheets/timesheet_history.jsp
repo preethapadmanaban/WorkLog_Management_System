@@ -62,7 +62,7 @@
 					String managerComment = timesheet.getManager_comment() == null ? "No Comment" : timesheet.getManager_comment();
 				%>
 						<td><%=managerComment%></td>
-						<td><a href="controller?action=timesheetReview&timesheetId=<%=timesheet.getId()%>">View details</a></td>
+						<td><a class="info_anchor" href="controller?action=timesheetReview&timesheetId=<%=timesheet.getId()%>">View details</a></td>
 					</tr>
 				<%
 					}

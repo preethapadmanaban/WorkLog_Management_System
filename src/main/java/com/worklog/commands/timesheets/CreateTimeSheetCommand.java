@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.worklog.dto.TimeSheetEntryDTO;
 import com.worklog.dto.TimeSheetRequestDTO;
 import com.worklog.entities.TimeSheet;
+import com.worklog.exceptions.DuplicateTimesheetCreationException;
 import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.TimeSheetDAO;
@@ -89,7 +90,14 @@ public class CreateTimeSheetCommand implements Command {
 		// System.out.println("timeSheetRequest => " + timeSheetRequest);
 
 		TimeSheetDAO repo = new TimeSheetDAO();
-		boolean flag = repo.createTimeSheet(timesheet);
+		boolean flag;
+		try {
+			flag = repo.createTimeSheet(timesheet);
+		} catch (DuplicateTimesheetCreationException e) {
+			request.setAttribute("status", "error");
+			request.setAttribute("message", e.getMessage());
+			return false;
+		}
 		if (flag == false) {
 			logger.error("Timesheet creation failed for employee {} on date {}", employeeId, workDateString);
 			request.setAttribute("status", "success");

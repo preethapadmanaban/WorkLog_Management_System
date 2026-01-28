@@ -35,9 +35,10 @@
     	} else {
 	%>
 	
+	<div class="container_70">
 	<h3>Timesheet Details</h3>
 	
-	<table border="1" cellpadding="6">
+	<table class="table table-striped table-hover border border-secondary">
 			<tr><th>Timesheet ID</th><td><%= ts.getId() %></td></tr>
 		    <tr><th>Employee ID</th><td><%= ts.getEmployee_id() %></td></tr>
 		    <tr><th>Work Date</th><td><%= ts.getWork_date() %></td></tr>
@@ -52,7 +53,7 @@
 	<!-- Entries Table -->
 	<h3>Entries</h3>
 	
-	<table border="1" cellpadding="6">
+	<table class="table table-striped table-hover border border-secondary">
 	    <tr>
 	        <th>Entry ID</th>
 	        <th>Task ID</th>
@@ -98,20 +99,20 @@
 	    <textarea name="manager_comment" rows="4" cols="50"></textarea>
 	    <br><br>
 	
-	    <button type="submit" name="action" value="approveTimesheet">Approve</button>
-	    <button type="submit" name="action" value="rejectTimesheet">Reject</button>
+	    <button class="submit_button" type="submit" name="action" value="approveTimesheet">Approve</button>
+	    <button class="reject_button" type="submit" name="action" value="rejectTimesheet">Reject</button>
 	
 	</form>
 	
 	<br>
 	
 	<br>
-	<a href="<%=request.getContextPath() %>/controller?action=pending">Back to Pending List</a>
+	<a class="info_anchor" href="<%=request.getContextPath() %>/controller?action=pending">Back to Pending List</a>
 	
 	<%
 		}
 	  }
 	%>
-
+	</div>
 </body>
 </html>

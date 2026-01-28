@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import com.worklog.db.DataSourceFactory;
 import com.worklog.dto.ReportEmployeeDTO;
 import com.worklog.entities.TimeSheet;
+import com.worklog.exceptions.DuplicateTimesheetCreationException;
 
 /**
  * 
@@ -74,7 +75,7 @@ public class TimeSheetDAO {
 		}
 	}
 
-	public boolean createTimeSheet(TimeSheet timesheet) {
+	public boolean createTimeSheet(TimeSheet timesheet) throws DuplicateTimesheetCreationException {
 		String sql = "INSERT INTO timesheets(employee_id, work_date, total_hours, status, manager_id) VALUES(?, ?, ?, ?, ?)";
 		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setInt(1, timesheet.getEmployee_id());
@@ -93,6 +94,10 @@ public class TimeSheetDAO {
 
 		} catch (SQLException e) {
 			logger.error("Error creating timesheet for employee {}", timesheet.getEmployee_id(), e);
+			if (e.getMessage().contains("duplicate") || e.getMessage().contains("unique_timesheet")) {
+				throw new DuplicateTimesheetCreationException("Timesheet Already Found for this Work date.", e);
+			}
+			e.printStackTrace();
 			return false;
 		}
 	}
