@@ -7,6 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>	Create Timesheet</title>
+<jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
 	<link rel="stylesheet" href="/worklog/ui/css/bootstrap.min.css" type="text/css">
 	<link rel="stylesheet" href="/worklog/ui/css/styles.css" type="text/css">
 </head>
@@ -220,9 +221,8 @@
                 }
                 // hours_spend validation must be <=10
                 const hours_spend = parseFloat(temp[1]);
-                if(hours_spend < 0.0 || hours_spend > 10.00)
+                if(hours_spend <= 0.0 || hours_spend > 10.00)
                 {
-		
                 	isValid = false;
                 	console.log("hours_spend validation failed!, value=>", hours_spend);
                 	return;

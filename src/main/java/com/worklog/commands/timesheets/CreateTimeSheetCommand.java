@@ -5,6 +5,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.worklog.dto.TimeSheetEntryDTO;
 import com.worklog.dto.TimeSheetRequestDTO;
 import com.worklog.entities.TimeSheet;
@@ -24,6 +27,8 @@ import jakarta.servlet.http.HttpSession;
  */
 
 public class CreateTimeSheetCommand implements Command {
+	
+	private static final Logger logger = LoggerFactory.getLogger(CreateTimeSheetCommand.class);
 
     @Override
     public boolean execute(HttpServletRequest request, HttpServletResponse response) throws UnAuthorizedException {
@@ -59,7 +64,7 @@ public class CreateTimeSheetCommand implements Command {
 					double hours_spend_for_one_task = Double.parseDouble(hoursSpendArray[array_pointer]);
 					total_hours_spend += hours_spend_for_one_task;
 					entries.add(new TimeSheetEntryDTO(Integer.parseInt(taskIdArray[array_pointer]), notesArray[array_pointer],
-									total_hours_spend));
+									hours_spend_for_one_task));
 				} catch (NumberFormatException e) {
 					request.setAttribute("message", "Invalid information.");
 					return false;
@@ -86,6 +91,8 @@ public class CreateTimeSheetCommand implements Command {
 		TimeSheetDAO repo = new TimeSheetDAO();
 		boolean flag = repo.createTimeSheet(timesheet);
 		if (flag == false) {
+			logger.error("Timesheet creation failed for employee {} on date {}", employeeId, workDateString);
+			request.setAttribute("status", "success");
 			request.setAttribute("message", "Time sheet creation failed, please try again!");
 			return false;
 		}
@@ -93,6 +100,8 @@ public class CreateTimeSheetCommand implements Command {
 		int timeSheetId = repo.getTimeSheetId(timesheet);
 
 		if (timeSheetId == -1) {
+			logger.error("Failed to retrieve timesheet ID for employee {} on date {}", employeeId, workDateString);
+			request.setAttribute("status", "success");
 			request.setAttribute("message", "Time sheet creation failed, please try again!");
 			return false;
 		}
@@ -101,6 +110,14 @@ public class CreateTimeSheetCommand implements Command {
 
 		flag = entryRepo.createTimeSheetEntries(timeSheetId, timeSheetRequest.getEntries());
 
+		if (flag == false) {
+			logger.error("Timesheet entries insertion failed for timesheet ID {}", timeSheetId);
+			request.setAttribute("status", "error");
+			request.setAttribute("message", "Time sheet entry creation failed, please try again!");
+			return false;
+		}
+
+		logger.info("Timesheet {} created successfully by employee {} for date {}", timeSheetId, employeeId, workDateString);
 		request.setAttribute("status", "success");
 		request.setAttribute("message", "Timesheet created and send for approval.");
 		return true;

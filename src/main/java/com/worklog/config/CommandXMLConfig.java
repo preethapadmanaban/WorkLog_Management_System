@@ -9,12 +9,17 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class CommandXMLConfig {
+	
+	private static final Logger logger = LogManager.getLogger(CommandXMLConfig.class);
+	 
 	private String commandClass;
 	private String successPage;
 	private String failurePage;
@@ -70,11 +75,13 @@ public class CommandXMLConfig {
 				configMap.put(commandKey, cmdConfig);
 
 			}
-
+			
+			logger.info("Loaded {} command configurations from XML", configMap.size());
+		
 			return configMap;
 
 		} catch (ParserConfigurationException | SAXException | IOException e) {
-			e.printStackTrace();
+			logger.error("Failed to load command XML configuration", e);
 			return null;
 		}
 

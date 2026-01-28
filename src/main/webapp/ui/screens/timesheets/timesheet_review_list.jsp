@@ -7,6 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Pending Timesheets</title>
+<jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
 <link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
 </head>
 <body>
@@ -14,13 +15,14 @@
 <jsp:include page="/ui/screens/common/navbar.jsp"/>
 <jsp:include page="/ui/screens/common/message.jsp"/>
 
+
 <h2>Pending Timesheets</h2>
 
 <%
     List<TimeSheet> pendingList =
         (List<TimeSheet>) request.getAttribute("pending");
 %>
-
+<div class="container_70">
 <table border="1" cellpadding="6">
     <tr>
         <th>Employee ID</th>
@@ -59,6 +61,6 @@
 %>
 
 </table>
-
+</div>
 </body>
 </html>

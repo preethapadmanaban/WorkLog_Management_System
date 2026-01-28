@@ -6,7 +6,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Timesheet history.</title>
+<title>Timesheet history</title>
+<jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
 <link rel="stylesheet" href="<%=request.getContextPath()%>/ui/css/styles.css">
 </head>
 <body>
@@ -14,22 +15,27 @@
     <jsp:include page="/ui/screens/common/message.jsp"></jsp:include>
     
     
-    <div class="container_70">
+    
  		<div class = "filter_section">
  			<h3>My Timesheets</h3>
- 			<div class="filter_section">
- 				<h3>Filter by Status - </h3>
- 				<select class="nice-form-input" id="status_select" onchange="selectStatus()">
-	 					<option selected>Select</option>
-	 					<option value="all">All tasks</option>
-						<option value="pending">Pending</option>
-						<option value="approved">Approved</option>
-						<option  value="rejected">Rejected</option>
-			
+ 			<form action="controller">
+	 			<div class="filter_section">
+	 				<input type="hidden" name="action" value="timesheetHistory">
+	 				<h3>Filter by Status - </h3>
+	 				
+	 				<select class="nice-form-input" name="status" id="status_select">
+		 					<option selected>Select</option>
+		 					<option value="all">All tasks</option>
+							<option value="pending">Pending</option>
+							<option value="approved">Approved</option>
+							<option  value="rejected">Rejected</option>
+				
 					</select>
- 			</div>
+					<input type="submit" value="Filter" class="submit_button">
+	 			</div>
+ 			</form>
  		</div>
- 	
+ 	<div class="container_70">
  		<table class="table table-hover text-white" id="task_table">
  		   <thead>
 				<tr>

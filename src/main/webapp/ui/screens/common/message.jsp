@@ -7,11 +7,3 @@
 </div>
 <% } %>
 
-<%
-String msg = (String) request.getAttribute("message");
-if (msg != null) {
-%>
-    <p style="color:red;"><%= msg %></p>
-<%
-}
-%>

@@ -8,15 +8,16 @@
 <head>
 <title>Worklog Report</title>
 	<link rel="stylesheet" href="/worklog/ui/css/styles.css" type="text/css">
+	<jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
+
 </head>
 <body>
 
 <jsp:include page="/ui/screens/common/navbar.jsp"/>
 <jsp:include page="/ui/screens/common/message.jsp"/>
-
-<div class="filter_section">
+	<div class="filter_section">
 	
-		<h1>Work Log</h1>
+		<h1>Employee Reports</h1>
 		
 		<form action="controller" method="get" class="header-form">
 		
@@ -25,12 +26,13 @@
 			  	<input type="hidden" name="filter" value="true">
 			  	
 			    
-			    <select name="type" class="nice-form-input">
+			    <!-- <select name="type" class="nice-form-input">
 				    <option value="">Select</option>
 				    <option value="employee">Employee</option>
 				    <option value="task">Task</option>
-				</select>
+				</select> -->
 
+				<input type="hidden" name="type" value="employee"> 
 		   
 		    
 			    <input type="date" name="fromDate" class="nice-form-input">
@@ -43,6 +45,8 @@
 			</div>
 		</form>
 </div>
+
+<div class="container_70">
 		<div class="records">
 			<table>
 				<tr>
@@ -85,6 +89,7 @@
 				 	<a href="<%=(request.getContextPath() + "/controller?" + request.getQueryString())%>&download=true"><button class="submit_button">Download Report</button></a>
 				</div>
 			<% } %>
+		</div>
 		</div>
 </body>
 </html>

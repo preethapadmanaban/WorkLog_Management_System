@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.worklog.db.DataSourceFactory;
 import com.worklog.dto.ListTaskDTO;
 import com.worklog.entities.Task;
@@ -26,6 +29,8 @@ import com.worklog.entities.Task;
  */
 
 public class TaskDAO {
+	
+	private static final Logger logger = LogManager.getLogger(TaskDAO.class);
 
 	private ListTaskDTO mapToListTaskDTO(ResultSet rs) throws SQLException {
 		return new ListTaskDTO.Builder()
@@ -62,18 +67,20 @@ public class TaskDAO {
 			return Optional.ofNullable(tasks);
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+		    logger.error("DB error in getAllTasksForEmployee(employeeId={})", employeeId, e);
 			return Optional.ofNullable(null);
 		}
 
 	}
 	
-	public Optional<Map<String, Integer>> getTaskCountByStatus() {
+	public Optional<Map<String, Integer>> getTaskCountByStatus(int managerId) {
 		
-		String sql = "select status, count(*) from tasks group by status";
+		String sql = "select status, count(*) from tasks where created_by = ? group by status";
 		
 		try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
 			
+			pstmt.setInt(1, managerId);
+
 			ResultSet rs = pstmt.executeQuery();
 			
 			Map<String, Integer> map = new HashMap<>();
@@ -89,7 +96,7 @@ public class TaskDAO {
 			return Optional.of(map);
 		}
 		catch(SQLException e) {
-			e.printStackTrace();
+		    logger.error("DB error in getTaskCountByStatus(managerId={})", managerId, e);
 			return Optional.ofNullable(null);
 		}
 	}
@@ -114,7 +121,7 @@ public class TaskDAO {
 			return rows > 0;
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+		    logger.error("DB error in createTask(createdBy={}, assignedTo={}, title={})", createdBy, assignedTo, title, e);
 			return false;
 		}
 	}
@@ -140,7 +147,7 @@ public class TaskDAO {
 			
 			
 		}catch(SQLException e) {
-			e.printStackTrace();
+			logger.error("DB error in getAllTasks(employeeId={})", employeeId, e);
 			return Optional.ofNullable(null);
 		}
 	}
@@ -164,7 +171,7 @@ public class TaskDAO {
 			return Optional.empty();
 			
 		}catch(SQLException e) {
-			e.printStackTrace();
+			 logger.error("DB error in getTaskById(id={})", id, e);
 			return Optional.ofNullable(null);
 		}
 		
@@ -172,7 +179,7 @@ public class TaskDAO {
 
 	public boolean updateTask(int id, String title, String description, int assigned_to, String status, Date deadline) {
 		
-		String sql = "update tasks set title=?, description=?, assigned_to=?, status=?, deadline=? where id = ?";
+		String sql = "update tasks set title=?, description=?, assigned_to=?, status=?, deadline=?, updated_at = current_timestamp where id = ?";
 		
 		try(Connection con = DataSourceFactory.getConnectionInstance();
 						PreparedStatement pstmt = con.prepareStatement(sql)){
@@ -189,7 +196,7 @@ public class TaskDAO {
 			return rows > 0;
 			
 		}catch(SQLException e) {
-			e.printStackTrace();
+			logger.error("DB error in updateTask(id={})", id, e);
 			return false;
 		}
 	}
@@ -209,14 +216,21 @@ public class TaskDAO {
 			return Optional.ofNullable(tasks);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("DB error in getAllCompletedTakEmployeeId(employeeId={})", id, e);
 			return null;
 		}
 	}
 
 	public Optional<List<Task>> getAllPendingTasks(int employeeId) {
 
-		String sql = "SELECT * FROM tasks WHERE assigned_to=? and ( status='Assigned' or status='In Progress' )";
+		// String sql = "SELECT * FROM tasks WHERE assigned_to=? and (status ilike 'Assigned' or status ilike 'In Progress');";
+
+		String sql = """
+
+						select * from tasks where assigned_to = ?
+						and (status in ('Assigned' , 'In Progress')
+						or to_char(updated_at, 'YYYY-MM-DD') = to_char(current_timestamp, 'YYYY-MM-DD'));
+							""";
 
 		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(sql);) {
 			pstmt.setInt(1, employeeId);
@@ -229,7 +243,7 @@ public class TaskDAO {
 
 			return Optional.ofNullable(pendingTasks);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("DB error in getAllPendingTasks(employeeId={})", employeeId, e);
 			return Optional.ofNullable(null);
 		}
 
@@ -263,7 +277,7 @@ public class TaskDAO {
 			return Optional.ofNullable(tasks);
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("DB error in getTasksForEmployee(employeeId={}, status={})", employeeId, status, e);
 		}
 		return Optional.ofNullable(null);
 	}
@@ -272,21 +286,38 @@ public class TaskDAO {
 	public Optional<List<Task>> getTasksCreatedByManager(int managerId, int empId, String status, LocalDate fromDate, LocalDate toDate) {
 
 			    List<Task> tasks = new ArrayList<>();
+				String sql;
+				if (status.equalsIgnoreCase("all")) {
+					sql = """
+												select * from tasks
+									where (created_by = ? and assigned_to = ?)
+									and TO_CHAR(created_at,'YYYY-MM-DD') between ? and ?
+									order by deadline
+									""";
+				} else {
+					sql = """
 
-			    String sql = "select * from tasks " +
-								"where created_by = ? and assigned_to = ? and status ilike ? "
-								+
-			                 "and deadline >= ? and deadline <= ? " +
-			                 "order by deadline";
+									select * from tasks
+									where (created_by = ? and assigned_to = ?) and status ilike ?
+									and TO_CHAR(created_at,'YYYY-MM-DD') between ? and ?
+									order by deadline
+													""";
+				}
 
 			    try (Connection con = DataSourceFactory.getConnectionInstance();
 			         PreparedStatement pstmt = con.prepareStatement(sql)) {
 
 			        pstmt.setInt(1, managerId);
 			        pstmt.setInt(2, empId);
-			        pstmt.setString(3, status);
-			        pstmt.setDate(4, Date.valueOf(fromDate));
-			        pstmt.setDate(5, Date.valueOf(toDate));
+
+					if (status.equalsIgnoreCase("all")) {
+						pstmt.setString(3, fromDate.toString());
+						pstmt.setString(4, toDate.toString());
+					} else {
+						pstmt.setString(3, status);
+						pstmt.setString(4, fromDate.toString());
+						pstmt.setString(5, toDate.toString());
+					}
 
 			        ResultSet rs = pstmt.executeQuery();
 			        
@@ -294,11 +325,12 @@ public class TaskDAO {
 			            tasks.add(mapToTask(rs));
 			        }
 
-			        return Optional.of(tasks);
+					return Optional.ofNullable(tasks);
 
 			    } catch (SQLException e) {
-			        e.printStackTrace();
-			        return Optional.empty();
+			    	logger.error("DB error in getTasksCreatedByManager(managerId={}, empId={}, status={}, from={}, to={})",
+			    		            managerId, empId, status, fromDate, toDate, e);
+					return Optional.ofNullable(null);
 			    }
 			}
 
@@ -321,7 +353,7 @@ public class TaskDAO {
 					return Optional.of(tasks);
 
 				} catch (SQLException e) {
-					e.printStackTrace();
+					logger.error("DB error in getTasksCreatedByManager(managerId={})", managerId, e);
 					return Optional.empty();
 			}
 		}

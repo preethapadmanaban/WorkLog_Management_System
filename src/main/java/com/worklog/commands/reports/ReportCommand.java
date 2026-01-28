@@ -6,17 +6,22 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.worklog.dto.ReportEmployeeDTO;
 import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.TimeSheetDAO;
+import com.worklog.servlets.Controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 public class ReportCommand implements Command{
-
+	
+	private static final Logger logger = LogManager.getLogger(Controller.class);
 	@Override
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) throws UnAuthorizedException {
 
@@ -54,19 +59,22 @@ public class ReportCommand implements Command{
 							.orElse(new ArrayList<ReportEmployeeDTO>());
 
 			if (request.getParameter("download") == null) {
+				logger.info("Manager {} generated report from {} to {}", managerId, fromDate, toDate);
 				if (reports != null) {
 					request.setAttribute("report", reports);
 					return true;
 				} else {
-					request.setAttribute("message", "id and date is no work");
+					request.setAttribute("status", "error");
+					request.setAttribute("message", "Exception occured");
 					return true;
 				}
 			}
 			else {
 				try {
+					logger.info("Manager {} downloaded report from {} to {}", managerId, fromDate, toDate);
 					// set the header
 					response.setContentType("text/csv");
-					response.setCharacterEncoding("UTF-8");
+					response.setCharacterEncoding("UTF-8"); // default - inline
 					response.setHeader("Content-Disposition", "attachment; filename=\"employee_report.csv\"");
 
 					PrintWriter out = response.getWriter();
@@ -79,7 +87,7 @@ public class ReportCommand implements Command{
 					out.flush();
 					return true;
 				} catch (IOException e) {
-					e.printStackTrace();
+					logger.error("Error while generating CSV report for manager {}", managerId, e);
 					return false;
 				}
 
@@ -87,7 +95,8 @@ public class ReportCommand implements Command{
 			
 
 		}else {
-			request.setAttribute("message","invalid date");
+			request.setAttribute("status", "error");
+			request.setAttribute("message", "Invalid date");
 			return false;
 		}
 	}

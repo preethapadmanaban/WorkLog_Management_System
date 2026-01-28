@@ -45,7 +45,7 @@
 				placeholder="Your password">
 		</div>
 		
-		<div>
+		<!-- <div>
 			<label class="block text-sm font-medium text-gray-900" for="password">Role</label>
 			<div class="flex justify-center item-center gap-5">
 				<label class="flex items-center">
@@ -56,7 +56,7 @@
 				    <input type="radio" name="role" value="Manager" class="form-radio h-4 w-4 bg-orange-600" checked>
 				    <span class="ml-2 text-gray-700 font-medium text-md">Manager</span>
 				  </label>
-			</div>
+			</div> -->
 			  
 				
 		</div>

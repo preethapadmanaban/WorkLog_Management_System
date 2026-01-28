@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.worklog.db.DataSourceFactory;
 import com.worklog.dto.ReportEmployeeDTO;
 import com.worklog.entities.TimeSheet;
@@ -24,6 +27,8 @@ import com.worklog.entities.TimeSheet;
  */
 
 public class TimeSheetDAO {
+	
+	private static final Logger logger = LogManager.getLogger(TimeSheetDAO.class);
 
 	private TimeSheet mapToTimeSheet(ResultSet rs) throws SQLException {
 	    TimeSheet timeSheet = new TimeSheet();
@@ -64,7 +69,7 @@ public class TimeSheetDAO {
 			return -1;
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("Error fetching timesheet ID for employee {}", timesheet.getEmployee_id(), e);
 			return -1;
 		}
 	}
@@ -87,7 +92,7 @@ public class TimeSheetDAO {
 			return true;
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("Error creating timesheet for employee {}", timesheet.getEmployee_id(), e);
 			return false;
 		}
 	}
@@ -98,10 +103,10 @@ public class TimeSheetDAO {
 
 	public Optional<List<TimeSheet>> getAllTimeSheetsForEmployee(int id, String status) {
 		String sql;
-		if (status.equalsIgnoreCase("All")) {
+		if (status.equalsIgnoreCase("all")) {
 			sql = "select * from timesheets where employee_id=?";
 		} else {
-			sql = "select * from timesheets where employee_id=? and status in (?)";
+			sql = "select * from timesheets where employee_id=? and status ilike ?";
 		}
 
 		try(Connection conn=DataSourceFactory.getConnectionInstance();
@@ -111,7 +116,7 @@ public class TimeSheetDAO {
 				List<TimeSheet> timeSheets = new ArrayList<>();
 
 			pstmt.setInt(1, id);
-			if (!status.equalsIgnoreCase("All")) {
+			if (!status.equalsIgnoreCase("all")) {
 				pstmt.setString(2, status);
 			}
 
@@ -122,7 +127,7 @@ public class TimeSheetDAO {
 
 			return Optional.of(timeSheets);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("DB error in getAllTimeSheetsForEmployee(employeeId={}, status={})", id, status, e);
 			return Optional.empty();
 		}
 	}
@@ -160,7 +165,7 @@ public class TimeSheetDAO {
 	        return Optional.of(list);
 
 	    } catch (SQLException e) {
-	        e.printStackTrace();
+	    	logger.error("DB error in getPendingTimesheet()", e);
 	        return Optional.empty();
 	    }
 	}
@@ -201,7 +206,7 @@ public class TimeSheetDAO {
 			return Optional.ofNullable(list);
 
 		}catch(SQLException e) {
-			e.printStackTrace();
+			logger.error("Error generating work hours report for manager {}", manager_id, e);
 			return Optional.ofNullable(null);
 		}
 	}
@@ -235,7 +240,7 @@ public class TimeSheetDAO {
 			return Optional.empty();
 			
 		}catch(SQLException e) {
-			e.printStackTrace();
+			logger.error("DB error in getTimesheetByid(id={})", id, e);
 			return Optional.ofNullable(null);
 		}
 		
@@ -259,7 +264,7 @@ public class TimeSheetDAO {
 			return rows > 0;
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("DB error while updating timesheet status. timesheetId={}", timesheetId, e);
 			return false;
 		}
 	}

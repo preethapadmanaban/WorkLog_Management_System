@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page import="org.mindrot.jbcrypt.BCrypt"%>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -6,6 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body>
+
 	<!-- <form action="login" method="post" class="mx-auto my-20 max-w-md space-y-4 rounded-lg border border-gray-300 bg-gray-100 p-6"> -->
 	<form action="/worklog/controller" method="post" class="mx-auto my-20 max-w-md space-y-4 rounded-lg border border-gray-300 bg-gray-100 p-6">
 	  

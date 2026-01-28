@@ -4,15 +4,18 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Access denied</title>
+<title>Access Denied</title>
+<link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
 </head>
 <body>
-
-	<h2>Access Denied</h2>
-	
-	<p>You are not authorized to access this page.</p>
-	
-	<a href="/worklog/">Go to Login</a>
+	<div class="access_denied_container">
+		<img class="access_denied_img" src="<%= request.getContextPath() %>/ui/images/delete-image_13434901.png">
+		<div class="access_denied_body">
+			<h3>Access Denied</h3>
+			<a class="info_anchor" href="/worklog/">Go to login</a>
+		</div>
+		
+	</div>
 
 </body>
 </html>

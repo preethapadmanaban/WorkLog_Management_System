@@ -1,5 +1,8 @@
 package com.worklog.commands.timesheets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.TimeSheetDAO;
@@ -14,6 +17,8 @@ import jakarta.servlet.http.HttpSession;
  * @since 21-01-2026
  */
 public class ApproveTimesheetCommand implements Command {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ApproveTimesheetCommand.class);
 
     @Override
     public boolean execute(HttpServletRequest request, HttpServletResponse response)
@@ -43,8 +48,12 @@ public class ApproveTimesheetCommand implements Command {
         TimeSheetDAO dao = new TimeSheetDAO();
         boolean updated = dao.updateTimesheetStatus(timesheetId, "approved", managerId,commentStr,true);
 
-        if (updated) {
-            session.setAttribute("message", "Timesheet approved successfully");
+		if (updated == true) {
+			logger.info("Manager {} approved timesheet {}", managerId, timesheetId);
+			request.setAttribute("status", "success");
+			request.setAttribute("message", "Timesheet approved successfully!");
+        }else {
+        	logger.error("Failed to approve timesheet {} by manager {}", timesheetId, managerId);
         }
 
         return updated;

@@ -5,6 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.worklog.db.DataSourceFactory;
 
 /**
@@ -15,14 +18,18 @@ import com.worklog.db.DataSourceFactory;
 
 public class PendingTimesheetCount {
 	
-	public static int pendingTimeSheet() {
+	private static final Logger logger = LogManager.getLogger(PendingTimesheetCount.class);
+	
+	public static int pendingTimeSheet(int managerId) {
 		
 		int count = 0;
 		
-		String sql = "select count(*) from timesheets where status = 'pending' ";
+		String sql = "select count(*) from timesheets where status = 'pending' and manager_id = ? ";
 		
 		try(Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
 			
+			pstmt.setInt(1, managerId);
+
 			ResultSet rs = pstmt.executeQuery();
 
 			if(rs.next()) {
@@ -32,7 +39,7 @@ public class PendingTimesheetCount {
 			// System.out.println("Pending Timesheets Count = " + count);
 		}
 		catch(SQLException e) {
-			e.printStackTrace();
+		    logger.error("Error fetching pending timesheet count for manager {}", managerId, e);
 		}
 		return count;
 	}

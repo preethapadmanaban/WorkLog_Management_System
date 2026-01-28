@@ -8,12 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.worklog.db.DataSourceFactory;
 import com.worklog.dto.TimeSheetEntryDTO;
 import com.worklog.dto.TimeSheetEntryForReviewDTO;
 import com.worklog.entities.TimeSheetEntry;
 
 public class TimeSheetEntryDAO {
+	
+	private static final Logger logger = LogManager.getLogger(TimeSheetEntryDAO.class);
+
 	private int id;
 
 
@@ -75,7 +81,7 @@ public class TimeSheetEntryDAO {
 
 			return true;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("Error creating timesheet entries for timesheet {}", timeSheetId, e);
 			return false;
 		}
 	}
@@ -93,8 +99,7 @@ public class TimeSheetEntryDAO {
 			}
 			return Optional.ofNullable(timeSheetEntries);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			 logger.error("Error fetching timesheet entries for timesheet {}", timeSheetId, e);
 			return Optional.ofNullable(null);
 		}
 	}
@@ -127,7 +132,7 @@ public class TimeSheetEntryDAO {
 			return Optional.ofNullable(list);
 			
 		}catch(SQLException e) {
-			e.printStackTrace();
+			logger.error("Error fetching review entries for timesheet {}", timesheetId, e);
 			return Optional.ofNullable(null);
 		}
 	}

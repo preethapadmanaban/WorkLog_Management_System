@@ -25,10 +25,10 @@ public class TimesheetReviewCommand implements Command {
             throw new UnAuthorizedException("access_denied");
         }
 
-        String role = (String) session.getAttribute("role");
-        if (!"Manager".equalsIgnoreCase(role)) {
-            throw new UnAuthorizedException("access_denied");
-        }
+		// String role = (String) session.getAttribute("role");
+		// if (!"Manager".equalsIgnoreCase(role)) {
+		// throw new UnAuthorizedException("access_denied");
+		// }
 
         String idStr = request.getParameter("timesheetId");   // MUST match URL param
         if (idStr == null || idStr.trim().isEmpty()) {
@@ -42,6 +42,7 @@ public class TimesheetReviewCommand implements Command {
         TimeSheet ts = tsDao.getTimesheetByid(timesheetId).orElse(null);
 
         if (ts == null) {
+			request.setAttribute("status", "error");
             request.setAttribute("message", "Invalid timesheet id!");
             return false;
         }

@@ -2,6 +2,9 @@ package com.worklog.servlets;
 
 import java.io.IOException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.worklog.config.CommandXMLConfig;
 import com.worklog.exceptions.CommandNotFoundException;
 import com.worklog.exceptions.UnAuthorizedException;
@@ -20,7 +23,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/controller/*")
 public class Controller extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
+	private static final Logger logger = LogManager.getLogger(Controller.class);
 	public Controller() {
 		super();
 	}
@@ -32,6 +35,7 @@ public class Controller extends HttpServlet {
 
 		// System.out.println("current action: " + action);
 		if (action == null) {
+			logger.error("Exception in controller : action not found on the url - " + request.getContextPath() + request.getQueryString());
 			response.sendRedirect("/worklog/");
 			return;
 		}
@@ -61,14 +65,15 @@ public class Controller extends HttpServlet {
 			}
 
 		} catch (CommandNotFoundException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("Command not found for query String :" + request.getQueryString(), e);
 			request.getRequestDispatcher("/worklog/").forward(request, response);
 		} catch (UnAuthorizedException e) {
-			System.out.println(e);
+			logger.error("AUthorization error: ", e);
 			request.setAttribute("message", e.getMessage());
 			request.getRequestDispatcher(CommandXMLFactory.configMap.get("access_denied").getSuccessPage()).include(request, response);
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.error("General exception: ", e);
 			request.setAttribute("message", e.getMessage());
 			request.getRequestDispatcher(cmdConfig.getFailurePage()).include(request, response);
 		}

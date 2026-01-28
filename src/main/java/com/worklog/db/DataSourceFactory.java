@@ -3,10 +3,15 @@ package com.worklog.db;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 public class DataSourceFactory {
+	
+	private static final Logger logger = LogManager.getLogger(DataSourceFactory.class);
 	
 	private static HikariDataSource datasource;
 	
@@ -30,6 +35,8 @@ public class DataSourceFactory {
 		config.setPoolName("hikari-datasource");
 		
 		datasource = new HikariDataSource(config);
+		
+		logger.info("HikariCP DataSource initialized successfully.");
 		
 	}
 

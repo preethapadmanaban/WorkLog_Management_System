@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.worklog.entities.Employee;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.LoginDAO;
@@ -15,7 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 public class LoginCommand implements Command{
-	 
+	private static final Logger logger = LogManager.getLogger(LoginCommand.class);
 	private static final int MAX_ATTEMPTS=3;
 
 	private void setInfoInSession(HttpSession session, Employee employee) {
@@ -68,22 +71,25 @@ public class LoginCommand implements Command{
 					setInfoInSession(session, employee);
 					// for route this into routing command.
 					request.setAttribute("action", "routing");
-					// request.set
+					logger.info("user logged in successfully - email: " + emp.get().getEmail());
 					return true;
 				} else {
 					request.setAttribute("message", "Invalid credentials!");
 					addAttempt(session);
+					logger.info("user login attempt failed - email: " + emp.get().getEmail());
 					return false;
 				}
 			}
 			else {
 				request.setAttribute("message","Invalid credentials!");
 				addAttempt(session);
+				logger.error("Exception: User name or password missing in login request, email: " + email + ", password: " + password);
 				return false;
 			}
 		}
 		else {
 			request.setAttribute("message", "Account locked, Max Attempts reached.");
+			logger.error("Exception: User login attempt failed, email: " + session.getAttribute("name"));
 			return false;
 		}
 

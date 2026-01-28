@@ -11,11 +11,11 @@ public class LogoutCommand implements Command {
 	@Override
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession(false);
-		if (session == null)
-			return false;
+		if (session != null)
+			session.invalidate();
 
-		session.invalidate();
 		return true;
+
 	}
 
 }

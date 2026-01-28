@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.worklog.db.DataSourceFactory;
 import com.worklog.entities.Employee;
 import com.worklog.exceptions.DuplicateUserException;
@@ -20,6 +23,8 @@ import com.worklog.exceptions.DuplicateUserException;
  */
 
 public class EmployeeDAO {
+	
+	private static final Logger logger = LogManager.getLogger(EmployeeDAO.class);
 
 	public boolean createEmployee(Employee employee) throws DuplicateUserException {
 
@@ -39,9 +44,10 @@ public class EmployeeDAO {
 			return true;
 		} catch (SQLException e) {
 			if (e.getMessage().contains("employees_email_key") || e.getMessage().contains(("duplicate"))) {
+				logger.warn("Attempt to create duplicate employee with email: {}", employee.getEmail());
 				throw new DuplicateUserException("Username already exists");
 			}
-			e.printStackTrace();
+		    logger.error("Error while creating employee with email: {}", employee.getEmail(), e);
 			return false;
 		}
 
@@ -68,7 +74,7 @@ public class EmployeeDAO {
 			return Optional.ofNullable(employeeList);
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+		    logger.error("Error fetching employee members list", e);
 			return Optional.ofNullable(null);
 			}
 

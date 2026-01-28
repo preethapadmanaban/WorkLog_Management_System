@@ -10,6 +10,7 @@
 <meta charset="UTF-8">
 <title>Review</title>
 <link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
+<jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
 </head>
 <body>
 <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
@@ -41,6 +42,8 @@
 		    <tr><th>Employee ID</th><td><%= ts.getEmployee_id() %></td></tr>
 		    <tr><th>Work Date</th><td><%= ts.getWork_date() %></td></tr>
 		    <tr><th>Total Hours</th><td><%= ts.getTotal_hours() %></td></tr>
+		    <% String comment = ts.getManager_comment() == null ? "No Comment" : ts.getManager_comment();%>
+		    <tr><th>Manager Comment</th><td><%=comment%></td></tr>
 		    <tr><th>Status</th><td><%= ts.getStatus() %></td></tr>
 	</table>
 	

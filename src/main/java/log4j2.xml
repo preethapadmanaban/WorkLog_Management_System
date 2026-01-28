@@ -16,7 +16,7 @@
         
         <!-- Error_log  -->
         <RollingFile name="Error_Logger"
-                     fileName="D:/worklog_management_system/.log"
+                     fileName="D:/worklog_management_system/errors.log"
                      filePattern="D:/worklog_management_system/worklog-%d{yyyy-MM-dd}.log">
 
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level %c - %m%n"/>

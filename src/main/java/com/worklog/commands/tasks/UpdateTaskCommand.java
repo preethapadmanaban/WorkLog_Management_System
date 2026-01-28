@@ -2,6 +2,9 @@ package com.worklog.commands.tasks;
 
 import java.sql.Date;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.TaskDAO;
 
@@ -16,6 +19,8 @@ import jakarta.servlet.http.HttpSession;
  */
 
 public class UpdateTaskCommand implements Command{
+	
+	private static final Logger logger = LogManager.getLogger(UpdateTaskCommand.class);
 
 	@Override
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) {
@@ -80,9 +85,13 @@ public class UpdateTaskCommand implements Command{
 			TaskDAO dao = new TaskDAO();
 			boolean updated = dao.updateTask(id, title, description, assigned_to, status, deadline);
 			if (updated == true) {
-				request.setAttribute("message", "Task Updated");
+				logger.info("Task {} updated successfully by user role {}", id, role);
+				request.setAttribute("status", "success");
+				request.setAttribute("message", "Task updated successfully!");
 				return true;
 			} else {
+				 logger.error("Task update failed for task ID {}", id);
+				request.setAttribute("status", "error");
 				request.setAttribute("message", "Task Updation failed!");
 				// System.out.println("leaving update task 8");
 				return false;

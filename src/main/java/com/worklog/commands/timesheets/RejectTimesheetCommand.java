@@ -1,5 +1,8 @@
 package com.worklog.commands.timesheets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.TimeSheetDAO;
 
@@ -8,6 +11,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 public class RejectTimesheetCommand implements Command{
+	
+	private static final Logger logger = LoggerFactory.getLogger(RejectTimesheetCommand.class);
 
 	@Override
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) {
@@ -41,8 +46,13 @@ public class RejectTimesheetCommand implements Command{
 
 			boolean updated = dao.updateTimesheetStatus(timesheetId, "rejected", managerId, commentStr, false);
 			
-			if(updated) {
-				request.getSession().setAttribute("message", "Timesheet rejected successfully");			
+			if (updated == true) {
+				logger.info("Manager {} rejected timesheet {}", managerId, timesheetId);
+				request.setAttribute("status", "success");
+				request.setAttribute("message", "Timesheet rejected successfully");
+			}
+			else {
+			    logger.error("Failed to reject timesheet {} by manager {}", timesheetId, managerId);
 			}
 
 			return updated;

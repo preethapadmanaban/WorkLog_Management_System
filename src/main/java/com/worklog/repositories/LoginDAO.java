@@ -7,10 +7,16 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.worklog.db.DataSourceFactory;
 import com.worklog.entities.Employee;
 
 public class LoginDAO {
+	
+	private static final Logger logger = LogManager.getLogger(LoginDAO.class);
+
 	Employee employee=null;
 	public Optional<Employee> getDetails(String emailId) {
 		
@@ -44,7 +50,7 @@ public class LoginDAO {
 			
 		}catch(SQLException e) {
 			
-			e.printStackTrace();
+		    logger.error("Database error while fetching login details for email: {}", emailId, e);
 			return Optional.ofNullable(null);
 			
 		}

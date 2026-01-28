@@ -3,6 +3,9 @@ package com.worklog.commands.tasks;
 import java.sql.Date;
 import java.time.LocalDate;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.TaskDAO;
 
@@ -17,6 +20,8 @@ import jakarta.servlet.http.HttpSession;
  */
 
 	public class CreateTaskCommand implements Command{
+		
+		private static final Logger logger = LogManager.getLogger(CreateTaskCommand.class);
 
 		@Override
 		public boolean execute(HttpServletRequest request, HttpServletResponse response) {
@@ -24,6 +29,7 @@ import jakarta.servlet.http.HttpSession;
 			HttpSession session = request.getSession(false);
 			
 			if(session == null) {
+				logger.warn("CreateTask failed: No active session.");
 				return false;
 			}
 			
@@ -37,10 +43,12 @@ import jakarta.servlet.http.HttpSession;
 				String deadlineStr = request.getParameter("deadline");
 				
 				if(title == null || title.trim().isEmpty()) { 
+					logger.warn("Task creation failed: Title is missing.");
 					return false;
 				}
 				
 				if(assignedStr == null || assignedStr.trim().isEmpty()) {
+					logger.warn("Task creation failed: Assigned user ID missing.");
 					return false;
 				}
 				int assigned_to = Integer.parseInt(assignedStr);
@@ -53,6 +61,7 @@ import jakarta.servlet.http.HttpSession;
 				LocalDate today = LocalDate.now();
 
 				if (localDeadline.isBefore(today)) {
+					logger.warn("Task creation failed: Deadline {} is in the past.", localDeadline);
 				    request.setAttribute("message", "Deadline cannot be in the past. Choose today or a future date.");
 				    return false;
 				}
@@ -73,10 +82,12 @@ import jakarta.servlet.http.HttpSession;
 				boolean inserted = dao.createTask(title, description, assigned_to, status, deadline, createdBy);
 				
 				if(inserted) {
+					logger.info("Task '{}' successfully created by Manager ID {}", title, createdBy);
 					request.setAttribute("status", "success");
-					request.setAttribute("status", "Task assigned successfully!");
+					request.setAttribute("message", "Task assigned successfully!");
 					return true;
 				}
+
 				return false;
 		
 			}
