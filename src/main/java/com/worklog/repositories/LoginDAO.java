@@ -17,9 +17,9 @@ public class LoginDAO {
 	
 	private static final Logger logger = LogManager.getLogger(LoginDAO.class);
 
-	Employee employee=null;
+
 	public Optional<Employee> getDetails(String emailId) {
-		
+
 		String sql="select * from employees where email=?";
 		try(Connection conn=DataSourceFactory.getConnectionInstance();
 			PreparedStatement pstmt=conn.prepareStatement(sql)){
@@ -34,7 +34,7 @@ public class LoginDAO {
 				boolean active=rs.getBoolean("active");
 				Timestamp created_at=rs.getTimestamp("created_at");
 				
-				employee= new Employee.Builder()
+				Employee employee = new Employee.Builder()
 								.withId(id)
 								.withName(name)
 								.withEmail(email)
@@ -44,10 +44,12 @@ public class LoginDAO {
 								.withCreatedAt(created_at)
 								.build();
 								
-
+				return Optional.ofNullable(employee);
+			} else {
+				return Optional.ofNullable(null);
 			}
-			return Optional.ofNullable(employee);
 			
+
 		}catch(SQLException e) {
 			
 		    logger.error("Database error while fetching login details for email: {}", emailId, e);

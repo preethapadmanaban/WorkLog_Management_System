@@ -2,7 +2,6 @@ package com.worklog.commands.auth;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -65,18 +64,17 @@ public class LoginCommand implements Command{
 			String password = request.getParameter("password");
 			if (email != null && password != null) {
 				LoginDAO loginDAO = new LoginDAO();
-				Optional<Employee> emp = loginDAO.getDetails(email);
-				if (emp.isPresent() && (PasswordProtector.checkPassword(password, emp.get().getPassword()))) {
-					Employee employee = emp.get();
-					setInfoInSession(session, employee);
+				Employee emp = loginDAO.getDetails(email).orElse(null);
+				if (emp != null && (PasswordProtector.checkPassword(password, emp.getPassword()))) {
+					setInfoInSession(session, emp);
 					// for route this into routing command.
 					request.setAttribute("action", "routing");
-					logger.info("user logged in successfully - email: " + emp.get().getEmail());
+					logger.info("user logged in successfully - email: " + emp.getEmail());
 					return true;
 				} else {
 					request.setAttribute("message", "Invalid credentials!");
 					addAttempt(session);
-					logger.info("user login attempt failed - email: " + emp.get().getEmail());
+					logger.info("user login attempt failed - email: " + emp.getEmail());
 					return false;
 				}
 			}
