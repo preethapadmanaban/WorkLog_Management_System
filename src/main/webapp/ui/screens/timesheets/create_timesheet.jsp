@@ -23,7 +23,7 @@
     <div class="container_70">
     	<form action="<%=request.getContextPath()%>/controller?action=createTimesheet" method="post" id="timesheet_entry_form">
     	
-    	<input type="number" name="manager_id" id="manager_id" hidden>
+    	<input type="number" name="manager_id" id="manager_id" hidden> 
   	   		<div>
 		        <div class="row">
 		            <div class="col-6 col-sm-3 ">

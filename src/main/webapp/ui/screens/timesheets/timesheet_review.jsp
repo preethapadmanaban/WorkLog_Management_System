@@ -80,7 +80,9 @@
 	
 	</div>
 	<br>
-
+	
+	
+	
 	<!-- Entries Table -->
 	<h3>Entries</h3>
 	
@@ -145,6 +147,16 @@
 	<%
 		}
 	  }
+	%>
+	
+	<% if(((String)session.getAttribute("role")).equalsIgnoreCase("employee") == true)
+	{
+	%>
+	<div style="margin-top: 20px;">
+		<a class="info_anchor" href="/worklog/controller?action=timesheetHistory">Back to Timesheet History</a>
+	</div>
+	<% 
+	}
 	%>
 	</div>
 </body>
