@@ -74,7 +74,7 @@ public class LoginCommand implements Command{
 				} else {
 					request.setAttribute("message", "Invalid credentials!");
 					addAttempt(session);
-					logger.info("user login attempt failed - email: " + emp.getEmail());
+					logger.info("user login attempt failed - email: " + email);
 					return false;
 				}
 			}

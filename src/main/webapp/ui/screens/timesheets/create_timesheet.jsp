@@ -1,5 +1,6 @@
 <%@page import="java.util.List"%>
 <%@page import="com.worklog.entities.Task"%>
+<%@page import="java.time.LocalDate"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -25,7 +26,10 @@
 	   			<h3>New Timesheet</h3>
 		        <div class="row">
 		            <div class="col-6 col-sm-3 ">
-		                   <span>Enter work date:</span> <input type="date" name="work_date" id="work_date" class="form-control"> </th>
+		            	<%
+						    String today = LocalDate.now().toString();
+						%>
+		                   <span>Enter work date:</span> <input type="date" name="work_date" id="work_date" class="form-control"  max="<%= today %>" required> </th>
 		                    <!-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" onclick="add_new_entry_row()" class="size-6 align-self-center add_timesheet_icon">
 		                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
 		                        </svg> -->

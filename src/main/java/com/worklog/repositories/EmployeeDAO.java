@@ -45,7 +45,7 @@ public class EmployeeDAO {
 		} catch (SQLException e) {
 			if (e.getMessage().contains("employees_email_key") || e.getMessage().contains(("duplicate"))) {
 				logger.warn("Attempt to create duplicate employee with email: {}", employee.getEmail());
-				throw new DuplicateUserException("Username already exists");
+				throw new DuplicateUserException("Email already exists");
 			}
 		    logger.error("Error while creating employee with email: {}", employee.getEmail(), e);
 			return false;

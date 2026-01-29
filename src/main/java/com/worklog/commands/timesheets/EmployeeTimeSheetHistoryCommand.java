@@ -23,7 +23,7 @@ public class EmployeeTimeSheetHistoryCommand implements Command {
 		}
 
 		int id = (int) session.getAttribute("id");
-		String status = request.getParameter("status") == null ? "all" : request.getParameter("status");
+		String status = request.getParameter("status") == null ? "all" : request.getParameter("status");//if filter is not selected default all
 		TimeSheetDAO timeSheetDAO = new TimeSheetDAO();
 		List<TimeSheet> timeSheets = timeSheetDAO.getAllTimeSheetsForEmployee(id, status).orElse(new ArrayList<TimeSheet>());
 		request.setAttribute("timesheets", timeSheets);
