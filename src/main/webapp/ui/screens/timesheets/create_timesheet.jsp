@@ -11,7 +11,7 @@
 <jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
 	<link rel="stylesheet" href="/worklog/ui/css/bootstrap.min.css" type="text/css">
 	<link rel="stylesheet" href="/worklog/ui/css/styles.css" type="text/css">
-</head>
+</head> 
 <body>
 
     <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
