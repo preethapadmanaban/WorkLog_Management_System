@@ -83,6 +83,14 @@
  	
  	<script>
  	
+ 		document.addEventListener('DOMContentLoaded', ()=>{
+			<%
+				String statusSelect = request.getParameter("status") == null ? "all" : request.getParameter("status");
+			%>
+			let status = "<%=statusSelect%>";
+			document.getElementById("status_select").value = status;
+ 		});
+ 	
  		function selectStatus(){
  			let selectTag = document.getElementById("status_select"); 			
  			window.location.href = "controller?action=listEmployeeTasks&status=" + selectTag.value;

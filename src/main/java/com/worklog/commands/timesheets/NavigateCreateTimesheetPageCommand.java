@@ -10,6 +10,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.worklog.entities.Task;
+import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.TaskDAO;
 
@@ -20,7 +21,7 @@ import jakarta.servlet.http.HttpSession;
 public class NavigateCreateTimesheetPageCommand implements Command {
 
 	@Override
-	public boolean execute(HttpServletRequest request, HttpServletResponse response) {
+	public boolean execute(HttpServletRequest request, HttpServletResponse response) throws UnAuthorizedException {
 
 		// System.out.println("inside navigation.");
 
@@ -28,7 +29,7 @@ public class NavigateCreateTimesheetPageCommand implements Command {
 
 		if (session == null || session.getAttribute("id") == null) {
 			// System.out.println("inside navigat to timesheet creation.");
-			return false;
+			throw new UnAuthorizedException("access_denied");
 		}
 
 		int id = (int) session.getAttribute("id");

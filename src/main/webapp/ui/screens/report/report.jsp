@@ -34,14 +34,14 @@
 
 				<input type="hidden" name="type" value="employee"> 
 		   
-		    
+		    	From date:
 			    <input type="date" name="fromDate" class="nice-form-input">
 			
-			    
+			    To date:
 			    <input type="date" name="toDate" class="nice-form-input">
 		
-		    
 		   		<button type="submit" class="submit_button">generate report</button>
+		   		
 			</div>
 		</form>
 </div>
@@ -75,7 +75,7 @@
    		 }else{
    		%>
    		
-   		<tr style="text-align: center;"><td colspan="5">No records!</td></tr>
+   		<tr><td style="text-align: center;" colspan="5">No records.</td></tr>
    		
    		<%
    		 }
