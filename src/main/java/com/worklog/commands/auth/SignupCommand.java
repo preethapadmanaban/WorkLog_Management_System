@@ -1,10 +1,12 @@
 package com.worklog.commands.auth;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.postgresql.util.PSQLException;
 
 import com.worklog.entities.Employee;
 import com.worklog.exceptions.DuplicateUserException;
@@ -22,12 +24,13 @@ public class SignupCommand implements Command {
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) {
 		String name = request.getParameter("name");
 		String email = request.getParameter("email");
-		String role = request.getParameter("role");
-		role = "employee";
+		// String role = request.getParameter("role");
+		// role = "employee";
+		String role = "employee";
 		String password = request.getParameter("password");
 
 		if (name == null || email == null || role == null || password == null) {
-			request.setAttribute("message", "Invalid info, please enter correct information!");
+			request.setAttribute("message", "Invalid info, Please enter valid information!");
 			logger.error("Exception, signup request failed: inputs - name : " + name + ", email: " + email + ", role: " + role
 							+ ", passowrd: " + password);
 			return false;
@@ -40,20 +43,23 @@ public class SignupCommand implements Command {
 
 
 		EmployeeDAO employeeRepo = new EmployeeDAO();
-		boolean flag;
 		try {
-			flag = employeeRepo.createEmployee(employee);
-		} catch (DuplicateUserException e) {
-			flag = false;
-			request.setAttribute("message", e.getMessage());
-		}
+			if (employeeRepo.createEmployee(employee) == true) {
+				logger.info("New User created, email:" + email);
+				return true;
+			} else {
+				return false;
+			}
 
-		if (flag == true) {
-			logger.info("New User created, email:" + email);
-			return true;
-		} else {
+		} catch (DuplicateUserException e) {
+			request.setAttribute("message", e.getMessage());
+			return false;
+		} catch (PSQLException e) {
+			return false;
+		} catch (SQLException e) {
 			return false;
 		}
+
 	}
 
 }

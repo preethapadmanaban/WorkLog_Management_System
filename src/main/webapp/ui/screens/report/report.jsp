@@ -1,3 +1,4 @@
+<%@page import="java.time.LocalDate"%>
 <%@page import="com.worklog.dto.ReportEmployeeDTO"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -9,7 +10,6 @@
 <title>Worklog Report</title>
 	<link rel="stylesheet" href="/worklog/ui/css/styles.css" type="text/css">
 	<jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
-
 </head>
 <body>
 
@@ -19,7 +19,7 @@
 	
 		<h1>Employee Reports</h1>
 		
-		<form action="controller" method="get" class="header-form">
+		<form action="controller" method="post" class="header-form">
 		
 		<div class="filter_section">
 				<input type="hidden" name="action" value="report">
@@ -38,9 +38,9 @@
 			    <input type="date" name="fromDate" class="nice-form-input">
 			
 			    To date:
-			    <input type="date" name="toDate" class="nice-form-input">
+			    <input type="date" name="toDate" class="nice-form-input" max="<%=LocalDate.now().toString()%>">
 		
-		   		<button type="submit" class="submit_button">generate report</button>
+		   		<button type="submit" class="submit_button">Generate report</button>
 		   		
 			</div>
 		</form>
@@ -68,7 +68,8 @@
 	                <td><%=r.getWork_date() %></td>
 	                <td><%=r.getTitle()%></td>
 	                <td><%=r.getTask_duration()%></td>
-	                <td><%=r.getNotes() %></td>
+	                <% String notes = (r.getNotes() == null || r.getNotes().strip().isEmpty() == true) ? "N/A" : r.getNotes(); %>
+	                <td><%=notes%></td>
             	</tr>
             	<%
         	}

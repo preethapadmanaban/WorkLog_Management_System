@@ -3,27 +3,31 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Worklog management system</title>
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="stylesheet" href="/worklog/ui/css/styles.css">
 </head>
 <body>
+<div class="mobile_auth_page">
+	<div class="app_name_div"><h3>Worklog Management</h3></div>
 
 	<!-- <form action="login" method="post" class="mx-auto my-20 max-w-md space-y-4 rounded-lg border border-gray-300 bg-gray-100 p-6"> -->
 	<form action="/worklog/controller" method="post" class="mx-auto my-20 max-w-md space-y-4 rounded-lg border border-gray-300 bg-gray-100 p-6">
 	  
 		<div class="flex justify-center">
-		 	<label class="block text-md text-2xl font-medium text-gray-900">Login page</label>
+		 	<label class="block text-md text-2xl font-medium text-gray-900">Login Screen</label>
 		</div>	
 		<div>
-			<input class="mt-1 w-full rounded-lg border-black-700 border p-2" value="login" name="action" id="action" type="text" hidden>
+			<input class="mt-1 w-full rounded-lg border-black-700 border p-2" value="login" name="action" id="action" type="hidden">
 		</div>
 		<div>
-			<label class="block text-sm font-medium text-gray-900" for="email">Email</label>
+			<label class="block text-sm font-medium text-gray-900" for="email">Your Email</label>
 			<input class="mt-1 w-full rounded-lg border-black-700 border p-2" name="email" id="email" type="email" placeholder="Your email" required>
 		</div>
 		
 		<div>
-		  	<label class="block text-sm font-medium text-gray-900" for="message">Password</label>
+		  	<label class="block text-sm font-medium text-gray-900" for="message">Your Password</label>
 			<input class="mt-1 w-full rounded-lg border-black-700 border p-2" name="password" id="password" type="password" placeholder="Your password" required>
 		</div>
 		<div class="flex justify-center">
@@ -34,13 +38,12 @@
 		  	Login
 		</button>
 		 <div class="flex justify-center">
-			<a href="/worklog/ui/screens/auth/signup.jsp" class="mx-auto inline-flex items-center font-medium text-fg-brand hover:underline">
-				New user? Create account 
+			<a href="/worklog/controller?action=signupPage" class="mx-auto inline-flex items-center font-medium text-fg-brand hover:underline">
+				New Employee? Create account 
 				<svg class="w-5 h-5 ms-1 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"/></svg>
 			</a>
 		</div>
 	</form>
-</body>
-</html>
+</div>
 </body>
 </html>

@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import com.worklog.db.DataSourceFactory;
 import com.worklog.entities.Employee;
 
+// written by renganathan
 public class LoginDAO {
 	
 	private static final Logger logger = LogManager.getLogger(LoginDAO.class);

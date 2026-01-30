@@ -18,14 +18,6 @@ import com.worklog.dto.ReportEmployeeDTO;
 import com.worklog.entities.TimeSheet;
 import com.worklog.exceptions.DuplicateTimesheetCreationException;
 
-/**
- * 
- * TimeSheetDAO - This class is used for creating time sheets in the database.
- * 
- * @author Vasudevan Tamizharasan, Preetha, Renganathan
- * @since 20-02-2026
- * 
- */
 
 public class TimeSheetDAO {
 	
@@ -97,7 +89,6 @@ public class TimeSheetDAO {
 			if (e.getMessage().contains("duplicate") || e.getMessage().contains("unique_timesheet")) {
 				throw new DuplicateTimesheetCreationException("Timesheet Already Found for this Work date.", e);
 			}
-			e.printStackTrace();
 			return false;
 		}
 	}
@@ -239,7 +230,7 @@ public class TimeSheetDAO {
 								rs.getBoolean("approved"),
 								rs.getTimestamp("created_at")
 								);
-				return Optional.of(ts);
+								return Optional.ofNullable(ts);
 				
 			}
 			return Optional.empty();

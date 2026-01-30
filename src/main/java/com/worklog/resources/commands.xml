@@ -9,9 +9,21 @@
 		<failure>ui/screens/auth/login.jsp</failure>
 	</command>
 	
+	<command name="loginPage">
+		<class>com.worklog.commands.auth.NavigateToLoginPage</class>
+		<success>ui/screens/auth/login.jsp</success>
+		<failure>ui/screens/auth/login.jsp</failure>
+	</command>
+	
 	<command name="signup">
 		<class>com.worklog.commands.auth.SignupCommand</class>
 		<success>ui/screens/auth/login.jsp</success>
+		<failure>ui/screens/auth/signup.jsp</failure>
+	</command>
+	
+	<command name="signupPage">
+		<class>com.worklog.commands.auth.NavigateToSignUpPage</class>
+		<success>ui/screens/auth/signup.jsp</success>
 		<failure>ui/screens/auth/signup.jsp</failure>
 	</command>
 	

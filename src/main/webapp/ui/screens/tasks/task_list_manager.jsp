@@ -30,7 +30,7 @@
 	
 		    <input type="hidden" name="filter" value="true">
 		
-		    Employee ID:
+		    Employee:
 		   	<select name="employee_id" class="nice-form-input" id="employee_select" required>
   			   		<option value="all">Select Employee</option>
  	
@@ -40,7 +40,7 @@
 		   				for(Employee emp : employees)
 		   				{
 		   		%>
-		   			<option value="<%=emp.getId()%>"><%=emp.getName()%></option>
+		   			<option value="<%=emp.getId()%>"><%=emp.getName() + " (" + emp.getId() + ") "%></option>
 		   		<%
 		   				}
 		   			}

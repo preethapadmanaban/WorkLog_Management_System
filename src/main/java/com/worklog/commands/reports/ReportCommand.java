@@ -13,7 +13,6 @@ import com.worklog.dto.ReportEmployeeDTO;
 import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.TimeSheetDAO;
-import com.worklog.servlets.Controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,7 +20,7 @@ import jakarta.servlet.http.HttpSession;
 
 public class ReportCommand implements Command{
 	
-	private static final Logger logger = LogManager.getLogger(Controller.class);
+	private static final Logger logger = LogManager.getLogger(ReportCommand.class);
 	@Override
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) throws UnAuthorizedException {
 
@@ -81,8 +80,9 @@ public class ReportCommand implements Command{
 					out.println("Employee Name, Work Date, Task Title, Task Duration, Task Notes");
 
 					for (ReportEmployeeDTO report : reports) {
-						out.printf("%s, %s, %s, %s, %s\n", report.getEmp_name(), report.getWork_date(), report.getTitle(),
-										(report.getTask_duration() + " hours"), report.getNotes());
+						out.printf("%s, %s, %s, %s, \"%s\"\n", report.getEmp_name(), report.getWork_date(), report.getTitle(),
+										(report.getTask_duration() + " hours"),
+										report.getNotes().replace("\r\n", "\n").replace("\r", "\n"));
 					}
 					out.flush();
 					return true;

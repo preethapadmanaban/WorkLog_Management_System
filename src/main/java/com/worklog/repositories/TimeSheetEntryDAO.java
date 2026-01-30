@@ -20,8 +20,6 @@ public class TimeSheetEntryDAO {
 	
 	private static final Logger logger = LogManager.getLogger(TimeSheetEntryDAO.class);
 
-	private int id;
-
 
 	private TimeSheetEntry getTimeSheetEntry(ResultSet rs) throws SQLException{
 		TimeSheetEntry timeSheetEntry=new TimeSheetEntry();
@@ -110,11 +108,7 @@ public class TimeSheetEntryDAO {
 		// old
 		// String sql = "select * from timesheet_entries where timesheetId = ?";
 		
-		String sql ="""
-							select tse.id, t.title, tse.hours_spent, tse.notes
-							from timesheet_entries tse inner join tasks t on tse.task_id = t.id
-							where tse.timesheet_id = ?;
-						""";
+		String sql = "select tse.id, t.title, tse.hours_spent, tse.notes from timesheet_entries tse inner join tasks t on tse.task_id = t.id where tse.timesheet_id = ?;";
 				
 		List<TimeSheetEntryForReviewDTO> list = new ArrayList<>();
 		

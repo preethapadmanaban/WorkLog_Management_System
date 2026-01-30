@@ -19,28 +19,20 @@ import com.worklog.db.DataSourceFactory;
 import com.worklog.dto.ListTaskDTO;
 import com.worklog.entities.Task;
 
-/**
- * 
- * TaskDAO - used for managing crud operations on tasks in this application on database.
- * 
- * @author Vasudevan, Preetha
- * @since 20-01-2026
- * 
- */
 
 public class TaskDAO {
 	
 	private static final Logger logger = LogManager.getLogger(TaskDAO.class);
 
+	// written by renganathan
 	private ListTaskDTO mapToListTaskDTO(ResultSet rs) throws SQLException {
-		return new ListTaskDTO.Builder()
-						.withTitle(rs.getString("title"))
-						.withDescription(rs.getString("description"))
-						.withStatus(rs.getString("status")).withDeadline(rs.getDate("deadline").toLocalDate())
-						.withManagerName(rs.getString("name")).createdAt(rs.getTimestamp("created_at").toLocalDateTime())
-						.build();
+		return new ListTaskDTO.Builder().withTitle(rs.getString("title")).withDescription(rs.getString("description"))
+						.withStatus(rs.getString("status"))
+						.withDeadline(rs.getDate("deadline").toLocalDate()).withManagerName(rs.getString("name"))
+						.createdAt(rs.getTimestamp("created_at").toLocalDateTime()).build();
 	}
 
+	// written by vasudevan
 	private Task mapToTask(ResultSet rs) throws SQLException {
 		return new Task.Builder().withId(rs.getInt("id")).withTitle(rs.getString("title")).withDescription(rs.getString("description"))
 						.assignedTo(rs.getInt("assigned_to")).setStatus(rs.getString("status"))
@@ -48,6 +40,7 @@ public class TaskDAO {
 						.createdAt(rs.getTimestamp("created_at")).updatedAt(rs.getTimestamp("updated_at")).build();
 	}
 
+	// written by vasudevan
 	public Optional<List<Task>> getAllTasksForEmployee(int employeeId) {
 		
 		String sql = "SELECT * FROM tasks where assigned_to = ?";
@@ -73,6 +66,7 @@ public class TaskDAO {
 
 	}
 	
+	// written by preetha
 	public Optional<Map<String, Integer>> getTaskCountByStatus(int managerId) {
 		
 		String sql = "select status, count(*) from tasks where created_by = ? group by status";
@@ -103,11 +97,10 @@ public class TaskDAO {
 	
 	public boolean createTask(String title, String description, int assignedTo, String status, Date deadline, int createdBy) {
 
-		String sql = "insert into tasks (title, description, assigned_to, status, deadline, created_by, created_at, updated_at) "
-				+ "values (?, ?, ?, ?, ?, ?, current_timestamp, current_timestamp)";
+		String sql = "insert into tasks (title, description, assigned_to, status, deadline, created_by, created_at, updated_at) values (?, ?, ?, ?, ?, ?, current_timestamp, current_timestamp)";
 
-		try (Connection con = DataSourceFactory.getConnectionInstance();
-				PreparedStatement pstmt = con.prepareStatement(sql)) {
+		try (Connection con = DataSourceFactory.getConnectionInstance(); 
+			 	PreparedStatement pstmt = con.prepareStatement(sql)) {
 
 			pstmt.setString(1, title);
 			pstmt.setString(2, description);

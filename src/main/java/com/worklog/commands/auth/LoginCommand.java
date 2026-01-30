@@ -46,7 +46,7 @@ public class LoginCommand implements Command{
 		}
 	}
 
-	public void addAttempt(HttpSession session) {
+	private void addAttempt(HttpSession session) {
 		Integer num_attempts = (Integer) session.getAttribute("num_attempts");
 		if (num_attempts != null) {
 			session.setAttribute("num_attempts", ++num_attempts);

@@ -10,23 +10,20 @@ import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.postgresql.util.PSQLException;
+import org.postgresql.util.ServerErrorMessage;
 
 import com.worklog.db.DataSourceFactory;
 import com.worklog.entities.Employee;
 import com.worklog.exceptions.DuplicateUserException;
 
-/**
- * This a employee dao class that adds employee list
- * 
- * @author Preetha, Vasudevan
- * @since 19-01-2026
- */
 
 public class EmployeeDAO {
 	
 	private static final Logger logger = LogManager.getLogger(EmployeeDAO.class);
 
-	public boolean createEmployee(Employee employee) throws DuplicateUserException {
+	// written - vasudevan
+	public boolean createEmployee(Employee employee) throws DuplicateUserException, SQLException {
 
 		String sql = "INSERT INTO employees(name, email, password, role) VALUES(?, ?, ?, ?)";
 
@@ -42,17 +39,38 @@ public class EmployeeDAO {
 				throw new SQLException("Employee creation failed.");
 
 			return true;
-		} catch (SQLException e) {
-			if (e.getMessage().contains("employees_email_key") || e.getMessage().contains(("duplicate"))) {
-				logger.warn("Attempt to create duplicate employee with email: {}", employee.getEmail());
-				throw new DuplicateUserException("Email already exists");
+
+		} catch (PSQLException e) {
+			/*
+			 * Me(Vasu), getting this error object and analyze the SQLState for confirming the error occurs is Unique constraint violation.
+			 * For that im checking the PostgreSQL docs to see the error code thrown by PostgreSQL server. PostgreSQL docs shows that the
+			 * SQLState starts with "23" is the constraint violation error and "23505" is unique_constraint_violation error.
+			 * 
+			 * @see - https://www.postgresql.org/docs/18/errcodes-appendix.html
+			 */
+			ServerErrorMessage errorMessage = e.getServerErrorMessage();
+			if (errorMessage != null && errorMessage.getSQLState() != null
+							&& (errorMessage.getSQLState().startsWith("23") || errorMessage.getSQLState().equals("23505"))) {
+				logger.error("Exception while creating new user, Unique_constraint_violation error.", e);
+				throw new DuplicateUserException("Email already exists.");
+			} else {
+				logger.error("Exception while creating new user, PSQLException.", e);
+				throw e;
 			}
+		} catch (SQLException e) {
+			// old version
+			// if (e.getMessage().contains("employees_email_key") || e.getMessage().contains(("duplicate"))) {
+			// logger.warn("Attempt to create duplicate employee with email: {}", employee.getEmail());
+			// throw new DuplicateUserException("Email already exists");
+			// }
+
 		    logger.error("Error while creating employee with email: {}", employee.getEmail(), e);
-			return false;
+			throw e;
 		}
 
 	}
 	
+	// written by preetha
 	public static Optional<List<Employee>> getAllMembers() {
 
 		List<Employee> employeeList = new ArrayList<>();
@@ -76,8 +94,8 @@ public class EmployeeDAO {
 		} catch (SQLException e) {
 		    logger.error("Error fetching employee members list", e);
 			return Optional.ofNullable(null);
-			}
-
 		}
+
+	}
 
 }

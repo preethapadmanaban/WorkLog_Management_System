@@ -10,12 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.worklog.db.DataSourceFactory;
 
-/**
- * PendingTimesheetCount- this class has the query to fetch the count of pending timesheet
- * @author Preetha
- * @since 20-01-2026
- */
-
+// written by preetha
 public class PendingTimesheetCount {
 	
 	private static final Logger logger = LogManager.getLogger(PendingTimesheetCount.class);

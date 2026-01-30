@@ -46,7 +46,7 @@
 			        		for(Employee e : list){
 			        %>
 			        
-			        				<option value="<%= e.getId() %>"><%= e.getName() %></option>
+			        				<option value="<%= e.getId() %>"><%=e.getName()+" ("+e.getId()+")"%></option>
 			        				
 			        <%
 			          		}
