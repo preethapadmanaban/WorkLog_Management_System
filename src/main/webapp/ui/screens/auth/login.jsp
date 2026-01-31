@@ -13,7 +13,7 @@
 	<div class="app_name_div"><h3>Worklog Management</h3></div>
 
 	<!-- <form action="login" method="post" class="mx-auto my-20 max-w-md space-y-4 rounded-lg border border-gray-300 bg-gray-100 p-6"> -->
-	<form action="/worklog/controller" method="post" class="mx-auto my-20 max-w-md space-y-4 rounded-lg border border-gray-300 bg-gray-100 p-6">
+	<form action="/worklog/controller" method="post" class="mx-auto my-20 max-w-md space-y-4 rounded-lg border border-gray-300 bg-gray-100 p-6 myform">
 	  
 		<div class="flex justify-center">
 		 	<label class="block text-md text-2xl font-medium text-gray-900">Login Screen</label>
@@ -23,15 +23,21 @@
 		</div>
 		<div>
 			<label class="block text-sm font-medium text-gray-900" for="email">Your Email</label>
-			<input class="mt-1 w-full rounded-lg border-black-700 border p-2" name="email" id="email" type="email" placeholder="Your email" required>
+			<input class="mt-1 w-full rounded-lg border-black-700 border p-2" name="email" id="email" type="text" placeholder="Your email">
+			<div  class="flex justify-center">
+				<span id="error_message_email" class="text-red-700 font-medium error_message"></span>
+			</div>
 		</div>
 		
 		<div>
 		  	<label class="block text-sm font-medium text-gray-900" for="message">Your Password</label>
-			<input class="mt-1 w-full rounded-lg border-black-700 border p-2" name="password" id="password" type="password" placeholder="Your password" required>
+			<input class="mt-1 w-full rounded-lg border-black-700 border p-2" name="password" id="password" type="password" placeholder="Your password">
+			<div  class="flex justify-center">
+				<span id="error_message_password" class="text-red-700 font-medium error_message"></span>
+			</div>
 		</div>
 		<div class="flex justify-center">
-		 	<span class="text-red-700 font-medium"><%=request.getAttribute("message") !=null ? request.getAttribute("message"): "" %></span>
+		 	<span  class="text-red-700 font-medium"><%=request.getAttribute("message") !=null ? request.getAttribute("message"): "" %></span>
 		</div>
 	
 		<button class="block w-full rounded-lg border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white transition-colors hover:bg-transparent hover:text-indigo-600" type="submit">
@@ -44,6 +50,42 @@
 			</a>
 		</div>
 	</form>
+	
 </div>
+<script>
+	function clearAllErrorMessage(){
+		const errorElementsArray = document.querySelectorAll(".error_message");
+		for(let i=0;i<errorElementsArray.length;i++){
+			errorElementsArray[i].innerText="";
+		}
+	}
+	let form=document.querySelector(".myform");
+	
+	form.addEventListener("submit",(e)=>{
+		e.preventDefault();
+		clearAllErrorMessage()
+		let email=document.getElementById("email").value;
+		let password=document.getElementById("password").value;
+		let isValid=true;
+		
+		//email format validation
+		const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+		if(!email_regex.test(email)){
+			document.getElementById("error_message_email").innerText="chech email format"
+			isValid=false;
+		}
+		
+		//password format validation
+		const password_regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-+.]).{6,20}$/;
+		if(!password_regex.test(password)){
+			document.getElementById("error_message_password").innerText="chech pssword format"
+			isValid=false;
+		}
+		
+		if(isValid){
+			form.submit();
+		}
+	})
+</script>
 </body>
 </html>

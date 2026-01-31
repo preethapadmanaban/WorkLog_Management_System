@@ -13,7 +13,7 @@
 
 <div class="mobile_auth_page">
 	<div class="app_name_div"><h3>Worklog Management</h3></div>
-	<form action="/worklog/controller" method="post"
+	<form id="myForm" action="/worklog/controller" method="post" 
 		class="mx-auto my-20 max-w-md space-y-4 rounded-lg border border-gray-300 bg-gray-100 p-6">
 		<div class="flex justify-center">
 			<label class="block text-md text-2xl font-medium text-gray-900">Create Employee Screen</label>
@@ -23,36 +23,48 @@
 				name="action" id="signup" type="text" value="signup"
 				hidden>
 		</div>
-		<div>
+		<div >
 			<label class="block text-sm font-medium text-gray-900" for="name">Employee Full Name</label>
 
 			<input class="mt-1 w-full rounded-lg border-black-700 border p-2"
 				name="name" id="name" type="text"
-				placeholder="Your full name" required>
+				placeholder="Your full name" >
+			<div class="flex justify-center">
+				<span id="error_message_fullname" class="text-red-700 font-medium error_message"></span>
+			</div>
 		</div>
 		
-		<div>
+		<div >
 			<label class="block text-sm font-medium text-gray-900" for="email">Employee Email</label>
 
 			<input class="mt-1 w-full rounded-lg border-black-700 border p-2"
-				name="email" id="email" type="email"
-				placeholder="Your email" required>
+				name="email" id="email" type="text"
+				placeholder="Your email">
+			<div  class="flex justify-center">
+				<span id="error_message_email" class="text-red-700 font-medium error_message"></span>
+			</div>
 		</div>
 
-		<div>
+		<div >
 			<label class="block text-sm font-medium text-gray-900" for="password">Employee Password</label>
 
 			<input class="mt-1 w-full rounded-lg border-black-700 border p-2"
 				name="password" id="password" type="password"
-				placeholder="Your password" required>
+				placeholder="Your password">
+			<div  class="flex justify-center">
+				<span id="error_message_password" class="text-red-700 font-medium error_message"></span>
+			</div>
 		</div>
 		
-		<div>
+		<div >
 			<label class="block text-sm font-medium text-gray-900" for="password">Confirm Password</label>
 
 			<input class="mt-1 w-full rounded-lg border-black-700 border p-2"
 				name="confirm_password" id="confirm_password" type="password"
-				placeholder="Confirm password" required>
+				placeholder="Confirm password">
+			<div class="flex justify-center">
+				<span id="error_message_confirm_password" class="text-red-700 font-medium error_message"></span>
+			</div>
 		</div>
 		
 		<!-- <div>
@@ -70,12 +82,12 @@
 			  		
 		
 		<div class="flex justify-center">
-			<span class="text-red-700 font-medium"><%=request.getAttribute("message") != null ? request.getAttribute("message") : ""%></span>
+			<span class="text-red-700 font-medium error_message"><%=request.getAttribute("message") != null ? request.getAttribute("message") : ""%></span>
 		</div>
 
 		<button
 			class="block w-full rounded-lg border border-orange-600 bg-orange-600 px-12 py-3 text-sm font-medium text-white transition-colors hover:bg-transparent hover:text-indigo-600"
-			type="submit">Signup</button>
+			onclick="validateData()">Signup</button>
 		<div class="flex justify-center">
 			<a href="/worklog/controller?action=loginPage"
 				class="inline-flex items-center font-medium text-fg-brand hover:underline">
@@ -85,5 +97,72 @@
 		</div>
 	</form>
 </div>
+<script>
+function clearAllErrorMessage(){
+	const errorElementsArray = document.querySelectorAll(".error_message");
+	for(let i=0;i<errorElementsArray.length;i++){
+		errorElementsArray[i].innerText="";
+	}
+}
+
+let form = document.getElementById("myForm");
+
+form.addEventListener("submit", function(e){
+	e.preventDefault();
+	clearAllErrorMessage();
+
+	let isValid = true;
+	let mandatory = "This field is mandatory";
+
+	let user_name = document.getElementById("name").value.trim();
+	let email = document.getElementById("email").value.trim();
+	let password = document.getElementById("password").value;
+	let confirm_password = document.getElementById("confirm_password").value;
+
+	// Full name validation
+	if(user_name === ""){
+		document.getElementById("error_message_fullname").innerText = mandatory;
+		isValid = false;
+	} else if(user_name.length <= 3){
+		document.getElementById("error_message_fullname").innerText = "Please enter a valid name.";
+		isValid = false;
+	}
+
+	// Email validation
+	const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+	if(email === ""){
+		document.getElementById("error_message_email").innerText = mandatory;
+		isValid = false;
+	} else if(!email_regex.test(email)){
+		document.getElementById("error_message_email").innerText = "Please enter a valid email.";
+		isValid = false;
+	}
+
+	// Password validation
+	const password_regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-+.]).{6,20}$/;
+	if(password === ""){
+		document.getElementById("error_message_password").innerText = mandatory;
+		isValid = false;
+	} else if(!password_regex.test(password)){
+		document.getElementById("error_message_password").innerText =
+			"Password should valid password";
+		isValid = false;
+	}
+
+	// Confirm password validation
+	if(confirm_password === ""){
+		document.getElementById("error_message_confirm_password").innerText = mandatory;
+		isValid = false;
+	} else if(password !== confirm_password){
+		document.getElementById("error_message_confirm_password").innerText ="Passwords and confirm password do not match.";
+		isValid = false;
+	}
+
+	if(isValid){
+		form.submit();
+	}
+});
+</script>
+
 </body>
 </html>
