@@ -15,6 +15,7 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.worklog.commands.constants.TaskStatus;
 import com.worklog.db.DataSourceFactory;
 import com.worklog.dto.ListTaskDTO;
 import com.worklog.entities.Task;
@@ -35,7 +36,7 @@ public class TaskDAO {
 	// written by vasudevan
 	private Task mapToTask(ResultSet rs) throws SQLException {
 		return new Task.Builder().withId(rs.getInt("id")).withTitle(rs.getString("title")).withDescription(rs.getString("description"))
-						.assignedTo(rs.getInt("assigned_to")).setStatus(rs.getString("status"))
+						.assignedTo(rs.getInt("assigned_to")).setStatus(TaskStatus.valueOf(rs.getString("status").toUpperCase()))
 						.withDeadline(rs.getDate("deadline").toLocalDate()).createdBy(rs.getInt("created_by"))
 						.createdAt(rs.getTimestamp("created_at")).updatedAt(rs.getTimestamp("updated_at")).build();
 	}
@@ -95,7 +96,7 @@ public class TaskDAO {
 		}
 	}
 	
-	public boolean createTask(String title, String description, int assignedTo, String status, Date deadline, int createdBy) {
+	public boolean createTask(String title, String description, int assignedTo, Date deadline, int createdBy) {
 
 		String sql = "insert into tasks (title, description, assigned_to, status, deadline, created_by, created_at, updated_at) values (?, ?, ?, ?, ?, ?, current_timestamp, current_timestamp)";
 
@@ -105,7 +106,7 @@ public class TaskDAO {
 			pstmt.setString(1, title);
 			pstmt.setString(2, description);
 			pstmt.setInt(3, assignedTo);
-			pstmt.setString(4, status);
+			pstmt.setString(4, TaskStatus.ASSIGNED.toString());
 			pstmt.setDate(5, deadline);
 			pstmt.setInt(6, createdBy);
 

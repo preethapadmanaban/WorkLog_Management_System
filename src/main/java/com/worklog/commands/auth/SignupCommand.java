@@ -55,7 +55,15 @@ public class SignupCommand implements Command {
 			request.setAttribute("message", e.getMessage());
 			return false;
 		} catch (PSQLException e) {
-			return false;
+			ServerErrorMessage errorMessage = e.getServerErrorMessage();
+			if (errorMessage != null && errorMessage.getSQLState() != null
+							&& (errorMessage.getSQLState().startsWith("23") || errorMessage.getSQLState().equals("23505"))) {
+				logger.error("Exception while creating new user, Unique_constraint_violation error.", e);
+				throw new DuplicateUserException("Email already exists.");
+			} else {
+				logger.error("Exception while creating new user, PSQLException.", e);
+				throw e;
+			}
 		} catch (SQLException e) {
 			return false;
 		}

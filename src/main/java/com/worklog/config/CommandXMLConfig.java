@@ -46,7 +46,7 @@ public class CommandXMLConfig {
 		return failurePage;
 	}
 
-	public static Map<String, CommandXMLConfig> loadConfigurations(InputStream commandConfigFile) {
+	public static Map<String, CommandXMLConfig> loadConfigurations(InputStream commandConfigFile) throws ClassNotFoundException {
 		Map<String, CommandXMLConfig> configMap = new HashMap<String, CommandXMLConfig>();
 
 		try {
@@ -80,7 +80,13 @@ public class CommandXMLConfig {
 		
 			return configMap;
 
-		} catch (ParserConfigurationException | SAXException | IOException e) {
+		} catch (ParserConfigurationException e) {
+			logger.error("Failed to load command XML configuration", e);
+			return null;
+		} catch (SAXException e) {
+			logger.error("Failed to load command XML configuration", e);
+			return null;
+		} catch (IOException e) {
 			logger.error("Failed to load command XML configuration", e);
 			return null;
 		}

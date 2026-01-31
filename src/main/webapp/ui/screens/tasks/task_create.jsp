@@ -9,6 +9,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Create task</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
 <jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
 </head>

@@ -87,7 +87,7 @@
 			if (reportEmployees != null && reportEmployees.size() != 0) {
 			%>
 				<div style="width: 100%; text-align: center;"> 
-				 	<a href="<%=(request.getContextPath() + "/controller?" + request.getQueryString())%>&download=true"><button class="submit_button">Download Report</button></a>
+				 	<a href="<%=(request.getContextPath() + "/controller/download/?" + request.getQueryString())%>"><button class="submit_button">Download Report</button></a>
 				</div>
 			<% } %>
 		</div>

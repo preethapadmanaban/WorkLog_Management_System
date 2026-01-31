@@ -6,6 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Edit Task</title>
 <link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
 <jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>

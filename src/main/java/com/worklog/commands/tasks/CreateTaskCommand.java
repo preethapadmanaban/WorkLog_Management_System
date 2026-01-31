@@ -80,7 +80,7 @@ import jakarta.servlet.http.HttpSession;
 				
 				int createdBy = (int) session.getAttribute("id");
 
-				boolean inserted = dao.createTask(title, description, assigned_to, status, deadline, createdBy);
+				boolean inserted = dao.createTask(title, description, assigned_to, deadline, createdBy);
 				
 				if(inserted) {
 					logger.info("Task '{}' successfully created by Manager ID {}", title, createdBy);

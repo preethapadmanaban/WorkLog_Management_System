@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.worklog.config.CommandXMLConfig;
 import com.worklog.exceptions.CommandNotFoundException;
+import com.worklog.exceptions.RequiredResourceNotFoundException;
 import com.worklog.interfaces.Command;
 
 public class CommandXMLFactory {
@@ -28,11 +29,17 @@ public class CommandXMLFactory {
 			// logger.debug("Porperty file loaded : "+is);
 			configMap = CommandXMLConfig.loadConfigurations(is);
 
+			if (configMap == null) {
+				throw new RequiredResourceNotFoundException("Exception while load the commands config.");
+			}
+
 			// logger.debug("configuration maping created : "+configMap);
+		} catch (ClassNotFoundException e) {
+			throw new RequiredResourceNotFoundException("Exception while finding command class.", e);
 		} catch (Exception e) {
 			// logger.error("Failed to load command mappings : "+e.getMessage());
 			logger.error("Failed to load command mappings from commands.xml", e);
-		    throw new RuntimeException("Failed to load command mappings", e);
+			throw new RequiredResourceNotFoundException("Failed to load command mappings", e);
 		}
 	}
 
@@ -40,11 +47,11 @@ public class CommandXMLFactory {
 		// Prevent object creation
 	}
 
-	public static Command getCommand(String action) throws CommandNotFoundException {
+	public static Command getCommand(String action) throws Exception {
 
 		try {
 			if (action == null) {
-				logger.warn("Received null action while fetching command");
+				logger.error("Received null action while fetching command");
 				return null;
 			}
 
@@ -58,10 +65,13 @@ public class CommandXMLFactory {
 			// System.out.println("clazz : " + (Command) clazz.getDeclaredConstructor().newInstance());
 			return (Command) clazz.getDeclaredConstructor().newInstance();
 
-		} catch (Exception e) {
-			// logger.error("Unable to create command for action: " + action, e.getMessage());
-			logger.error("Unable to create command for action: {}", action, e);
-		    throw new CommandNotFoundException(("Unable to create command for action: " + action), e);
+		} catch (ClassNotFoundException e) {
+			throw new CommandNotFoundException("Exception while finding the command class", e);
 		}
+		catch (Exception e) {
+			logger.error("Exception in getting the respective command class for the given action.", e);
+			throw e;
+		}
+
 	}
 }

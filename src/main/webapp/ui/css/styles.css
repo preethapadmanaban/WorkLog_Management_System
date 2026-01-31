@@ -1,5 +1,55 @@
 @charset "UTF-8";
 
+/* Modal styles */
+
+.modal_outlier{
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: grey;
+}
+.modal_container{
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    gap: 10px;
+    width: 25%;
+    padding: 20px;
+    background-color: white;
+}
+
+
+.modal_header{
+    text-align: center;
+}
+
+.modal_status_img{
+    width: 25%;
+}
+
+.modal_body{
+    text-align: center;
+    /* font-weight: bold; */
+}
+
+.modal_action{
+    display: flex;
+    justify-content: space-evenly;
+    gap: 20px;
+}
+
+.modal_action_ok{
+    background-color: "";
+}
+
+/* Modal styles ends */
+
 .mobile_auth_page{
 	height: 100vh;
 	align-content: center;
@@ -35,7 +85,7 @@
 .task_card{
 /* 	border: 1px solid grey; */
 	border-radius: 5px;
-    width: 300px;
+    width: 280px;
     padding: 10px 15px;
     margin: 10px 10px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -138,6 +188,13 @@ body{
 
 .navLinks a:hover{
     color: orange;
+}
+
+.navbar_menu{
+  width: 30px;
+  margin: 0px 20px 0px 0px;
+  cursor: pointer;
+  display: none;
 }
 
 /* DASHBOARD CONTENT */
@@ -370,4 +427,36 @@ th:last-child{
 }
 .timesheet_status_img{
 	width: 50%;
+}
+
+.display-flex{
+	display: flex;
+}
+
+
+@media (max-width: 768px){
+	.navLinks{
+	  display: none;
+	  flex-direction: column;
+	  position: absolute;
+	  top: 100px;
+	  background-color: white;
+	  width: 90%;
+	  gap: 15px;
+	  padding: 10px 5px;
+	  text-align: right;
+	}
+	
+	#task_section{
+		flex-direction: column;
+	}
+	
+	.timesheet_review_detail_with_image{
+		grid-template-columns: 1fr;
+		text-align: center;
+	}
+	
+	.navbar_menu{
+		display: block;
+	}
 }

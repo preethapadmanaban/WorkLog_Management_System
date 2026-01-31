@@ -3,6 +3,8 @@ package com.worklog.entities;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
+import com.worklog.commands.constants.TaskStatus;
+
 /**
  * This class is a entity class for task.
  * 
@@ -16,11 +18,12 @@ public class Task {
 	private String title;
 	private String description;
 	private int assigned_to;
-	private String status;
+	private TaskStatus status;
 	private LocalDate deadline;
 	private int created_by;
 	private Timestamp created_at;
 	private Timestamp updated_at;
+
 
 	public Task(Task.Builder builder) {
 		super();
@@ -35,6 +38,7 @@ public class Task {
 		this.updated_at = builder.updated_at;
 
 	}
+
 
 	public int getId() {
 		return id;
@@ -52,7 +56,7 @@ public class Task {
 		return assigned_to;
 	}
 
-	public String getStatus() {
+	public TaskStatus getStatus() {
 		return status;
 	}
 
@@ -78,7 +82,7 @@ public class Task {
 		private String title;
 		private String description;
 		private int assigned_to;
-		private String status;
+		private TaskStatus status;
 		private LocalDate deadline;
 		private int created_by;
 		private Timestamp created_at;
@@ -108,7 +112,7 @@ public class Task {
 			return this;
 		}
 
-		public Builder setStatus(String status) {
+		public Builder setStatus(TaskStatus status) {
 			this.status = status;
 			return this;
 		}

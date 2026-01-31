@@ -1,3 +1,4 @@
+<%@page import="com.worklog.commands.constants.TaskStatus"%>
 <%@page import="com.worklog.dto.ListTaskDTO"%>
 <%@page import="com.worklog.entities.Task"%>
 <%@page import="java.util.List"%>
@@ -7,6 +8,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Tasks</title>
 <jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
 <link href="/worklog/ui/css/bootstrap.min.css" rel="stylesheet" type="text/css">
@@ -15,6 +17,7 @@
 <body>
  	<jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
  	<jsp:include page="/ui/screens/common/message.jsp"></jsp:include>
+ 	<%-- <jsp:include page="/ui/screens/common/modal.jsp"></jsp:include> --%>
  		<div class = "filter_section">
  			<h3>My Tasks</h3>
  			
@@ -24,9 +27,9 @@
 		 				<input type="hidden" name="action" value="listEmployeeTasks">
 		 				<select class="nice-form-input" name="status" id="status_select">
 			 					<option value="all">All tasks</option>
-								<option value="Completed">Completed</option>
-								<option value="In Progress">In Progress</option>
-								<option value="Assigned">Assigned</option>
+								<option value="<%=TaskStatus.ASSIGNED.toString()%>">Assigned</option>
+								<option value="<%=TaskStatus.IN_PROGRESS.toString()%>">In Progress</option>
+								<option value="<%=TaskStatus.COMPLETED.toString()%>">Completed</option>
 							</select>
 							
 						<input type="submit" value="Filter" class="submit_button">
@@ -82,6 +85,8 @@
  	</div>
  	
  	<script>
+
+
  	
  		document.addEventListener('DOMContentLoaded', ()=>{
 			<%
@@ -95,6 +100,33 @@
  			let selectTag = document.getElementById("status_select"); 			
  			window.location.href = "controller?action=listEmployeeTasks&status=" + selectTag.value;
  		}
+
+		/* function getTasksByStatus(){
+			let selectedStatus = document.getElementById("status_select").value;
+			if(selectedStatus == null || status_select == ""){
+				alert("Select Status");
+				return;
+			}
+
+			//  fetch the task from server
+			fetch("controller?action=listTasks", {
+				method: "POST",
+				headers: { 
+					"Content-Type" : "application/x-www-form-urlencoded",
+					"Accept" : "application/json"
+				},
+				body: "status="+encodeURIComponent(selectStatus) // encoded data
+			})
+			.then( (response) => response.json())
+			.then( (data) => console.log("data => ", data))
+			.catch( (error)=> {
+				// handling api call failures here
+				const modalObj = new Modal();
+				modalObj.error(error.message);
+			} );
+		} */
+ 		
+ 		
  		
  	</script>
 	

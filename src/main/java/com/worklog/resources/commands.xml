@@ -3,6 +3,12 @@
 	<!-- AUTH -->
 <command>
 
+	<!-- <command name="test">
+		<class>test</class>
+		<success>/controller?action=routing</success>
+		<failure>ui/screens/auth/login.jsp</failure>
+	</command> -->
+
 	<command name="login">
 		<class>com.worklog.commands.auth.LoginCommand</class>
 		<success>/controller?action=routing</success>

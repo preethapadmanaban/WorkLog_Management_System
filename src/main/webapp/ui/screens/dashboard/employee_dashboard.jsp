@@ -1,3 +1,4 @@
+<%@page import="com.worklog.commands.constants.TaskStatus"%>
 <%@page import="com.worklog.entities.Task"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -25,15 +26,15 @@
 			{
 				List<Task> tasks = (List<Task>)request.getAttribute("pending_tasks_array");
 				
-				List<Task> pendingTasks =  tasks.stream().filter(t->t.getStatus().equalsIgnoreCase("assigned")).toList();
+				List<Task> pendingTasks =  tasks.stream().filter(t->t.getStatus().equals(TaskStatus.ASSIGNED)).toList();
 				
-				List<Task> progressTasks = tasks.stream().filter(t->t.getStatus().contains("In")).toList();
+				List<Task> progressTasks = tasks.stream().filter(t->t.getStatus().equals(TaskStatus.IN_PROGRESS)).toList();
 				
-				List<Task> completedTasks = tasks.stream().filter(t->t.getStatus().equalsIgnoreCase("completed")).toList();
+				List<Task> completedTasks = tasks.stream().filter(t->t.getStatus().equals(TaskStatus.COMPLETED)).toList();
 			
 			%>
 			<div class="pending_task_array task_card_array">
-				<h3>Pending tasks</h3>
+				<h3>Pending Tasks</h3>
 				<% if(pendingTasks.size() > 0)
 				{
 				for(Task task:pendingTasks)
@@ -75,7 +76,7 @@
 			</div>
 			
 			<div class="progress_task_array task_card_array">
-				<h3>In Progress tasks</h3>
+				<h3>In Progress Tasks</h3>
 				<% if(progressTasks.size() > 0)
 				{
 					for(Task task:progressTasks)
@@ -116,7 +117,7 @@
 			</div>
 			
 			<div class="completed_task_array task_card_array">
-				<h3>Completed tasks</h3>
+				<h3>Completed Tasks</h3>
 				<% if(completedTasks.size() > 0)
 				{
 					for(Task task:completedTasks)
