@@ -17,38 +17,26 @@ import org.apache.logging.log4j.Logger;
 
 import com.worklog.commands.constants.TaskStatus;
 import com.worklog.db.DataSourceFactory;
-import com.worklog.dto.ListTaskDTO;
 import com.worklog.entities.Task;
+import com.worklog.utils.CustomDateFormatter;
 
 
 public class TaskDAO {
 	
 	private static final Logger logger = LogManager.getLogger(TaskDAO.class);
 
-	// written by renganathan
-	private ListTaskDTO mapToListTaskDTO(ResultSet rs) throws SQLException {
-		return new ListTaskDTO.Builder().withTitle(rs.getString("title")).withDescription(rs.getString("description"))
-						.withStatus(rs.getString("status"))
-						.withDeadline(rs.getDate("deadline").toLocalDate()).withManagerName(rs.getString("name"))
-						.createdAt(rs.getTimestamp("created_at").toLocalDateTime()).build();
-	}
-
 	// written by vasudevan
 	private Task mapToTask(ResultSet rs) throws SQLException {
 		return new Task.Builder().withId(rs.getInt("id")).withTitle(rs.getString("title")).withDescription(rs.getString("description"))
 						.assignedTo(rs.getInt("assigned_to")).setStatus(TaskStatus.valueOf(rs.getString("status").toUpperCase()))
-						.withDeadline(rs.getDate("deadline").toLocalDate()).createdBy(rs.getInt("created_by"))
-						.createdAt(rs.getTimestamp("created_at")).updatedAt(rs.getTimestamp("updated_at")).build();
+						.withDeadline(CustomDateFormatter.toLocalFormat(rs.getString("deadline"))).createdBy(rs.getInt("created_by"))
+						.createdAt(CustomDateFormatter.toLocalFormat(rs.getString("created_at"), true))
+						.updatedAt(CustomDateFormatter.toLocalFormat(rs.getString("updated_at"), true))
+						.build();
 	}
 
-	// written by vasudevan
-	public Optional<List<Task>> getAllTasksForEmployee(int employeeId) {
-		
-		String sql = "SELECT * FROM tasks where assigned_to = ?";
-		
-		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-			pstmt.setInt(1, employeeId);
+	public Optional<List<Task>> getTasksWithQuery(String query) {
+		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(query)) {
 
 			ResultSet rs = pstmt.executeQuery();
 
@@ -61,12 +49,35 @@ public class TaskDAO {
 			return Optional.ofNullable(tasks);
 
 		} catch (SQLException e) {
-		    logger.error("DB error in getAllTasksForEmployee(employeeId={})", employeeId, e);
+			logger.error("Exception while fetch the task.", e);
 			return Optional.ofNullable(null);
 		}
+	}
+
+	// written by vasudevan
+	public Optional<List<Task>> getAllTasksForEmployee(int employeeId, boolean isPending) {
+
+		String sql;
+
+		if (isPending == true) {
+			sql = "select * from tasks where assigned_to = " + employeeId + " and ((status ilike " + "'%" + TaskStatus.ASSIGNED.toString()
+							+ "%' or status ilike " + "'%" + TaskStatus.IN_PROGRESS.toString() + "%'"
+							+ ") or to_char(updated_at, 'YYYY-MM-DD') = to_char(current_timestamp, 'YYYY-MM-DD')) order by created_at";
+		} else {
+			sql = "SELECT * FROM tasks where assigned_to = " + employeeId;
+		}
+		
+		return getTasksWithQuery(sql);
 
 	}
 	
+	public Optional<List<Task>> filterTasksByStatus(int employeeId, String status) {
+
+		String sql = "SELECT * FROM tasks WHERE assigned_to =" + employeeId + " AND status ILIKE '%" + status + "%'";
+		return getTasksWithQuery(sql);
+
+	}
+
 	// written by preetha
 	public Optional<Map<String, Integer>> getTaskCountByStatus(int managerId) {
 		
@@ -120,32 +131,7 @@ public class TaskDAO {
 		}
 	}
 	
-	// changed by vasu for manager only tasks.
-	public Optional<List<Task>> getAllTasks(int employeeId) {
-		
-		List<Task> task = new ArrayList<>();
-		
-		String sql = "select * from tasks where assigned_to = ?";
-		
-		try(Connection con = DataSourceFactory.getConnectionInstance();
-						PreparedStatement pstmt = con.prepareStatement(sql)){
-			
-			pstmt.setInt(1, employeeId);
 
-			ResultSet rs = pstmt.executeQuery();
-			
-			while(rs.next()) {
-				task.add(mapToTask(rs));
-			}
-			return Optional.of(task);
-			
-			
-		}catch(SQLException e) {
-			logger.error("DB error in getAllTasks(employeeId={})", employeeId, e);
-			return Optional.ofNullable(null);
-		}
-	}
-	
 	public Optional<Task> getTaskById(int id){
 		
 		String sql = "select * from tasks where id = ?";
@@ -194,161 +180,86 @@ public class TaskDAO {
 			return false;
 		}
 	}
-	public Optional<List<Task>> getAllCompletedTakEmployeeId(int id){
-		
-		List<Task> tasks=new ArrayList<>();
-		String sql = "select * from task where assigned_to=? and status='COMPLETED' ";
-		try(Connection conn = DataSourceFactory.getConnectionInstance();
-			PreparedStatement pstmt=conn.prepareStatement(sql)){
-			pstmt.setInt(1,id );
-			ResultSet rs=pstmt.executeQuery();
-			while(rs.next()) {
-				
-				tasks.add( mapToTask(rs));
-								
-			}
-			return Optional.ofNullable(tasks);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			logger.error("DB error in getAllCompletedTakEmployeeId(employeeId={})", id, e);
-			return null;
-		}
-	}
 
-	public Optional<List<Task>> getAllPendingTasks(int employeeId) {
+	public boolean updateTask(int id, String status) {
 
-		// String sql = "SELECT * FROM tasks WHERE assigned_to=? and (status ilike 'Assigned' or status ilike 'In Progress');";
+		String sql = "UPDATE tasks SET status=?, updated_at = current_timestamp WHERE id = ?";
 
-		String sql = """
+		try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
 
-						select * from tasks where assigned_to = ?
-						and (status in ('Assigned' , 'In Progress')
-						or to_char(updated_at, 'YYYY-MM-DD') = to_char(current_timestamp, 'YYYY-MM-DD'));
-							""";
+			pstmt.setString(1, status);
+			pstmt.setInt(2, id);
 
-		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(sql);) {
-			pstmt.setInt(1, employeeId);
+			int affectedrows = pstmt.executeUpdate();
 
-			ResultSet rs = pstmt.executeQuery();
-			List<Task> pendingTasks = new ArrayList<Task>();
-			while (rs.next()) {
-				pendingTasks.add(mapToTask(rs));
-			}
-
-			return Optional.ofNullable(pendingTasks);
-		} catch (SQLException e) {
-			logger.error("DB error in getAllPendingTasks(employeeId={})", employeeId, e);
-			return Optional.ofNullable(null);
-		}
-
-	}
-
-	public Optional<List<ListTaskDTO>> getTasksForEmployee(int employeeId, String status) {
-
-		String sql;
-		if (status.equalsIgnoreCase("All")) {
-			sql = "select t.title as title, t.description as description, t.status as status, t.deadline as deadline, t.created_at as created_at, e.name as name from tasks t inner join employees e on t.created_by = e.id where t.assigned_to = ?";
-		}
-		else {
-			sql = "select t.title as title, t.description as description, t.status as status, t.deadline as deadline, t.created_at as created_at, e.name as name from tasks t inner join employees e on t.created_by = e.id where t.assigned_to = ? and status in (?)";
-		}
-
-		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-			pstmt.setInt(1, employeeId);
-
-			if (!status.equalsIgnoreCase("All")) {
-				pstmt.setString(2, status);
-			}
-
-			ResultSet rs = pstmt.executeQuery();
-
-			List<ListTaskDTO> tasks = new ArrayList<ListTaskDTO>();
-			while (rs.next()) {
-				tasks.add(mapToListTaskDTO(rs));
-			}
-
-			return Optional.ofNullable(tasks);
+			return affectedrows > 0;
 
 		} catch (SQLException e) {
-			logger.error("DB error in getTasksForEmployee(employeeId={}, status={})", employeeId, status, e);
+			logger.error("DB error in updateTask(id={})", id, e);
+			return false;
 		}
-		return Optional.ofNullable(null);
 	}
-	
 
 	public Optional<List<Task>> getTasksCreatedByManager(int managerId, int empId, String status, LocalDate fromDate, LocalDate toDate) {
 
-			    List<Task> tasks = new ArrayList<>();
-				String sql;
-				if (status.equalsIgnoreCase("all")) {
-					sql = """
-												select * from tasks
-									where (created_by = ? and assigned_to = ?)
-									and TO_CHAR(created_at,'YYYY-MM-DD') between ? and ?
-									order by deadline
-									""";
-				} else {
-					sql = """
-
-									select * from tasks
-									where (created_by = ? and assigned_to = ?) and status ilike ?
-									and TO_CHAR(created_at,'YYYY-MM-DD') between ? and ?
-									order by deadline
-													""";
-				}
-
-			    try (Connection con = DataSourceFactory.getConnectionInstance();
-			         PreparedStatement pstmt = con.prepareStatement(sql)) {
-
-			        pstmt.setInt(1, managerId);
-			        pstmt.setInt(2, empId);
-
-					if (status.equalsIgnoreCase("all")) {
-						pstmt.setString(3, fromDate.toString());
-						pstmt.setString(4, toDate.toString());
-					} else {
-						pstmt.setString(3, status);
-						pstmt.setString(4, fromDate.toString());
-						pstmt.setString(5, toDate.toString());
-					}
-
-			        ResultSet rs = pstmt.executeQuery();
-			        
-			        while (rs.next()) {
-			            tasks.add(mapToTask(rs));
-			        }
-
-					return Optional.ofNullable(tasks);
-
-			    } catch (SQLException e) {
-			    	logger.error("DB error in getTasksCreatedByManager(managerId={}, empId={}, status={}, from={}, to={})",
-			    		            managerId, empId, status, fromDate, toDate, e);
-					return Optional.ofNullable(null);
-			    }
-			}
-
-			public Optional<List<Task>> getTasksCreatedByManager(int managerId) {
-
-				List<Task> tasks = new ArrayList<>();
-
-				String sql = "select * from tasks where created_by = ? ";
-
-				try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
-
-					pstmt.setInt(1, managerId);
-
-					ResultSet rs = pstmt.executeQuery();
-
-					while (rs.next()) {
-						tasks.add(mapToTask(rs));
-					}
-
-					return Optional.of(tasks);
-
-				} catch (SQLException e) {
-					logger.error("DB error in getTasksCreatedByManager(managerId={})", managerId, e);
-					return Optional.empty();
-			}
+		List<Task> tasks = new ArrayList<>();
+		String sql;
+		if (status.equalsIgnoreCase("all")) {
+			sql = "select * from tasks where (created_by = ? and assigned_to = ?) and TO_CHAR(created_at,'YYYY-MM-DD') between ? and ? order by deadline";
+		} else {
+			sql = "select * from tasks where (created_by = ? and assigned_to = ?) and status ilike ? and TO_CHAR(created_at,'YYYY-MM-DD') between ? and ? order by deadline";
 		}
+
+		try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+			pstmt.setInt(1, managerId);
+			pstmt.setInt(2, empId);
+
+			if (status.equalsIgnoreCase("all")) {
+				pstmt.setString(3, fromDate.toString());
+				pstmt.setString(4, toDate.toString());
+			} else {
+				pstmt.setString(3, status);
+				pstmt.setString(4, fromDate.toString());
+				pstmt.setString(5, toDate.toString());
+			}
+
+			ResultSet rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				tasks.add(mapToTask(rs));
+			}
+
+			return Optional.ofNullable(tasks);
+
+		} catch (SQLException e) {
+			logger.error("DB error in getTasksCreatedByManager(managerId={}, empId={}, status={}, from={}, to={})", managerId, empId,
+							status, fromDate, toDate, e);
+			return Optional.ofNullable(null);
+		}
+	}
+
+	public Optional<List<Task>> getTasksCreatedByManager(int managerId) {
+
+		List<Task> tasks = new ArrayList<>();
+
+		String sql = "select * from tasks where created_by = ? ";
+
+		try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+			pstmt.setInt(1, managerId);
+
+			ResultSet rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				tasks.add(mapToTask(rs));
+			}
+
+			return Optional.of(tasks);
+
+		} catch (SQLException e) {
+			logger.error("DB error in getTasksCreatedByManager(managerId={})", managerId, e);
+			return Optional.empty();
+		}
+	}
 }

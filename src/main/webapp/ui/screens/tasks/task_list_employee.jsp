@@ -44,7 +44,6 @@
 					<th>S.No</th>
 					<th>Task</th>
 					<th>Description</th>
-					<th>Report To</th>
 					<th>Status</th>
 					<th>Deadline</th>
 					<th>Assigned Date</th>
@@ -52,7 +51,7 @@
 			</thead>
 			<tbody>
 				<% 
-				List<ListTaskDTO> tasks = (List<ListTaskDTO>)request.getAttribute("tasks");
+				List<Task> tasks = (List<Task>)request.getAttribute("tasks");
 				if(tasks != null && tasks.size() != 0) 
 				{
 					 
@@ -60,16 +59,15 @@
 					//for(ListTaskDTO task:tasks)
 					for(int i=0; i<tasks.size(); i++)
 					{
-						ListTaskDTO task = tasks.get(i);
+						Task task = tasks.get(i);
 					%>
 						<tr>
 							<td><%=i+1%></td>
 							<td><%=task.getTitle()%></td>
 							<td><%=task.getDescription()%></td>
-							<td><%=task.getManagerName()%></td>
-							<td><%=task.getStatus()%></td>
+							<td><%=task.getStatus().getDisplayValue()%></td>
 							<td><%=task.getDeadline()%></td>
-							<td><%=task.getCreated_at().toString().split("T")[0]%></td>
+							<td><%=task.getCreated_at()%></td>
 						</tr>
 					<%	
 					}	

@@ -83,6 +83,12 @@
 	  <failure>ui/screens/tasks/task_list_manager.jsp</failure>
 	</command>
 	
+	<command name="employeeUpdateTask">
+	    <class>com.worklog.commands.tasks.EmployeeUpdateTaskCommand</class>
+	    <success>ui/screens/tasks/employee_update_task.jsp</success>
+	    <failure>/controller?action=routing</failure>
+	</command>
+	
 	<command name="editTask">
 	    <class>com.worklog.commands.tasks.EditTaskCommand</class>
 	    <success>ui/screens/tasks/task_edit.jsp</success>
@@ -140,14 +146,14 @@
 	</command>
 	
 	<command name="createTimesheet">
-	  <class>com.worklog.commands.timesheets.CreateTimeSheetCommand</class>
+	  <class>com.worklog.commands.timesheets.CreateTimesheetCommandJson</class>
 	  <success>/controller?action=createTimesheetPage</success>
 	  <failure>/controller?action=createTimesheetPage</failure>
 	</command>
 	
 	<command name="createTimesheetPage">
 	  <class>com.worklog.commands.timesheets.NavigateCreateTimesheetPageCommand</class>
-	  <success>ui/screens/timesheets/create_timesheet.jsp</success>
+	  <success>ui/screens/timesheets/create_timesheet_2.jsp</success>
 	  <failure>/controller?action=access_denied</failure>
 	</command>
 	

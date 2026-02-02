@@ -1,14 +1,8 @@
 package com.worklog.commands.timesheets;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializer;
 import com.worklog.entities.Task;
 import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
@@ -36,16 +30,17 @@ public class NavigateCreateTimesheetPageCommand implements Command {
 
 		TaskDAO taskDAO = new TaskDAO();
 
-		List<Task> tasks = taskDAO.getAllPendingTasks(id).orElse(new ArrayList<Task>());
+		List<Task> tasks = taskDAO.getAllTasksForEmployee(id, true).orElse(new ArrayList<Task>());
 
 		// here we convert this into json, because we use this list of task directly inside the script tag, not as jsp rendering.
-		Gson gson = new GsonBuilder()
-						.registerTypeAdapter(LocalDate.class,
-										(JsonSerializer<LocalDate>) (src, typeOfSrc, context) -> new JsonPrimitive(src.toString()))
-						.registerTypeAdapter(LocalDate.class,
-										(JsonDeserializer<LocalDate>) (json, typeOfT, context) -> LocalDate.parse(json.getAsString()))
-						.create();
-		request.setAttribute("tasks", gson.toJson(tasks));
+		// Gson gson = new GsonBuilder()
+		// .registerTypeAdapter(LocalDate.class,
+		// (JsonSerializer<LocalDate>) (src, typeOfSrc, context) -> new JsonPrimitive(src.toString()))
+		// .registerTypeAdapter(LocalDate.class,
+		// (JsonDeserializer<LocalDate>) (json, typeOfT, context) -> LocalDate.parse(json.getAsString()))
+		// .create();
+		// request.setAttribute("tasks", gson.toJson(tasks));
+		request.setAttribute("tasks", tasks);
 
 		// System.out.println("succesfully navigat to timesheet creation.");
 

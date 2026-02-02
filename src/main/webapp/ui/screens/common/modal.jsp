@@ -12,8 +12,8 @@
             <p id="modal_body_text">This is a sample alert message for you!</p> 
         </div>
         <div class="modal_action">
-            <button class="submit_button">Ok</button>
-            <button class="reject_button" onclick="model_inner_object_reference.hideModal()">Cancel</button>
+            <button class="success_anchor" onclick="model_inner_object_reference.hideModal()">Ok</button>
+            <button class="info_anchor" onclick="model_inner_object_reference.hideModal()">Cancel</button>
         </div>
     </div>
 </div>

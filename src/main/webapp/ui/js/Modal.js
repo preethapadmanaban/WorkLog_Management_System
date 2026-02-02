@@ -24,6 +24,7 @@ class Modal{
 
     hideModal(){
         document.getElementById("modal_outlier").style.display = "none";
+		window.location.reload();
     }
 }
 

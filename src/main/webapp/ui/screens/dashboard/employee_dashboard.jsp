@@ -24,7 +24,10 @@
 		 <div id="task_section">
 			<% if(request.getAttribute("pending_tasks_array") != null)
 			{
+
 				List<Task> tasks = (List<Task>)request.getAttribute("pending_tasks_array");
+				
+				String employeeUpdateTaskUrl = "/worklog/controller?action=employeeUpdateTask&task_id=";
 				
 				List<Task> pendingTasks =  tasks.stream().filter(t->t.getStatus().equals(TaskStatus.ASSIGNED)).toList();
 				
@@ -49,7 +52,7 @@
 							</div>
 							<div class="task_card_row">
 								<span class="task_card_label">Status: </span>
-								<span class="task_card_value"><%=task.getStatus()%></span>	
+								<span class="task_card_value"><%=task.getStatus().getDisplayValue()%></span>	
 							</div>
 							<div class="task_card_row">
 								<span class="task_card_label">Deadline: </span>
@@ -58,7 +61,7 @@
 						</div>
 						
 						<div>
-							<a class="edit_button" href="/worklog/controller?action=editTask&task_id=<%=task.getId()%>" >
+							<a class="edit_button" href="<%= employeeUpdateTaskUrl + task.getId()%>" >
 								<i class="fa-solid fa-pen-to-square fa-lg"></i>
 							</a>
 						</div>
@@ -91,7 +94,7 @@
 							</div>
 							<div class="task_card_row">
 								<span class="task_card_label">Status: </span>
-								<span class="task_card_value"><%=task.getStatus()%></span>	
+								<span class="task_card_value"><%=task.getStatus().getDisplayValue()%></span>	
 							</div>
 							<div class="task_card_row">
 								<span class="task_card_label">Deadline: </span>
@@ -100,7 +103,7 @@
 						</div>
 						
 						<div>
-							<a class="edit_button" href="/worklog/controller?action=editTask&task_id=<%=task.getId()%>" >
+							<a class="edit_button" href="<%= employeeUpdateTaskUrl + task.getId()%>" >
 								<i class="fa-solid fa-pen-to-square fa-lg"></i>
 							</a>
 						</div>
@@ -132,7 +135,7 @@
 							</div>
 							<div class="task_card_row">
 								<span class="task_card_label">Status: </span>
-								<span class="task_card_value"><%=task.getStatus()%></span>	
+								<span class="task_card_value"><%=task.getStatus().getDisplayValue()%></span>	
 							</div>
 							<div class="task_card_row">
 								<span class="task_card_label">Deadline: </span>

@@ -33,8 +33,8 @@ public class Controller extends HttpServlet {
 
 		// System.out.println("QueryString: " + request.getQueryString());
 		String action = request.getParameter("action");
-		boolean isApiRequest = request.getRequestURI().contains("/api/");
-		boolean isDownloadRequest = request.getRequestURI().contains("/download/");
+		boolean isApiRequest = request.getRequestURI().contains("/api");
+		boolean isDownloadRequest = request.getRequestURI().contains("/download");
 		// System.out.println("current action: " + action);
 		if (action == null) {
 			logger.error("Exception in controller : action not found on the url - " + request.getContextPath() + request.getQueryString());

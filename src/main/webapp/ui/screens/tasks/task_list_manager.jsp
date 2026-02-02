@@ -94,7 +94,7 @@
 		<td><%=i+1%></td>
         <td><%= t.getTitle() %></td>
         <td><%= t.getAssigned_to() %></td>
-        <td><%= t.getStatus() %></td>
+        <td><%= t.getStatus().toString() %></td>
         <td><%= t.getDeadline() %></td>
 
         <td class="action_button_array">

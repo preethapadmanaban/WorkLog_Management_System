@@ -45,8 +45,8 @@
 		    <tr><th>Total Hours</th><td><%= ts.getTotal_hours() %> hours</td></tr>
 		    <% String comment = ts.getManager_comment() == null ? "No Comment" : ts.getManager_comment();%>
 		    <tr><th>Manager Comment</th><td><%=comment%></td></tr>
-		    <tr><th>Status</th><td><%= ts.getStatus().toUpperCase() %></td></tr>
-		    <tr><th>Submitted Date</th><td><%=ts.getCreated_at().toLocalDateTime().toString().split("T")[0] %></td></tr>
+		    <tr><th>Status</th><td><%= ts.getStatus().toString()%></td></tr>
+		    <tr><th>Submitted Date</th><td><%=ts.getCreated_at()%></td></tr>
 	</table>
 	
 	

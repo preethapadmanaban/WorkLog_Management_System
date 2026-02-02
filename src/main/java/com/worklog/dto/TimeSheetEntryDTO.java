@@ -42,4 +42,9 @@ public class TimeSheetEntryDTO {
 		this.hours_spent = hours_spent;
 	}
 
+	@Override
+	public String toString() {
+		return "TimeSheetEntryDTO [task_id=" + task_id + ", notes=" + notes + ", hours_spent=" + hours_spent + "]";
+	}
+
 }

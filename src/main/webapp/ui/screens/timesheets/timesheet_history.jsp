@@ -1,3 +1,4 @@
+<%@page import="com.worklog.commands.constants.TimeSheetStatus"%>
 <%@page import="com.worklog.entities.TimeSheet"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -19,7 +20,7 @@
     
  		<div class = "filter_section">
  			<h3>My Timesheets</h3>
- 			<form action="controller">
+ 			<form action="controller" method="post">
 	 			<div class="filter_section">
 	 				<input type="hidden" name="action" value="timesheetHistory">
 	 				<h3>Filter by Status - </h3>
@@ -27,9 +28,9 @@
 	 				<select class="nice-form-input" name="status" id="status_select">
 		 					<!-- <option selected>Select</option> -->
 		 					<option value="all" selected>All status</option>
-							<option value="pending">Pending</option>
-							<option value="approved">Approved</option>
-							<option  value="rejected">Rejected</option>
+							<option value="<%=TimeSheetStatus.PENDING.toString()%>">Pending</option>
+							<option value="<%=TimeSheetStatus.APPROVED.toString()%>">Approved</option>
+							<option value="<%=TimeSheetStatus.REJECTED.toString()%>">Rejected</option>
 				
 					</select>
 					<input type="submit" value="Filter" class="submit_button">
@@ -58,7 +59,7 @@
 					<tr>
 						<td><%=timesheet.getWork_date() %></td>
 						<td><%=timesheet.getTotal_hours() %> hrs</td>
-						<td><%=timesheet.getStatus() %></td>
+						<td><%=timesheet.getStatus().toString() %></td>
 				<%
 					String managerComment = timesheet.getManager_comment() == null ? "No Comment" : timesheet.getManager_comment();
 				%>
@@ -90,7 +91,7 @@
  	
  		document.addEventListener('DOMContentLoaded', () => {
 			<%
-				String selectStatus = request.getParameter("status") == null ? "all": request.getParameter("status").toLowerCase();
+				String selectStatus = request.getParameter("status") == null ? "all": request.getParameter("status");
 			%>
 			let status = "<%=selectStatus%>";
 			document.getElementById('status_select').value = status;

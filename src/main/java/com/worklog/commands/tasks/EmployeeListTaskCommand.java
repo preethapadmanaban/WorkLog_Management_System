@@ -3,7 +3,7 @@ package com.worklog.commands.tasks;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.worklog.dto.ListTaskDTO;
+import com.worklog.entities.Task;
 import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.TaskDAO;
@@ -19,18 +19,22 @@ public class EmployeeListTaskCommand implements Command {
 
 		HttpSession session = request.getSession(false);
 
-		if (session == null) {
+		if (session == null || session.getAttribute("id") == null) {
 			throw new UnAuthorizedException("access_denied");
 		}
 
-		String role = (String) session.getAttribute("role");
-		int id = session.getAttribute("id") != null ? (int) session.getAttribute("id") : -1;
-		if (id == -1 || role == null)
-			return false;
+		int employeeId = (int) session.getAttribute("id");
 
 		String status = request.getParameter("status") == null ? "all" : request.getParameter("status");
 		TaskDAO repo = new TaskDAO();
-		List<ListTaskDTO> tasks = repo.getTasksForEmployee(id, status).orElse(new ArrayList<ListTaskDTO>());
+		List<Task> tasks;
+
+		if (status == null || status.equalsIgnoreCase("all")) {
+			tasks = repo.getAllTasksForEmployee(employeeId, false).orElse(new ArrayList<Task>());
+		} else {
+			tasks = repo.filterTasksByStatus(employeeId, status).orElse(new ArrayList<Task>());
+		}
+
 		request.setAttribute("tasks", tasks);
 
 		return true;
