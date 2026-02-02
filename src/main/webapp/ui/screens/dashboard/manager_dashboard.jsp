@@ -65,33 +65,40 @@
         <div class="tableBox">
             <h3>Team Members List</h3>
 
-            <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Role</th>
-                </tr>
-
-                <%
-                    if(members != null && !members.isEmpty()){
-                        for(Employee e : members){
-                %>
-                <tr>
-                    <td><%= e.getId() %></td>
-                    <td><%= e.getName() %></td>
-                    <td><%= e.getRole() %></td>
-                </tr>
-                <%
-                        }
-                    } else {
-                %>
-                <tr>
-                    <td colspan="3">No members found</td>
-                </tr>
-                <%
-                    }
-                %>
-            </table>
+            <table class="table-professional">
+            
+			  <thead>
+			    <tr>
+			      <th>ID</th>
+			      <th>Name</th>
+			      <th>Role</th>
+			    </tr>
+			  </thead>
+			
+			  <tbody>
+			    <%
+			      if(members != null && !members.isEmpty()){
+			        for(Employee e : members){
+			    %>
+			      <tr>
+			        <td><%= e.getId() %></td>
+			        <td><%= e.getName() %></td>
+			        <td><%= e.getRole() %></td>
+			      </tr>
+			    <%
+			        }
+			      } else {
+			    %>
+			      <tr>
+			        <td colspan="3" style="text-align:center; padding:18px;">
+			          No members found
+			        </td>
+			      </tr>
+			    <%
+			      }
+			    %>
+			  </tbody>
+			</table>
         </div>
 
     </div>

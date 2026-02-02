@@ -23,23 +23,25 @@
       </h3>
       <p>Create a new task and assign to a employee.</p>
       
-      <form action="/worklog/controller" method="post">
+      <form action="/worklog/controller" method="post" >
    	  <input type="hidden" name="action" value="createTask">
 
       <div class="nice-form-group"> 
-        <label>Title</label>
-        <input class="nice-form-input" name="title" type="text" placeholder="Task title" required/>
+        <label>Title<span class="required">*</span></label>
+        <input class="nice-form-input" name="title" type="text" placeholder="Task title"/>
+        <small class="error-text" id="titleError"></small>
       </div>
 
       <div class="nice-form-group">
-        <label>Description</label>
-        <input class="nice-form-input" name="description" type="text" placeholder="Your description" required/>
+        <label>Description<span class="required">*</span></label>
+        <input class="nice-form-input" name="description" type="text" placeholder="Your description"/>
+        <small class="error-text" id="descError"></small>
       </div>
 
       <div class="nice-form-group">
-        <label>Select employee</label>
-        <select class="nice-form-input" name="assigned_to" name="task_id" id="task_id" required>
-          <option selected>-- Select employee --</option>
+        <label>Select employee<span class="required">*</span></label>
+        <select class="nice-form-input" name="assigned_to" name="task_id" id="task_id">
+          <option value="">-- Select employee --</option>
           			<%
 			        	List<Employee> list = (List<Employee>) request.getAttribute("Members");
 			        
@@ -54,19 +56,148 @@
 			        	}
 			        %>
         </select>
+        <small class="error-text" id="empError"></small>
       </div>
 
       <div class="nice-form-group">
-        <label for="deadline">Deadline</label>
+        <label for="deadline">Deadline<span class="required">*</span></label>
         <%
     		String today = LocalDate.now().toString();
 		%>    
-        <input class="nice-form-input" type="date" id="deadline" name="deadline" placeholder="Your password" min="<%= today %>" required/>
+        <input class="nice-form-input" type="date" id="deadline" name="deadline" placeholder="Your password" min="<%= today %>"/>
+        <small class="error-text" id="deadlineError"></small>
       </div>
       
-      <button class="submit_button">Submit</button>
+      <p id="formError" class="form-error"></p>
+      
+		<button type="button" class="submit_button" onclick="submitTask()">Submit</button>
+      
       </form>
     </section>
+    
+   <script>
+		function setError(field, errorId, msg){
+		  field.classList.add("input-error");
+		  document.getElementById(errorId).textContent = msg;
+		}
+		
+		function clearError(field, errorId){
+		  field.classList.remove("input-error");
+		  document.getElementById(errorId).textContent = "";
+		}
+		
+		function openPopup(msg, popupTitle="Message", type="info"){
+			  const box = document.querySelector(".modal-box");
+			  box.classList.remove("success", "error");
+
+			  if(type === "success") box.classList.add("success");
+			  if(type === "error") box.classList.add("error");
+
+			  document.getElementById("modalTitle").textContent = popupTitle;
+			  document.getElementById("modalText").textContent = msg;
+			  document.getElementById("modalOverlay").style.display = "flex";
+		}
+		
+		function closePopup() {
+			  document.getElementById("modalOverlay").style.display = "none";
+			}
+		
+		async function submitTask(){
+		  const title = document.querySelector("input[name='title']");
+		  const desc  = document.querySelector("input[name='description']");
+		  const emp   = document.querySelector("select[name='assigned_to']");
+		  const dead  = document.querySelector("input[name='deadline']");
+
+		  clearError(title, "titleError");
+		  clearError(desc, "descError");
+		  clearError(emp, "empError");
+		  clearError(dead, "deadlineError");
+
+		  const allEmpty =
+		    !title.value.trim() &&
+		    !desc.value.trim() &&
+		    !emp.value &&
+		    !dead.value;
+		
+		  if(allEmpty){
+			openPopup("Please fill all the mandatory fields marked with (*).", "Field is required", "error");
+		    setError(title, "titleError", "Please enter the task title.");
+		    setError(desc, "descError", "Please enter the description.");
+		    setError(emp, "empError", "Please select an employee.");
+		    setError(dead, "deadlineError", "Please select a deadline.");
+		    title.focus();
+		    return;
+		  }
+
+		  let valid = true;
+		
+		  if(!title.value.trim()){ setError(title,"titleError","Please enter the task title."); valid=false; }
+		  if(!desc.value.trim()){ setError(desc,"descError","Please enter the description."); valid=false; }
+		  if(!emp.value){ setError(emp,"empError","Please select an employee."); valid=false; }
+		  if(!dead.value){ setError(dead,"deadlineError","Please select a deadline."); valid=false; }
+		
+		  if(!valid) return;
+
+		  const payload = new URLSearchParams();
+		  payload.append("action", "createTask");
+		  payload.append("title", title.value.trim());
+		  payload.append("description", desc.value.trim());
+		  payload.append("assigned_to", emp.value);
+		  payload.append("deadline", dead.value);
+		
+		  try {
+			  const res = await fetch("/worklog/controller", {
+				  method: "POST",
+				  headers: {
+				    "Content-Type": "application/x-www-form-urlencoded",
+				    "X-Requested-With": "fetch" 
+				  },
+				  body: payload.toString()
+				});
+		
+		    const data = await res.json();
+		
+		    if(data.success){
+		    	  openPopup("Your task has been submitted successfully.", "Success ✅", "success");
+
+		    	  title.value = "";
+		    	  desc.value  = "";
+		    	  emp.value   = "";
+		    	  dead.value  = "";
+
+		    	} else {
+		    	  openPopup(data.message || "Task creation failed.", "Error ❌", "error");
+		    	}
+		    
+		  } catch (e) {
+		    console.error(e);
+		    openPopup("Server error. Please try again.");
+		  }
+		}
+
+		document.addEventListener("DOMContentLoaded", () => {
+		  const title = document.querySelector("input[name='title']");
+		  const desc  = document.querySelector("input[name='description']");
+		  const emp   = document.querySelector("select[name='assigned_to']");
+		  const dead  = document.querySelector("input[name='deadline']");
+		
+		  title.addEventListener("input", () => clearError(title,"titleError"));
+		  desc.addEventListener("input",  () => clearError(desc,"descError"));
+		  emp.addEventListener("change",  () => clearError(emp,"empError"));
+		  dead.addEventListener("change", () => clearError(dead,"deadlineError"));
+		});
+		
+	</script>
+	
+	<div id="modalOverlay" class="modal-overlay" style="display:none;">
+	  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+	    <h4 id="modalTitle" class="modal-title">Message</h4>
+	    <p id="modalText" class="modal-text"></p>
+	    <div class="modal-actions">
+	      <button type="button" class="modal-ok" onclick="closePopup()">OK</button>
+	    </div>
+	  </div>
+	</div>
 
 </body>
 </html>

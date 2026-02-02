@@ -41,7 +41,6 @@ public class SignupCommand implements Command {
 		Employee employee = new Employee.Builder().withName(name).withEmail(email).withPassword(hashedPassword).withrole(role)
 						.withCreatedAt(Timestamp.valueOf(LocalDateTime.now())).withActive(true).build();
 
-
 		EmployeeDAO employeeRepo = new EmployeeDAO();
 		try {
 			if (employeeRepo.createEmployee(employee) == true) {

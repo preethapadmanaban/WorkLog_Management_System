@@ -1,11 +1,15 @@
 package com.worklog.commands.tasks;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.worklog.dto.PagedResult;
 import com.worklog.entities.Employee;
 import com.worklog.entities.Task;
 import com.worklog.exceptions.UnAuthorizedException;
@@ -18,79 +22,124 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 public class ListTasksCommand implements Command {
-	
+
 	private static final Logger logger = LogManager.getLogger(ListTasksCommand.class);
 
-    @Override
-    public boolean execute(HttpServletRequest request, HttpServletResponse response) throws UnAuthorizedException {
-    	
-        HttpSession session = request.getSession(false);
+	@Override
+	public boolean execute(HttpServletRequest request, HttpServletResponse response) throws UnAuthorizedException {
 
-        if (session == null) {
-            throw new UnAuthorizedException("access_denied");
-        }
+		HttpSession session = request.getSession(false);
 
-        String role = (String) session.getAttribute("role");
+		if (session == null) {
+			throw new UnAuthorizedException("access_denied");
+		}
 
-        if (role != null) {
+		String role = (String) session.getAttribute("role");
 
-            boolean filter = Boolean.valueOf(request.getParameter("filter"));
-            int managerId = (int) session.getAttribute("id");
+		if (role != null && role.equalsIgnoreCase("manager")) {
 
-            TaskDAO dao = new TaskDAO();
+			boolean filter = Boolean.valueOf(request.getParameter("filter"));
+			int managerId = (int) session.getAttribute("id");
 
-            if (filter) {
+			int page = 1;
+			int size = 5;
 
-                String empIdStr = request.getParameter("employee_id");
-                String status = request.getParameter("status");
-                String fromDateStr = request.getParameter("fromDate");
-                String toDateStr = request.getParameter("toDate");
+			String pageStr = request.getParameter("page");
+			String sizeStr = request.getParameter("size");
 
-                Integer empId = null;
-                LocalDate fromDate = null;
-                LocalDate toDate = null;
-                
-                logger.info("Manager {} is filtering tasks | empId={} status={} from={} to={}",
-                		        managerId, empId, status, fromDate, toDate);
+			if (pageStr != null && !pageStr.isBlank())
+				page = Integer.parseInt(pageStr);
+			if (sizeStr != null && !sizeStr.isBlank())
+				size = Integer.parseInt(sizeStr);
 
-                if (empIdStr != null && !empIdStr.trim().isEmpty()) {
-                    empId = Integer.parseInt(empIdStr);
-                }
+			if (page < 1)
+				page = 1;
 
-                if (status != null && status.trim().isEmpty()) {
-                    status = null;
-                }
+			if (size < 1)
+				size = 5;
 
-                if (fromDateStr != null && !fromDateStr.trim().isEmpty()) {
-                    fromDate = LocalDate.parse(fromDateStr);
-                }
+			TaskDAO dao = new TaskDAO();
 
-                if (toDateStr != null && !toDateStr.trim().isEmpty()) {
-                    toDate = LocalDate.parse(toDateStr);
-                }
+			Integer empId = null;
+			String status = null;
+			LocalDate fromDate = null;
+			LocalDate toDate = null;
 
-                List<Task> taskList = dao
-                        .getTasksCreatedByManager(managerId, empId, status, fromDate, toDate)
-                        .orElse(new ArrayList<>());
+			if (filter) {
 
-                request.setAttribute("members", EmployeeDAO.getAllMembers().orElse(new ArrayList<Employee>()));
-                request.setAttribute("tasks", taskList);
+				String empIdStr = request.getParameter("employee_id");
+				status = request.getParameter("status");
+				String fromDateStr = request.getParameter("fromDate");
+				String toDateStr = request.getParameter("toDate");
 
-                return true;
+				if (empIdStr != null && !empIdStr.trim().isEmpty() && !empIdStr.equalsIgnoreCase("all")) {
+					empId = Integer.parseInt(empIdStr);
+				}
 
-            } else {
-            	
-            	logger.info("Manager {} is viewing all created tasks", managerId);
+				if (status == null || status.trim().isEmpty() || status.equalsIgnoreCase("all")) {
+					status = null;
+				}
 
-                List<Task> taskList = dao.getTasksCreatedByManager(managerId).orElse(new ArrayList<>());
+				if (fromDateStr != null && !fromDateStr.trim().isEmpty()) {
+					fromDate = LocalDate.parse(fromDateStr);
+				}
 
-                request.setAttribute("members", EmployeeDAO.getAllMembers().orElse(new ArrayList<Employee>()));
-                request.setAttribute("tasks", taskList);
+				if (toDateStr != null && !toDateStr.trim().isEmpty()) {
+					toDate = LocalDate.parse(toDateStr);
+				}
 
-                return true;
-            }
-        }
+				logger.info("Manager {} is filtering tasks | empId={} status={} from={} to={}", managerId, empId, status, fromDate, toDate);
 
-        return false;
-    }
+				PagedResult<Task> result = dao.getTasksCreatedByManager(managerId, empId, status, fromDate, toDate, page, size)
+								.orElse(new PagedResult<>(new ArrayList<>(), 0));
+
+				List<Employee> members = EmployeeDAO.getAllMembers().orElse(new ArrayList<>());
+
+				Map<Integer, String> empNameMap = new HashMap<>();
+				for (Employee e : members) {
+					empNameMap.put(e.getId(), e.getName());
+				}
+
+				request.setAttribute("members", members);
+				request.setAttribute("empNameMap", empNameMap);
+
+				request.setAttribute("tasks", result.getData());
+
+				request.setAttribute("totalCount", result.getTotalCount());
+				request.setAttribute("page", page);
+				request.setAttribute("size", size);
+				request.setAttribute("totalPages", result.getTotalPages(size));
+
+				return true;
+
+			} else {
+
+				logger.info("Manager {} is viewing all created tasks", managerId);
+
+				PagedResult<Task> result = dao.getTasksCreatedByManager(managerId, null, null, null, null, page, size)
+								.orElse(new PagedResult<>(new ArrayList<>(), 0));
+
+				List<Employee> members = EmployeeDAO.getAllMembers().orElse(new ArrayList<>());
+
+				Map<Integer, String> empNameMap = new HashMap<>();
+				for (Employee e : members) {
+					empNameMap.put(e.getId(), e.getName());
+				}
+
+				request.setAttribute("members", members);
+				request.setAttribute("empNameMap", empNameMap);
+
+				request.setAttribute("tasks", result.getData());
+
+				request.setAttribute("totalCount", result.getTotalCount());
+				request.setAttribute("page", page);
+				request.setAttribute("size", size);
+				request.setAttribute("totalPages", result.getTotalPages(size));
+
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
