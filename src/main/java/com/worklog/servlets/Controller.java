@@ -36,8 +36,8 @@ public class Controller extends HttpServlet {
 		String action = request.getParameter("action");
 
 		boolean isAjax = "fetch".equalsIgnoreCase(request.getHeader("X-Requested-With"));
-		boolean isApiRequest = request.getRequestURI().contains("/api/");
-		boolean isDownloadRequest = request.getRequestURI().contains("/download/");
+		boolean isApiRequest = request.getRequestURI().contains("/api");
+		boolean isDownloadRequest = request.getRequestURI().contains("/download");
 		// System.out.println("current action: " + action);
 		if (action == null) {
 			logger.error("Exception in controller : action not found on the url - " + request.getContextPath() + request.getQueryString());
@@ -60,11 +60,12 @@ public class Controller extends HttpServlet {
 				response.setCharacterEncoding("UTF-8");
 
 				String msg = (String) request.getAttribute("message");
-				if (msg == null)
-					msg = flag ? "Success" : "Failed";
-				msg = msg.replace("\"", "\\\"");
+				if (msg != null) {
+					msg = msg.replace("\"", "\\\"");
+				}
+				String status = flag == true ? "success" : "error";
 
-				response.getWriter().write("{\"success\":" + flag + ",\"message\":\"" + msg + "\"}");
+				response.getWriter().write("{\"status\": \"" + status + "\",\"message\":\"" + msg + "\"}");
 				return;
 			} else if (isDownloadRequest) {
 				response.setContentType("text/csv");

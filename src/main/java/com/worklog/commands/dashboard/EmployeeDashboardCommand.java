@@ -37,7 +37,7 @@ public class EmployeeDashboardCommand implements Command {
 		Integer employeeId = (Integer) session.getAttribute("id");
 
 		TaskDAO taskDao = new TaskDAO();
-		request.setAttribute("pending_tasks_array", taskDao.getAllTasksForEmployee(employeeId, true).orElse(new ArrayList<Task>()));
+		request.setAttribute("pending_tasks_array", taskDao.getAllTasksForEmployee(employeeId, true, 1).orElse(new ArrayList<Task>()));
 		return true;
 	}
 

@@ -12,10 +12,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
 <jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
+<script src="${pageContext.request.contextPath}/ui/js/Modal.js"></script>
 </head>
 <body class="create-task-page">
 <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
 <jsp:include page="/ui/screens/common/message.jsp"></jsp:include>
+<jsp:include page="/ui/screens/common/modal.jsp"></jsp:include>
+
 
   <section class="nice-form">
       <h3>
@@ -82,23 +85,7 @@
 		  field.classList.remove("input-error");
 		  document.getElementById(errorId).textContent = "";
 		}
-		
-		function openPopup(msg, popupTitle="Message", type="info"){
-			  const box = document.querySelector(".modal-box");
-			  box.classList.remove("success", "error");
-
-			  if(type === "success") box.classList.add("success");
-			  if(type === "error") box.classList.add("error");
-
-			  document.getElementById("modalTitle").textContent = popupTitle;
-			  document.getElementById("modalText").textContent = msg;
-			  document.getElementById("modalOverlay").style.display = "flex";
-		}
-		
-		function closePopup() {
-			  document.getElementById("modalOverlay").style.display = "none";
-			}
-		
+			
 		async function submitTask(){
 		  const title = document.querySelector("input[name='title']");
 		  const desc  = document.querySelector("input[name='description']");
@@ -143,7 +130,7 @@
 		  payload.append("deadline", dead.value);
 		
 		  try {
-			  const res = await fetch(base + "/controller", {
+			  const res = await fetch("/worklog/controller/api?action=createTask", {
 				  method: "POST",
 				  headers: {
 				    "Content-Type": "application/x-www-form-urlencoded",
@@ -154,7 +141,7 @@
 		
 		    const data = await res.json();
 		
-		    if(data.success){
+		    if(data.status === "success"){
 		    	  openPopup("Your task has been submitted successfully.", "Success ✅", "success");
 
 		    	  title.value = "";
@@ -186,15 +173,7 @@
 		
 	</script>
 	
-	<div id="modalOverlay" class="modal-overlay" style="display:none;">
-	  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-	    <h4 id="modalTitle" class="modal-title">Message</h4>
-	    <p id="modalText" class="modal-text"></p>
-	    <div class="modal-actions">
-	      <button type="button" class="modal-ok" onclick="closePopup()">OK</button>
-	    </div>
-	  </div>
-	</div>
+	
 
 </body>
 </html>

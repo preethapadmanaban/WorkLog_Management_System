@@ -1,25 +1,19 @@
 @charset "UTF-8";
 
-/* Create Timesheet Section */
 
-.back_button img{
-	width: 25px;
-	border-radius: 50%;
-	padding: 10px;
-	border: 0.5px solid lightgray;
-	cursor: pointer;
-}
+
+/* Create Timesheet Section */
 
 .timesheet_container{
 	padding: 1rem;
     background: white;
-    height: 100vh;
 }
 
 .create_timesheet_section{
     display: flex;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     justify-content: space-between;
+    gap: 20px;
 }
 
 .title {
@@ -100,6 +94,14 @@
 
 .entry_section{
     width: 40%;
+    margin: 40px auto;
+	border: 1px solid #e5e7eb;
+	padding: 20px;
+	border: 1px solid #e5e7eb;
+	padding: 20px;
+	border-radius: 20px;
+	color: #6b7280;
+	font-size: 14px;
 }
 #error_message{
     color: red;
@@ -116,7 +118,7 @@
 
 .loader_outlier{
 	position: absolute;
-	background: grey;
+	background: #F7FFFF;
 	width: 100%;
 	height: 100vh;
 	display: none;
@@ -215,6 +217,10 @@
 }
 
 .mandatory_symbol{
+	color: red;
+}
+
+.required{
 	color: red;
 }
 
@@ -463,13 +469,16 @@ th{
 	text-align: center;
 	width: 100%;
 }
-
+/* 
 .nice-form{
   width: 40%;
   justify-self: center;
   background-color: white;
+<<<<<<< Updated upstream
   padding: 0px 20px;
 }
+=======
+  padding: 0px 20px;} */
 
 /* TABLE */
 .table-professional {
@@ -516,37 +525,38 @@ th{
   margin: 40px auto;
   background: #ffffff;
   border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 26px 28px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
-}
-
-.nice-form h3{
-  margin: 0 0 8px 0;
-  font-size: 22px;
-  color: #111827;
-}
-
-.nice-form p{
-  margin: 0 0 18px 0;
+  padding: 20px;
+  border-radius: 20px;
   color: #6b7280;
   font-size: 14px;
 }
+.success_anchor{
+	background-color: #10b981;
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+/* {
+  
+} */
 
 /* form layout */
 .nice-form-group{
   margin-bottom: 16px;
 }
 
-.nice-form-group label{
-  display: block;
-  margin-bottom: 8px;
-  font-size: 13px;
-  font-weight: 700;
-  color: #374151;
+/* .
+    border: none;
+    cursor: pointer;
+  */
+ar.success_anchor:hover{
+	background-color: rgb(192, 192, 192);
+    color: black;
 }
-
-.required{
+quired{
   color: #ef4444;
   margin-left: 4px;
 }
@@ -603,6 +613,10 @@ textarea.nice-form-input{
 @media (max-width: 520px){
   .nice-form{
     padding: 18px 16px;
+  }
+  
+  .filter_section_block{
+  	width: 50%;	
   }
 }
 
@@ -927,7 +941,8 @@ textarea.nice-form-input{
    (Affects only body.tasks-page)
    =========================== */
 
-.tasks-page .tasks-filter{
+/* .tasks-page */ 
+.tasks-filter{
   width: min(1100px, 92%);
   margin: 22px auto 18px;
   background: #fff;
@@ -1053,3 +1068,105 @@ textarea.nice-form-input{
   font-size:13px;
   font-weight:600;
 }
+
+/* Timesheet Entry Card */
+.entry-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.entry-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.entry-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.task-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.task-duration {
+  background: #eef2ff;
+  color: #4338ca;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.task-notes {
+  font-size: 0.9rem;
+  color: #4b5563;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.task-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+/* Timesheet ENntry Buttons */
+
+.btn {
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+.btn-danger {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.btn-primary {
+  background: #4f46e5;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #4338ca;
+}
+
+.btn-danger:hover {
+  background: #fecaca;
+}
+
+.pagination-button{
+  margin: 20px 0px;
+  display: flex;
+  align-items: center;
+  float: right;
+  gap: 25px;
+}
+
+.filter_section_block{
+	/* width: 70%; */
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+

@@ -1,8 +1,5 @@
 package com.worklog.commands.tasks;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-
 import com.worklog.entities.Task;
 import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
@@ -33,28 +30,18 @@ public class EmployeeUpdateTaskCommand implements Command {
 		TaskDAO dao = new TaskDAO();
 
 		if (request.getRequestURI().contains("/api")) {
-			
-			response.setContentType("application/json");
-			PrintWriter out = null;
-			try {
-				out = response.getWriter();
-			} catch (IOException e) {
-				out.append("{\"status\" : \"error\", \"message\" : \"Invalid Id\"}");
-				return false;
-			}
-
 			String status = request.getParameter("status");
 
 			if (status == null) {
-				out.append("{\"status\" : \"error\", \"message\" : \"Invalid Id.\"}");
+				request.setAttribute("message", "Invalid Request!");
 				return false;
 			}
 
 			if (dao.updateTask(task_id, status) == true) {
-				out.append("{\"status\" : \"success\", \"message\" : \"Task Updated\"}");
+				request.setAttribute("message", "Task Updated Successfully!");
 				return true;
 			} else {
-				out.append("{\"status\" : \"error\", \"message\" : \"Exception while updation!\"}");
+				request.setAttribute("message", "Task Updation failed!");
 				return false;
 			}
 
@@ -64,6 +51,7 @@ public class EmployeeUpdateTaskCommand implements Command {
 			Task task = dao.getTaskById(task_id).orElse(null);
 
 			if (task == null) {
+				request.setAttribute("message", "Task Found!");
 				return false;
 			}
 

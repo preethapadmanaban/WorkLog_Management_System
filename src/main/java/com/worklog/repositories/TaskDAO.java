@@ -23,6 +23,7 @@ import com.worklog.utils.CustomDateFormatter;
 public class TaskDAO {
 
 	private static final Logger logger = LogManager.getLogger(TaskDAO.class);
+	private static final int rowsPerPage = 5;
 
 	// written by vasudevan
 	private Task mapToTask(ResultSet rs) throws SQLException {
@@ -54,25 +55,33 @@ public class TaskDAO {
 	}
 
 	// written by vasudevan
-	public Optional<List<Task>> getAllTasksForEmployee(int employeeId, boolean isPending) {
+	public Optional<List<Task>> getAllTasksForEmployee(int employeeId, boolean isPending, int pageNumber) {
 
 		String sql;
+		if (pageNumber == 0)
+			pageNumber = 1; // default 1st page
+		int offset = (pageNumber - 1) * rowsPerPage;
 
 		if (isPending == true) {
 			sql = "select * from tasks where assigned_to = " + employeeId + " and ((status ilike " + "'%" + TaskStatus.ASSIGNED.toString()
 							+ "%' or status ilike " + "'%" + TaskStatus.IN_PROGRESS.toString() + "%'"
 							+ ") or to_char(updated_at, 'YYYY-MM-DD') = to_char(current_timestamp, 'YYYY-MM-DD')) order by created_at";
 		} else {
-			sql = "SELECT * FROM tasks where assigned_to = " + employeeId;
+			sql = "SELECT * FROM tasks where assigned_to = " + employeeId + " LIMIT " + rowsPerPage + " OFFSET " + offset;
 		}
 
 		return getTasksWithQuery(sql);
 
 	}
 
-	public Optional<List<Task>> filterTasksByStatus(int employeeId, String status) {
+	public Optional<List<Task>> filterTasksByStatus(int employeeId, String status, int pageNumber) {
 
-		String sql = "SELECT * FROM tasks WHERE assigned_to =" + employeeId + " AND status ILIKE '%" + status + "%'";
+		if (pageNumber == 0)
+			pageNumber = 1; // default 1st page
+		int offset = (pageNumber - 1) * rowsPerPage;
+
+		String sql = "SELECT * FROM tasks WHERE assigned_to =" + employeeId + " AND status ILIKE '%" + status + "%' LIMIT " + rowsPerPage
+						+ " OFFSET " + offset;
 		return getTasksWithQuery(sql);
 
 	}

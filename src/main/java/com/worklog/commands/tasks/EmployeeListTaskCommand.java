@@ -26,13 +26,15 @@ public class EmployeeListTaskCommand implements Command {
 		int employeeId = (int) session.getAttribute("id");
 
 		String status = request.getParameter("status") == null ? "all" : request.getParameter("status");
+		int pageNumber = request.getParameter("pageNumber") == null ? 1 : Integer.parseInt(request.getParameter("pageNumber"));
+
 		TaskDAO repo = new TaskDAO();
 		List<Task> tasks;
 
 		if (status == null || status.equalsIgnoreCase("all")) {
-			tasks = repo.getAllTasksForEmployee(employeeId, false).orElse(new ArrayList<Task>());
+			tasks = repo.getAllTasksForEmployee(employeeId, false, pageNumber).orElse(new ArrayList<Task>());
 		} else {
-			tasks = repo.filterTasksByStatus(employeeId, status).orElse(new ArrayList<Task>());
+			tasks = repo.filterTasksByStatus(employeeId, status, pageNumber).orElse(new ArrayList<Task>());
 		}
 
 		request.setAttribute("tasks", tasks);

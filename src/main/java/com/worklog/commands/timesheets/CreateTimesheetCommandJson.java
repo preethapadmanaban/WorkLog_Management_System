@@ -41,8 +41,6 @@ public class CreateTimesheetCommandJson implements Command {
 
 		if (request.getRequestURI().contains("/api")) {
 
-			response.setContentType("application/json");
-
 			Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).create();
 
 			PrintWriter out = null;
@@ -73,14 +71,12 @@ public class CreateTimesheetCommandJson implements Command {
 				try {
 					flag = repo.createTimeSheet(timesheet);
 				} catch (DuplicateTimesheetCreationException e) {
-					out.write("{\"status\" : \"error\",");
-					out.append("\"message\" : \" " + e.getMessage() + "\"}");
+					request.setAttribute("message", e.getMessage());
 					return false;
 				}
 				if (flag == false) {
 					logger.error("Timesheet creation failed for employee {} on date {}", employeeId, timeSheetRequest.getWork_date());
-					out.write("{\"status\" : \"error\",");
-					out.append("\"message\" : \"Time sheet creation failed, please try again! \"}");
+					request.setAttribute("message", "Timesheet creation failed!");
 					return false;
 				}
 
@@ -88,8 +84,7 @@ public class CreateTimesheetCommandJson implements Command {
 
 				if (timeSheetId == -1) {
 					logger.error("Failed to retrieve timesheet ID for employee {} on date {}", employeeId, timeSheetRequest.getWork_date());
-					out.write("{\"status\" : \"error\",");
-					out.append("\"message\" : \"Time sheet creation failed, please try again! \"}");
+					request.setAttribute("message", "Timesheet creation failed!");
 					return false;
 				}
 
@@ -99,35 +94,31 @@ public class CreateTimesheetCommandJson implements Command {
 
 				if (flag == false) {
 					logger.error("Timesheet entries insertion failed for timesheet ID {}", timeSheetId);
-					out.write("{\"status\" : \"error\",");
-					out.append("\"message\" : \"Time sheet creation failed, please try again! \"}");
+					request.setAttribute("message", "Timesheet creation failed!");
 					return false;
 				}
 
 				logger.info("Timesheet {} created successfully by employee {} for date {}", timeSheetId, employeeId, timeSheetRequest.getWork_date());
-				out.write("{\"status\" : \"success\",");
-				out.append("\"message\" : \"Timesheet created and send for approval.\"}");
+				request.setAttribute("message", "Timesheet created successfully!");
 				return true;
 				
 
 			} catch (JsonSyntaxException e) {
 				logger.error("Timesheet creation failed ", e);
-				out.write("{\"status\" : \"error\",");
-				out.append("\"message\" : \" " + e.getMessage() + "\"}");
+				request.setAttribute("message", "Exception Occured!");
 				return false;
 			} catch (JsonIOException e) {
 				logger.error("Timesheet creation failed ", e);
-				out.write("{\"status\" : \"error\",");
-				out.append("\"message\" : \" " + e.getMessage() + "\"}");
+				request.setAttribute("message", "Exception Occured!");
 				return false;
 			} catch (IOException e) {
 				logger.error("Timesheet creation failed ", e);
-				out.write("{\"status\" : \"error\",");
-				out.append("\"message\" : \" " + e.getMessage() + "\"}");
+				request.setAttribute("message", "Exception Occured!");
 				return false;
 			}
 		}
 		else {
+			request.setAttribute("message", "Invalid Request!");
 			return false;
 		}
 

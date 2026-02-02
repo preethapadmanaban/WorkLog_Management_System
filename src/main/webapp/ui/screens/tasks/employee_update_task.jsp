@@ -9,6 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Update task</title>
 <link rel="stylesheet" href="/worklog/ui/css/styles.css">
+<script src="${pageContext.request.contextPath}/ui/js/Modal.js"></script>
 </head>
 <body>
 
@@ -72,7 +73,6 @@
 				}
 				
 				function updateStatus(){
-					const modalObj = new Modal();
 					let status = "<%=nextStatus.toString()%>";
 					let task_id = <%=request.getParameter("task_id")%>;
 					let updateTaskUri = "/worklog/controller/api?action=employeeUpdateTask&task_id="+  task_id +"&status=" + status;
@@ -84,14 +84,9 @@
 					})
 					.then((res)=>res.json())
 					.then((data)=>{		
-						if(data.status === "success"){
-							modalObj.success(data.message);
-						}
-						else{
-							modalObj.error(data.message);
-						}
+						openPopup(data.message, "Message", data.status);
 					})
-					.catch(err => modalObj.error(err.message));
+					.catch(err => openPopup("Unable to Connect to the Server!", "Alert", "error"));
 				}
 			</script>
 		<%
