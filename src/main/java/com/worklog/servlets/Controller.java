@@ -25,6 +25,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class Controller extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = LogManager.getLogger(Controller.class);
+
 	public Controller() {
 		super();
 	}
@@ -33,6 +34,8 @@ public class Controller extends HttpServlet {
 
 		// System.out.println("QueryString: " + request.getQueryString());
 		String action = request.getParameter("action");
+
+		boolean isAjax = "fetch".equalsIgnoreCase(request.getHeader("X-Requested-With"));
 		boolean isApiRequest = request.getRequestURI().contains("/api");
 		boolean isDownloadRequest = request.getRequestURI().contains("/download");
 		// System.out.println("current action: " + action);
@@ -49,9 +52,28 @@ public class Controller extends HttpServlet {
 				throw new CommandNotFoundException("Undeifned action.");
 			}
 
-
 			Command cmd = CommandXMLFactory.getCommand(action);
 			boolean flag = cmd.execute(request, response);
+
+			if (isAjax || isApiRequest) {
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+
+				String msg = (String) request.getAttribute("message");
+				if (msg != null) {
+					msg = msg.replace("\"", "\\\"");
+				}
+				String status = flag == true ? "success" : "error";
+
+				response.getWriter().write("{\"status\": \"" + status + "\",\"message\":\"" + msg + "\"}");
+				return;
+			} else if (isDownloadRequest) {
+				response.setContentType("text/csv");
+				response.setCharacterEncoding("UTF-8");
+
+				return;
+			}
+
 			String forward;
 			if (flag) {
 				forward = cmdConfig.getSuccessPage();
@@ -59,14 +81,7 @@ public class Controller extends HttpServlet {
 				forward = cmdConfig.getFailurePage();
 			}
 
-			// the respective will be taken in the command.
-			// we implement the download option here instead of putting it as an separate servlet
-			if (isApiRequest || isDownloadRequest) {
-				return;
-			}
-			else {
-				request.getRequestDispatcher(forward).forward(request, response);
-			}
+			request.getRequestDispatcher(forward).forward(request, response);
 
 		} catch (CommandNotFoundException e) {
 			// e.printStackTrace();
@@ -89,6 +104,5 @@ public class Controller extends HttpServlet {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
-
 
 }

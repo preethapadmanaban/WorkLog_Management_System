@@ -3,6 +3,7 @@ package com.worklog.dto;
 public class ListTaskDTO {
 
 	private int id;
+	private String assignedName;
 	private String title;
 	private String description;
 	private String managerName;
@@ -12,6 +13,7 @@ public class ListTaskDTO {
 
 	public ListTaskDTO(Builder builder) {
 		this.id = builder.id;
+		this.assignedName = builder.assignedName;
 		this.title = builder.title;
 		this.description = builder.description;
 		this.managerName = builder.managerName;
@@ -26,6 +28,14 @@ public class ListTaskDTO {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getAssignedName() {
+		return assignedName;
+	}
+
+	public void setAssignedName(String assignedName) {
+		this.assignedName = assignedName;
 	}
 
 	public String getTitle() {
@@ -78,6 +88,7 @@ public class ListTaskDTO {
 
 	public static class Builder {
 		private int id;
+		private String assignedName;
 		private String title;
 		private String description;
 		private String managerName;
@@ -91,6 +102,11 @@ public class ListTaskDTO {
 
 		public Builder withId(int id) {
 			this.id = id;
+			return this;
+		}
+
+		public Builder withAssignedName(String assignedName) {
+			this.assignedName = assignedName;
 			return this;
 		}
 

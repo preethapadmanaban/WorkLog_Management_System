@@ -1,31 +1,16 @@
-class Modal{
-	
-    success(message){
-        if(message == null){
-            console.log("success message is null");
-            return;
-        }
-        document.getElementById("modal_header_error_img").hidden = true;
-        document.getElementById("modal_header_success_img").hidden = false;
-        document.getElementById("modal_body_text").innerText = message;
-        document.getElementById("modal_outlier").style.display = "flex";
-    }
+window.openPopup = function (msg, popupTitle="Message", type="info"){
+	  const box = document.querySelector(".modal-box");
+	  box.classList.remove("success", "error");
 
-    error(message){
-        if(message == null){
-            console.log("error message is null");
-            return;
-        }
-        document.getElementById("modal_header_success_img").hidden = true;
-        document.getElementById("modal_header_error_img").hidden = false;
-        document.getElementById("modal_body_text").innerText = message;
-        document.getElementById("modal_outlier").style.display = "flex";
-    }
+	  if(type === "success") box.classList.add("success");
+	  if(type === "error") box.classList.add("error");
 
-    hideModal(){
-        document.getElementById("modal_outlier").style.display = "none";
-		window.location.reload();
-    }
+	  document.getElementById("modalTitle").textContent = popupTitle;
+	  document.getElementById("modalText").textContent = msg;
+	  document.getElementById("modalOverlay").style.display = "flex";
 }
 
-window.Modal = Modal;
+window.closePopup = function() {
+	  document.getElementById("modalOverlay").style.display = "none";
+	  window.location.reload();
+}

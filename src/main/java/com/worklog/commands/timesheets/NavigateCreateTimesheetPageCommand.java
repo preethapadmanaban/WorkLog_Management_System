@@ -30,7 +30,7 @@ public class NavigateCreateTimesheetPageCommand implements Command {
 
 		TaskDAO taskDAO = new TaskDAO();
 
-		List<Task> tasks = taskDAO.getAllTasksForEmployee(id, true).orElse(new ArrayList<Task>());
+		List<Task> tasks = taskDAO.getAllTasksForEmployee(id, true, 1).orElse(new ArrayList<Task>());
 
 		// here we convert this into json, because we use this list of task directly inside the script tag, not as jsp rendering.
 		// Gson gson = new GsonBuilder()

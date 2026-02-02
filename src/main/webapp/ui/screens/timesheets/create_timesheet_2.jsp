@@ -8,6 +8,7 @@
 <meta charset="UTF-8">
 <title>Create Timesheet</title>
 <link href="/worklog/ui/css/styles.css" rel="stylesheet">
+<script src="${pageContext.request.contextPath}/ui/js/Modal.js"></script>
 <style>
 	.entry-card {
 	  max-width: 320px;
@@ -30,8 +31,10 @@
 	
 
 	<div class="timesheet_container">	
-		<div class="filter_section">
-	        <button>Back</button>
+		<div class="tasks-filter">
+			<div>
+				<h3>Create A New Timesheet</h3>
+			</div>
 	        <div>
 	            <label for="">Enter Work Date </label>
 	            <input class="nice-form-input"  type="date" name="work_date" id="work_date">
@@ -80,8 +83,6 @@
 	    </div>
 	</div>
     <script>
-    	
-    	let modal_obj = new Modal();
     	let manager_id = <%=(tasks != null || tasks.size() == 0) ? tasks.get(0).getCreated_by() : -1%>;
     	let entries = [];
         let entry_object = { task_id : 0, title : "", hours_spent: 0.0, notes: ""};
@@ -222,19 +223,19 @@
             entries.push(new Entry(entry_object.task_id, entry_object.hours_spent, entry_object.notes));
             let enrty_card = document.createElement("div");
         
-            enrty_card.innerHTML = "<div class='entry_card'>"+
-                    	"<span class='title'>🍪 "+ entry_object.title +"</span>" +  
-                    	"<p class='description'>" + entry_object.notes + "</p>"+
-                    	"<div class='actions'>" + 
-                        "<button class='pref'> " +
-                           "Taken Time  -  " + entry_object.hours_spent   + " hours " + 
-                        "</button>" +
-                        "<button class='accept' onclick='delete_entry_card(event, " + entry_object.task_id +")'> " +
-                            "Delete" +  
-                        "</button>"+
-                        "</div>";
-
-
+            enrty_card.innerHTML = '<div class="entry-card" id=entry_'+ entry_object.task_id + '>'+
+							            '<div class="entry-card-header">' + 
+							            '<h3 class="task-title"> '+ entry_object.title +'</h3>' +
+							            '<span class="task-duration">⏱  '+ entry_object.hours_spent +' hrs</span>' + 
+							          '</div>' +
+								
+							          '<p class="task-notes">' + 
+							            entry_object.notes + 
+							          '</p>' + 							
+							          '<div class="task-actions">' + 
+							            '<button class="btn btn-danger" onclick="delete_entry_card(' + entry_object.task_id  + ')">Delete</button>' + 
+							          '</div>' + 
+							        '</div>';
             let entries_doc = document.getElementById("entries_doc"); // removes when 1st element is added.	
             if(entries_doc != null){
             	entries_doc.remove();
@@ -251,20 +252,22 @@
         }
 
         // delete entry card
-        function delete_entry_card(e, task_id){
+        function delete_entry_card(task_id){
 			// remove the card from ui.
-            e.target.parentNode.parentNode.parentNode.remove();
-            addNoEntriesDoc();
+            // e.target.parentNode.parentNode.remove();
+			document.getElementById("entry_" + task_id).remove();
+           
             // remove the object in the stored array.
             console.log(task_id);
             entries = entries.filter(entry => parseInt(entry.task_id) !== task_id);
             console.log(entries);
+            // docs in the ui
+            addNoEntriesDoc();
         }
                
         function addNoEntriesDoc(){
         	/* Entries */
-            let entriesChild = document.getElementById("entry_section").childNodes;
-            if(entriesChild.length <= 1){
+            if(entries.length <= 0){
  			   let doc = document.createElement("p");
  			   doc.classList.add("entries_doc");
  			   doc.setAttribute("id", "entries_doc");
@@ -275,7 +278,7 @@
         
         function createTimesheet(){
 			if(entries == null || entries.length === 0){
-				modal_obj.error("Please Create Atleast One Entry!");
+				openPopup("Please Create Atleast One Entry!", "Message", "error");
 				return;
 			}
 			
@@ -296,14 +299,7 @@
 			.then( (res) => res.json() )
 			.then( (data) =>{ 
 				document.getElementById("loader_outlier").style.display = "none";
-				if(data.status === "success")
-				{
-					modal_obj.success(data.message);
-				}
-				else
-				{
-					modal_obj.error(data.message);
-				}
+				openPopup(data.message, "Message", data.status);
 			})
 			.catch( err=> console.log("error =>", err))
 			.finally(()=>{

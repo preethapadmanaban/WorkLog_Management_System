@@ -18,11 +18,10 @@
  	<jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
  	<jsp:include page="/ui/screens/common/message.jsp"></jsp:include>
  	<%-- <jsp:include page="/ui/screens/common/modal.jsp"></jsp:include> --%>
- 		<div class = "filter_section">
+ 		<div class = "nice-form">
  			<h3>My Tasks</h3>
- 			
  				<form action="controller" method="post">
-	 					<div class="filter_section">
+	 					<div class="filter_section_block">
 				 		<h3>Filter by Status - </h3>
 		 				<input type="hidden" name="action" value="listEmployeeTasks">
 		 				<select class="nice-form-input" name="status" id="status_select">
@@ -38,19 +37,21 @@
  			
  		</div>
  	<div class="container_70">
- 		<table class="table table-striped table-hover" id="task_table">
-			<thead>
-				<tr>
-					<th>S.No</th>
+		<div class="table-card">
+		    <div class="table-responsive">
+		      <table class="table-professional">
+		        <thead>
+		          <tr>
+		           	<th>S.No</th>
 					<th>Task</th>
 					<th>Description</th>
 					<th>Status</th>
 					<th>Deadline</th>
 					<th>Assigned Date</th>
-				</tr>
-			</thead>
-			<tbody>
-				<% 
+		          </tr>
+		        </thead>
+		        <tbody>
+		        <% 
 				List<Task> tasks = (List<Task>)request.getAttribute("tasks");
 				if(tasks != null && tasks.size() != 0) 
 				{
@@ -65,21 +66,50 @@
 							<td><%=i+1%></td>
 							<td><%=task.getTitle()%></td>
 							<td><%=task.getDescription()%></td>
-							<td><%=task.getStatus().getDisplayValue()%></td>
+							<td>
+							 <span class="task-status status-<%= task.getStatus().getDisplayValue() %>">
+				                <%= task.getStatus().getDisplayValue() %>
+				              </span>
+							</td>
 							<td><%=task.getDeadline()%></td>
 							<td><%=task.getCreated_at()%></td>
 						</tr>
 					<%	
 					}	
-				}
-				else{
-				%>
-				<tr><td colspan="7" style="text-align: center;">No Tasks found!</td></tr>
-				<%
-				}
-				%>
-			</tbody>
-		</table>
+		        } else {
+		        %>
+		          <tr>
+		            <td colspan="6">No tasks found</td>
+		          </tr>
+		        <%
+		            }
+		        %>
+		        </tbody>
+		      </table>
+		      <% if(tasks != null || tasks.size() > 10) {  %>
+		      <div class="pagination-button">
+		      		<%
+		      			int totalPages = request.getAttribute("totalPages") != null ? (int)request.getAttribute("totalPages") : 1;
+		      			int pageNumber = request.getAttribute("pageNumber") != null ? (int)request.getAttribute("pageNumber") : 1;
+		      			
+		      			%>	
+	     			<form action="controller">
+		      			<input type="hidden" name="action" value="listEmployeeTasks">
+		      			<input type="hidden" name="pageNumber" value="<%=pageNumber - 1%>">
+		      			<button class="btn btn-primary" type="submit" <%if(pageNumber <= 1) { %> disabled <% } %> >Prev</button>
+	      			</form>
+	      			
+	      			<span><%=pageNumber%></span>
+	      			
+	      			<form action="controller">
+	      				<input type="hidden" name="action" value="listEmployeeTasks">
+		      			<input type="hidden" name="pageNumber" value="<%=pageNumber + 1%>">
+		      			<button class="btn btn-primary" type="submit" <%if(totalPages <= 1) { %> disabled <% } %>>Next</button>
+	      			</form>
+		      </div>
+		      <% } %>
+		    </div>
+		  </div>
  	</div>
  	
  	<script>

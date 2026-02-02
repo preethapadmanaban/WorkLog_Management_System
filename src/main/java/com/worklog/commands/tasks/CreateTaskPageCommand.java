@@ -12,26 +12,26 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-public class CreateTaskPageCommand implements Command{
+public class CreateTaskPageCommand implements Command {
 
 	@Override
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) throws UnAuthorizedException {
-		
-		HttpSession session = request.getSession(false);
-		
-        if (session == null) {
-			throw new UnAuthorizedException("access_denied");
-        }
 
-        String role = (String) session.getAttribute("role");
-        
-        if (role == null || !role.equalsIgnoreCase("Manager")) {
-        	 return false;
-        }
+		HttpSession session = request.getSession(false);
+
+		if (session == null) {
+			throw new UnAuthorizedException("access_denied");
+		}
+
+		String role = (String) session.getAttribute("role");
+
+		if (role == null || !role.equalsIgnoreCase("Manager")) {
+			return false;
+		}
 
 		List<Employee> members = EmployeeDAO.getAllMembers().orElse(new ArrayList<Employee>());
-        request.setAttribute("Members", members);
-        
+		request.setAttribute("members", members);
+
 		return true;
 	}
 
