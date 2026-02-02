@@ -23,7 +23,8 @@ public class PagedResult<T> {
 	public int getTotalPages(int size) {
 		if (size <= 0)
 			return 1;
-		return (int) Math.ceil((double) totalCount / size);
+		int pages = (int) Math.ceil((double) totalCount / size);
+		return Math.max(1, pages);
 	}
 
 }

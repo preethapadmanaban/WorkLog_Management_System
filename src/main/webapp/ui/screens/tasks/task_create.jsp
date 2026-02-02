@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
 <jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
 </head>
-<body>
+<body class="create-task-page">
 <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
 <jsp:include page="/ui/screens/common/message.jsp"></jsp:include>
 
@@ -23,7 +23,7 @@
       </h3>
       <p>Create a new task and assign to a employee.</p>
       
-      <form action="/worklog/controller" method="post" >
+      <form action="<%= request.getContextPath() %>/controller" method="post">
    	  <input type="hidden" name="action" value="createTask">
 
       <div class="nice-form-group"> 
@@ -40,22 +40,19 @@
 
       <div class="nice-form-group">
         <label>Select employee<span class="required">*</span></label>
-        <select class="nice-form-input" name="assigned_to" name="task_id" id="task_id">
-          <option value="">-- Select employee --</option>
-          			<%
-			        	List<Employee> list = (List<Employee>) request.getAttribute("Members");
-			        
-			        	if(list != null){
-			        		for(Employee e : list){
-			        %>
-			        
-			        				<option value="<%= e.getId() %>"><%=e.getName()+" ("+e.getId()+")"%></option>
-			        				
-			        <%
-			          		}
-			        	}
-			        %>
-        </select>
+        <select class="nice-form-input" name="assigned_to" id="assigned_to">
+			  <option value="">-- Select employee --</option>
+			  <%
+			    List<Employee> list = (List<Employee>) request.getAttribute("members");
+			    if(list != null){
+			      for(Employee e : list){
+			  %>
+			      <option value="<%= e.getId() %>"><%= e.getName() %></option>
+			  <%
+			      }
+			    }
+			  %>
+		</select>
         <small class="error-text" id="empError"></small>
       </div>
 
@@ -146,7 +143,7 @@
 		  payload.append("deadline", dead.value);
 		
 		  try {
-			  const res = await fetch("/worklog/controller", {
+			  const res = await fetch(base + "/controller", {
 				  method: "POST",
 				  headers: {
 				    "Content-Type": "application/x-www-form-urlencoded",

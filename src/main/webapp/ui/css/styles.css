@@ -414,7 +414,6 @@ h3{
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-<<<<<<< Updated upstream
 table{
     width: 100%;
     border-collapse: collapse;
@@ -470,19 +469,19 @@ th{
   justify-self: center;
   background-color: white;
   padding: 0px 20px;
-=======
+}
+
 /* TABLE */
 .table-professional {
   width: 100%;
   border-collapse: collapse;
   font-family: Arial, sans-serif;
   overflow: hidden;
->>>>>>> Stashed changes
   border-radius: 10px;
 }
 
 .table-professional thead {
-  background: #d7e0ff;
+  background: #c4d1ff;
   color: black;
 }
 
@@ -685,7 +684,6 @@ textarea.nice-form-input{
   cursor: pointer;
 }
 
-<<<<<<< Updated upstream
 .success_anchor{
 	background-color: #10b981;
     padding: 10px;
@@ -709,7 +707,8 @@ textarea.nice-form-input{
 .success_anchor:hover{
 	background-color: rgb(192, 192, 192);
     color: black;
-=======
+}
+
 .modal-ok:hover{
   opacity: 0.95;
 }
@@ -719,7 +718,6 @@ textarea.nice-form-input{
 
 .modal-box.error   { 
 	border-left: 6px solid #dc2626; 
->>>>>>> Stashed changes
 }
 
 /* LIST TASK TABLE */
@@ -1055,4 +1053,3 @@ textarea.nice-form-input{
   font-size:13px;
   font-weight:600;
 }
-
