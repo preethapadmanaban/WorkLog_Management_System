@@ -3,6 +3,7 @@ package com.worklog.commands.timesheets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.worklog.commands.constants.TimeSheetStatus;
 import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.TimeSheetDAO;
@@ -46,7 +47,7 @@ public class ApproveTimesheetCommand implements Command {
         int managerId = (int) session.getAttribute("id");
 
         TimeSheetDAO dao = new TimeSheetDAO();
-        boolean updated = dao.updateTimesheetStatus(timesheetId, "approved", managerId,commentStr,true);
+		boolean updated = dao.updateTimesheetStatus(timesheetId, TimeSheetStatus.APPROVED.toString(), managerId, commentStr, true);
 
 		if (updated == true) {
 			logger.info("Manager {} approved timesheet {}", managerId, timesheetId);

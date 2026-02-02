@@ -7,9 +7,9 @@ import java.time.LocalDateTime;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.postgresql.util.PSQLException;
+import org.postgresql.util.ServerErrorMessage;
 
 import com.worklog.entities.Employee;
-import com.worklog.exceptions.DuplicateUserException;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.EmployeeDAO;
 import com.worklog.utils.PasswordProtector;
@@ -51,18 +51,16 @@ public class SignupCommand implements Command {
 				return false;
 			}
 
-		} catch (DuplicateUserException e) {
-			request.setAttribute("message", e.getMessage());
-			return false;
 		} catch (PSQLException e) {
 			ServerErrorMessage errorMessage = e.getServerErrorMessage();
 			if (errorMessage != null && errorMessage.getSQLState() != null
 							&& (errorMessage.getSQLState().startsWith("23") || errorMessage.getSQLState().equals("23505"))) {
 				logger.error("Exception while creating new user, Unique_constraint_violation error.", e);
-				throw new DuplicateUserException("Email already exists.");
+				request.setAttribute("message", "Email already exists.");
+				return false;
 			} else {
 				logger.error("Exception while creating new user, PSQLException.", e);
-				throw e;
+				return false;
 			}
 		} catch (SQLException e) {
 			return false;

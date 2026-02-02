@@ -17,6 +17,7 @@ import com.worklog.db.DataSourceFactory;
 import com.worklog.dto.ReportEmployeeDTO;
 import com.worklog.entities.TimeSheet;
 import com.worklog.exceptions.DuplicateTimesheetCreationException;
+import com.worklog.utils.CustomDateFormatter;
 
 
 public class TimeSheetDAO {
@@ -27,19 +28,14 @@ public class TimeSheetDAO {
 	    TimeSheet timeSheet = new TimeSheet();
 
 	    timeSheet.setApproved(rs.getBoolean("approved"));
-	    timeSheet.setCreated_at(rs.getTimestamp("created_at"));
+		timeSheet.setCreated_at(CustomDateFormatter.toLocalFormat(rs.getString("created_at"), true));
 	    timeSheet.setEmployee_id(rs.getInt("employee_id"));
 	    timeSheet.setId(rs.getInt("id"));
 	    timeSheet.setStatus(rs.getString("status"));
 	    timeSheet.setManager_comment(rs.getString("manager_comment")); // correct column name
 	    timeSheet.setTotal_hours(rs.getDouble("total_hours"));
 	    timeSheet.setManager_id(rs.getInt("manager_id"));
-
-	    Date date = rs.getDate("work_date");
-	    if (date != null) {
-	        timeSheet.setWork_date(date.toLocalDate());
-	    }
-
+		timeSheet.setWork_date(CustomDateFormatter.toLocalFormat(rs.getString("work_date")));
 	    return timeSheet;
 	}
 
@@ -100,9 +96,9 @@ public class TimeSheetDAO {
 	public Optional<List<TimeSheet>> getAllTimeSheetsForEmployee(int id, String status) {
 		String sql;
 		if (status.equalsIgnoreCase("all")) {
-			sql = "select * from timesheets where employee_id=?";
+			sql = "select * from timesheets where employee_id=? order by work_date";
 		} else {
-			sql = "select * from timesheets where employee_id=? and status ilike ?";
+			sql = "select * from timesheets where employee_id=? and status ilike ? order by work_date";
 		}
 
 		try(Connection conn=DataSourceFactory.getConnectionInstance();
@@ -113,7 +109,7 @@ public class TimeSheetDAO {
 
 			pstmt.setInt(1, id);
 			if (!status.equalsIgnoreCase("all")) {
-				pstmt.setString(2, status);
+				pstmt.setString(2, "%" + status + "%");
 			}
 
 			ResultSet rs = pstmt.executeQuery();
@@ -131,42 +127,32 @@ public class TimeSheetDAO {
 
 	public Optional<List<TimeSheet>> getPendingTimesheet() {
 
-	    String sql =
-	        "select id, employee_id, work_date, total_hours, status, manager_id, manager_comment, approved, created_at " +
-	        "from timesheets " +
-	        "where status ILIKE 'pending' " +
-	        "order by work_date DESC, created_at desc";
+		String sql = "select id, employee_id, work_date, total_hours, status, manager_id, manager_comment, approved, created_at "
+						+ "from timesheets " + "where status ILIKE 'pending' " + "order by work_date DESC, created_at desc";
 
-	    List<TimeSheet> list = new ArrayList<>();
+		List<TimeSheet> list = new ArrayList<>();
 
-	    try (Connection conn = DataSourceFactory.getConnectionInstance();
-	         PreparedStatement pstmt = conn.prepareStatement(sql);
-	         ResultSet rs = pstmt.executeQuery()) {
+		try (Connection conn = DataSourceFactory.getConnectionInstance();
+						PreparedStatement pstmt = conn.prepareStatement(sql);
+						ResultSet rs = pstmt.executeQuery()) {
 
-	        while (rs.next()) {
-	            TimeSheet timesheet = new TimeSheet(
-	                rs.getInt("id"),
-	                rs.getInt("employee_id"),
-	                rs.getDate("work_date").toLocalDate(),
-	                rs.getDouble("total_hours"),
-	                rs.getString("status"),
-	                rs.getInt("manager_id"),
-	                rs.getString("manager_comment"),
-	                rs.getBoolean("approved"),
-	                rs.getTimestamp("created_at")
-	            );
-	            list.add(timesheet);
-	        }
+			while (rs.next()) {
+				TimeSheet timesheet = new TimeSheet(rs.getInt("id"), rs.getInt("employee_id"),
+								CustomDateFormatter.toLocalFormat(rs.getString("work_date")), rs.getDouble("total_hours"),
+								rs.getString("status"), rs.getInt("manager_id"), rs.getString("manager_comment"), rs.getBoolean("approved"),
+								CustomDateFormatter.toLocalFormat(rs.getString("created_at"), true));
+				list.add(timesheet);
+			}
 
-	        return Optional.of(list);
+			return Optional.of(list);
 
-	    } catch (SQLException e) {
-	    	logger.error("DB error in getPendingTimesheet()", e);
-	        return Optional.empty();
-	    }
+		} catch (SQLException e) {
+			logger.error("DB error in getPendingTimesheet()", e);
+			return Optional.empty();
+		}
 	}
 
-	// tommorrow seen this reportdao
+
 	public Optional<List<ReportEmployeeDTO>> getReportDailyworkhours(LocalDate fromDate, LocalDate toDate, int manager_id) {
 		String sql = """
 						select t.assigned_to as "employee_id",e.name as "employee_name", ts.work_date as "work_date" , t.id as "task_id",
@@ -222,13 +208,13 @@ public class TimeSheetDAO {
 				TimeSheet ts = new TimeSheet(
 								rs.getInt("id"),
 								rs.getInt("employee_id"),
-								rs.getDate("work_date").toLocalDate(),   
+								CustomDateFormatter.toLocalFormat(rs.getString("work_date")),
 								rs.getDouble("total_hours"),
 								rs.getString("status"),
 								rs.getInt("manager_id"),
 								rs.getString("manager_comment"),
 								rs.getBoolean("approved"),
-								rs.getTimestamp("created_at")
+								CustomDateFormatter.toLocalFormat(rs.getString("created_at"), true)
 								);
 								return Optional.ofNullable(ts);
 				

@@ -1,8 +1,5 @@
 package com.worklog.dto;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 public class ListTaskDTO {
 
 	private int id;
@@ -10,8 +7,8 @@ public class ListTaskDTO {
 	private String description;
 	private String managerName;
 	private String status;
-	private LocalDate deadline;
-	private LocalDateTime created_at;
+	private String deadline;
+	private String created_at;
 
 	public ListTaskDTO(Builder builder) {
 		this.id = builder.id;
@@ -63,19 +60,19 @@ public class ListTaskDTO {
 		this.status = status;
 	}
 
-	public LocalDate getDeadline() {
+	public String getDeadline() {
 		return deadline;
 	}
 
-	public void setDeadline(LocalDate deadline) {
+	public void setDeadline(String deadline) {
 		this.deadline = deadline;
 	}
 
-	public LocalDateTime getCreated_at() {
+	public String getCreated_at() {
 		return created_at;
 	}
 
-	public void setCreated_at(LocalDateTime created_at) {
+	public void setCreated_at(String created_at) {
 		this.created_at = created_at;
 	}
 
@@ -85,8 +82,8 @@ public class ListTaskDTO {
 		private String description;
 		private String managerName;
 		private String status;
-		private LocalDate deadline;
-		private LocalDateTime created_at;
+		private String deadline;
+		private String created_at;
 
 		public Builder() {
 
@@ -117,12 +114,12 @@ public class ListTaskDTO {
 			return this;
 		}
 
-		public Builder withDeadline(LocalDate deadline) {
+		public Builder withDeadline(String deadline) {
 			this.deadline = deadline;
 			return this;
 		}
 
-		public Builder createdAt(LocalDateTime created_at) {
+		public Builder createdAt(String created_at) {
 			this.created_at = created_at;
 			return this;
 		}

@@ -1,26 +1,23 @@
 package com.worklog.entities;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
-
 public class TimeSheet {
 
 	private int id;
 	private int employee_id;
-	private LocalDate work_date;
+	private String work_date;
 	private double total_hours;
 	private String status;
 	private int manager_id;
 	private String manager_comment;
 	private boolean approved;
-	private Timestamp created_at;
+	private String created_at;
 
 	public TimeSheet() {
 
 	}
 
-	public TimeSheet(int employee_id, LocalDate work_date, double total_hours, String status, int manager_id, String manager_comment,
-					boolean approved, Timestamp created_at) {
+	public TimeSheet(int employee_id, String work_date, double total_hours, String status, int manager_id, String manager_comment,
+					boolean approved, String created_at) {
 		this.employee_id = employee_id;
 		this.work_date = work_date;
 		this.total_hours = total_hours;
@@ -31,8 +28,8 @@ public class TimeSheet {
 		this.created_at = created_at;
 	}
 
-	public TimeSheet(int id, int employee_id, LocalDate work_date, double total_hours, String status, int manager_id,
-					String manager_comment, boolean approved, Timestamp created_at) {
+	public TimeSheet(int id, int employee_id, String work_date, double total_hours, String status, int manager_id, String manager_comment,
+					boolean approved, String created_at) {
 		this.id = id;
 		this.employee_id = employee_id;
 		this.work_date = work_date;
@@ -60,11 +57,11 @@ public class TimeSheet {
 		this.employee_id = employee_id;
 	}
 
-	public LocalDate getWork_date() {
+	public String getWork_date() {
 		return work_date;
 	}
 
-	public void setWork_date(LocalDate work_date) {
+	public void setWork_date(String work_date) {
 		this.work_date = work_date;
 	}
 
@@ -108,11 +105,11 @@ public class TimeSheet {
 		this.approved = approved;
 	}
 
-	public Timestamp getCreated_at() {
+	public String getCreated_at() {
 		return created_at;
 	}
 
-	public void setCreated_at(Timestamp created_at) {
+	public void setCreated_at(String created_at) {
 		this.created_at = created_at;
 	}
 

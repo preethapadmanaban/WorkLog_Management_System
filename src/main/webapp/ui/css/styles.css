@@ -1,5 +1,160 @@
 @charset "UTF-8";
 
+/* Create Timesheet Section */
+
+.back_button img{
+	width: 25px;
+	border-radius: 50%;
+	padding: 10px;
+	border: 0.5px solid lightgray;
+	cursor: pointer;
+}
+
+.timesheet_container{
+	padding: 1rem;
+    background: white;
+    height: 100vh;
+}
+
+.create_timesheet_section{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.title {
+  font-weight: 600;
+  color: rgb(31 41 55);
+}
+
+.description {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: rgb(75 85 99);
+}
+
+.description a {
+  --tw-text-opacity: 1;
+  color: rgb(59 130 246);
+}
+
+.description a:hover {
+  -webkit-text-decoration-line: underline;
+  text-decoration-line: underline;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+  -moz-column-gap: 1rem;
+  column-gap: 1rem;
+  flex-shrink: 0;
+}
+
+.pref {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: rgb(31 41 55 );
+  -webkit-text-decoration-line: underline;
+  text-decoration-line: underline;
+  transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  background-color: transparent;
+}
+
+.pref:hover {
+  color: rgb(156 163 175);
+}
+
+.pref:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.accept {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  background-color: rgb(17 24 39);
+  font-weight: 500;
+  border-radius: 0.5rem;
+  color: #fff;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  border: none;
+  transition: all .15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.accept:hover {
+  background-color: rgb(55 65 81);
+}
+
+.accept:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.entry_section{
+    width: 40%;
+}
+#error_message{
+    color: red;
+    font-weight: bold;
+}
+
+.full_div_action_button{
+	text-align: center;
+}
+
+/* Create timesheet ends */
+
+/* Spinner outlier  */
+
+.loader_outlier{
+	position: absolute;
+	background: grey;
+	width: 100%;
+	height: 100vh;
+	display: none;
+	justify-content: center;
+	align-items: center;
+}
+
+.loader_container{
+    background-color: white;
+    width: 250px;
+    height: 150px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loader {
+	width: 48px;
+	height: 48px;
+	border: 5px solid royalblue;
+	border-bottom-color: transparent;
+	border-radius: 50%;
+	display: inline-block;
+	box-sizing: border-box;
+	animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+	0% {
+	    transform: rotate(0deg);
+	}
+	100% {
+	    transform: rotate(360deg);
+	}
+} 
+
+
 /* Modal styles */
 
 .modal_outlier{
@@ -9,7 +164,7 @@
     display: none;
     justify-content: center;
     align-items: center;
-    background-color: grey;
+    background-color: #F7F8F8;
 }
 .modal_container{
     border-radius: 10px;
@@ -57,6 +212,10 @@
 .app_name_div{
 	width: 100%;
 	text-align: center;
+}
+
+.mandatory_symbol{
+	color: red;
 }
 
 .container_70{
@@ -272,13 +431,6 @@ th{
     background: #fafafa;
 }
 
-th:last-child{
-	text-align: center;
-}
-
-
-
-
 .add_timesheet_icon{
 	cursor: pointer;
 }
@@ -312,11 +464,10 @@ th:last-child{
 }
 
 .nice-form{
-  margin-top: 40px;
-  width: 50%;
+  width: 40%;
   justify-self: center;
   background-color: white;
-  padding: 20px 50px;
+  padding: 0px 20px;
   border-radius: 10px;
 }
 
@@ -373,9 +524,14 @@ th:last-child{
 	padding: 0px 10px;
 }
 
-.action_button_array{
-	display: flex;
-	justify-content: space-around;
+.success_anchor{
+	background-color: #10b981;
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
 }
 
 .info_anchor{
@@ -384,6 +540,13 @@ th:last-child{
     border-radius: 5px;
     color: white;
     text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.success_anchor:hover{
+	background-color: rgb(192, 192, 192);
+    color: black;
 }
 
 .info_anchor:hover{

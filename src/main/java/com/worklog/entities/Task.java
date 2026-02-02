@@ -1,8 +1,5 @@
 package com.worklog.entities;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
-
 import com.worklog.commands.constants.TaskStatus;
 
 /**
@@ -19,10 +16,10 @@ public class Task {
 	private String description;
 	private int assigned_to;
 	private TaskStatus status;
-	private LocalDate deadline;
+	private String deadline;
 	private int created_by;
-	private Timestamp created_at;
-	private Timestamp updated_at;
+	private String created_at;
+	private String updated_at;
 
 
 	public Task(Task.Builder builder) {
@@ -60,7 +57,7 @@ public class Task {
 		return status;
 	}
 
-	public LocalDate getDeadline() {
+	public String getDeadline() {
 		return deadline;
 	}
 
@@ -68,11 +65,11 @@ public class Task {
 		return created_by;
 	}
 
-	public Timestamp getCreated_at() {
+	public String getCreated_at() {
 		return created_at;
 	}
 
-	public Timestamp getUpdated_at() {
+	public String getUpdated_at() {
 		return updated_at;
 	}
 
@@ -83,10 +80,10 @@ public class Task {
 		private String description;
 		private int assigned_to;
 		private TaskStatus status;
-		private LocalDate deadline;
+		private String deadline;
 		private int created_by;
-		private Timestamp created_at;
-		private Timestamp updated_at;
+		private String created_at;
+		private String updated_at;
 
 		public Builder() {
 
@@ -117,7 +114,7 @@ public class Task {
 			return this;
 		}
 
-		public Builder withDeadline(LocalDate date) {
+		public Builder withDeadline(String date) {
 			this.deadline = date;
 			return this;
 		}
@@ -127,12 +124,12 @@ public class Task {
 			return this;
 		}
 
-		public Builder createdAt(Timestamp createdAt) {
+		public Builder createdAt(String createdAt) {
 			this.created_at = createdAt;
 			return this;
 		}
 
-		public Builder updatedAt(Timestamp updateAt) {
+		public Builder updatedAt(String updateAt) {
 			this.updated_at = updateAt;
 			return this;
 		}

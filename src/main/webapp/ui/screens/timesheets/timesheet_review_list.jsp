@@ -41,8 +41,8 @@
         <td><%= t.getEmployee_id() %></td>
         <td><%= t.getWork_date() %></td>
         <td><%= t.getTotal_hours() %> hrs</td>
-        <td><%= t.getStatus().toUpperCase() %></td>
-        <td><%= t.getCreated_at().toLocalDateTime().toString().split("T")[0] %></td>
+        <td><%= t.getStatus().toString() %></td>
+        <td><%= t.getCreated_at() %></td>
         <td class="action_button_array">
             <a class="info_anchor" href="<%=request.getContextPath()%>/controller?action=timesheetReview&timesheetId=<%= t.getId() %>">
                 Review
