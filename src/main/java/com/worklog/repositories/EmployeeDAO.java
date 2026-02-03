@@ -10,25 +10,20 @@ import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.postgresql.util.PSQLException;
-import org.postgresql.util.ServerErrorMessage;
 
 import com.worklog.db.DataSourceFactory;
 import com.worklog.entities.Employee;
-import com.worklog.exceptions.DuplicateUserException;
-
 
 public class EmployeeDAO {
-	
-	private static final Logger logger = LogManager.getLogger(EmployeeDAO.class);
 
+	private static final Logger logger = LogManager.getLogger(EmployeeDAO.class);
 
 	public boolean createEmployee(Employee employee) throws SQLException {
 
 		String sql = "INSERT INTO employees(name, email, password, role) VALUES(?, ?, ?, ?)";
 
 		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			
+
 			pstmt.setString(1, employee.getName());
 			pstmt.setString(2, employee.getEmail());
 			pstmt.setString(3, employee.getPassword());
@@ -41,36 +36,36 @@ public class EmployeeDAO {
 
 			return true;
 
-		} 
+		}
 		// catch (PSQLException e) {
-		// 	/*
-		// 	 * Analyze the SQLState for confirming the error occurs is Unique constraint violation. For that im checking the PostgreSQL docs
-		// 	 * to see the error code thrown by PostgreSQL server. PostgreSQL docs shows that the SQLState starts with "23" is the constraint
-		// 	 * violation error and "23505" is unique_constraint_violation error.
-		// 	 * 
-		// 	 * @see - https://www.postgresql.org/docs/18/errcodes-appendix.html
-		// 	 */
-			
-		// } catch (SQLException e) {
-		// 	// old version
-		// 	// if (e.getMessage().contains("employees_email_key") || e.getMessage().contains(("duplicate"))) {
-		// 	// logger.warn("Attempt to create duplicate employee with email: {}", employee.getEmail());
-		// 	// throw new DuplicateUserException("Email already exists");
-		// 	// }
+		// /*
+		// * Analyze the SQLState for confirming the error occurs is Unique constraint violation. For that im checking the PostgreSQL docs
+		// * to see the error code thrown by PostgreSQL server. PostgreSQL docs shows that the SQLState starts with "23" is the constraint
+		// * violation error and "23505" is unique_constraint_violation error.
+		// *
+		// * @see - https://www.postgresql.org/docs/18/errcodes-appendix.html
+		// */
 
-		//     logger.error("Error while creating employee with email: {}", employee.getEmail(), e);
-		// 	throw e;
+		// } catch (SQLException e) {
+		// // old version
+		// // if (e.getMessage().contains("employees_email_key") || e.getMessage().contains(("duplicate"))) {
+		// // logger.warn("Attempt to create duplicate employee with email: {}", employee.getEmail());
+		// // throw new DuplicateUserException("Email already exists");
+		// // }
+
+		// logger.error("Error while creating employee with email: {}", employee.getEmail(), e);
+		// throw e;
 		// }
 
 	}
-	
+
 	// written by preetha
 	public static Optional<List<Employee>> getAllMembers() {
 
 		List<Employee> employeeList = new ArrayList<>();
-			
+
 		String sql = "select id,name,role from employees where role ilike 'Employee' ";
-			
+
 		try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
 
 			ResultSet rs = pstmt.executeQuery();
@@ -86,9 +81,31 @@ public class EmployeeDAO {
 			return Optional.ofNullable(employeeList);
 
 		} catch (SQLException e) {
-		    logger.error("Error fetching employee members list", e);
+			logger.error("Error fetching employee members list", e);
 			return Optional.ofNullable(null);
 		}
+
+	}
+
+	// written by preetha
+	public static Optional<String> getEmployeeNameById(int id) {
+
+		String sql = " select name from employees where id = ?";
+		try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+			pstmt.setInt(1, id);
+
+			ResultSet rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				return Optional.ofNullable(rs.getString("name"));
+			}
+
+		} catch (SQLException e) {
+			logger.error("Error fetching employee names", e);
+			return Optional.ofNullable(null);
+		}
+		return Optional.empty();
 
 	}
 

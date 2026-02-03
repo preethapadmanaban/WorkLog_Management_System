@@ -1,10 +1,12 @@
 package com.worklog.commands.tasks;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.worklog.entities.Task;
 import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.TaskDAO;
@@ -15,82 +17,128 @@ import jakarta.servlet.http.HttpSession;
 
 /**
  * UpdateTaskCommand - This class is used to update the timesheet
+ * 
  * @author Preetha
  * @since 21-01-2026
  */
 
-public class UpdateTaskCommand implements Command{
-	
+public class UpdateTaskCommand implements Command {
+
 	private static final Logger logger = LogManager.getLogger(UpdateTaskCommand.class);
 
 	@Override
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) throws UnAuthorizedException {
 		HttpSession session = request.getSession(false);
-		
-		if(session == null) {
+
+		if (session == null) {
 			throw new UnAuthorizedException("access_denied");
 		}
-		
-		String role = (String)session.getAttribute("role");
-		
+
+		String role = (String) session.getAttribute("role");
+
 		if (role != null) {
-			
+
 			String idStr = request.getParameter("id");
 			String title = request.getParameter("title");
 			String description = request.getParameter("description");
 			String assignedStr = request.getParameter("assigned_to");
 			String deadlineStr = request.getParameter("deadline");
-			
+
 			// System.out.println("Update task data: " + idStr + " " + title + " " + description + " " + assignedStr + " " + deadlineStr);
 
-			if(idStr == null) {
+			if (idStr == null) {
 				// System.out.println("leaving update task 2");
 				return false;
 			}
 			int id = Integer.parseInt(idStr);
-			
-			if(title == null) {
+
+			if (title == null) {
 				request.setAttribute("message", "Invalid title!");
 				// System.out.println("leaving update task 3");
 				return false;
 			}
-			
-			if(description == null) {
+
+			if (description == null) {
 				request.setAttribute("message", "Invalid description!");
 				// System.out.println("leaving update task 4");
 				return false;
-			} 
-			
-			if(assignedStr == null) {
+			}
+
+			if (assignedStr == null) {
 				request.setAttribute("message", "Invalid assignment employee!");
 				// System.out.println("leaving update task 5");
 				return false;
 			}
 			int assigned_to = Integer.parseInt(assignedStr);
-			
-			if(deadlineStr == null) {
+
+			if (deadlineStr == null) {
 				request.setAttribute("message", "Invalid deadline!");
 				// System.out.println("leaving update task 6");
 				return false;
 			}
 			Date deadline = Date.valueOf(deadlineStr);
-			
+
+			LocalDate selected = deadline.toLocalDate();
+			LocalDate today = LocalDate.now();
+
+			if (selected.isBefore(today)) {
+				request.setAttribute("status", "error");
+				request.setAttribute("message", "Deadline cannot be past date!");
+				return false;
+			}
+
 			String status = request.getParameter("status");
-			if(status == null) {
+			if (status == null) {
 				request.setAttribute("message", "Invalid task status!");
 				// System.out.println("leaving update task 7");
 				return false;
 			}
-			
+
 			TaskDAO dao = new TaskDAO();
+
+			if ("manager".equalsIgnoreCase(role)) {
+				Task existing = dao.getTaskById(id).orElse(null);
+				if (existing == null) {
+					request.setAttribute("message", "Task not found!");
+					return false;
+				}
+
+				if (existing.getStatus() == null || !"ASSIGNED".equals(existing.getStatus().name())) {
+					request.setAttribute("message", "Manager cannot edit task when status is In Progress / Completed!");
+					request.setAttribute("status", "error");
+					return false;
+				}
+			}
+
 			boolean updated = dao.updateTask(id, title, description, assigned_to, status, deadline);
+
+			String xhr = request.getHeader("X-Requested-With");
+			boolean isFetch = "fetch".equalsIgnoreCase(xhr);
+
+			if (isFetch) {
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+
+				try {
+					if (updated) {
+						response.getWriter().write("{\"success\":true, \"message\":\"Task updated successfully\"}");
+					} else {
+						response.getWriter().write("{\"success\":false, \"message\":\"Task updation failed\"}");
+					}
+				} catch (Exception e) {
+					logger.error("Error writing JSON response", e);
+				}
+
+				return true;
+			}
+
 			if (updated == true) {
 				logger.info("Task {} updated successfully by user role {}", id, role);
 				request.setAttribute("status", "success");
 				request.setAttribute("message", "Task updated successfully!");
 				return true;
 			} else {
-				 logger.error("Task update failed for task ID {}", id);
+				logger.error("Task update failed for task ID {}", id);
 				request.setAttribute("status", "error");
 				request.setAttribute("message", "Task Updation failed!");
 				// System.out.println("leaving update task 8");

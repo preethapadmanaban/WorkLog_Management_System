@@ -92,7 +92,7 @@
 	<command name="editTask">
 	    <class>com.worklog.commands.tasks.EditTaskCommand</class>
 	    <success>ui/screens/tasks/task_edit.jsp</success>
-	    <failure>/controller?action=routing</failure>
+	    <failure>/controller?action=editTask</failure>
 	</command>
 	
 	<command name="updateTask">
