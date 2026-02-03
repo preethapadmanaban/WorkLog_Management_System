@@ -9,15 +9,6 @@
 <title>Create Timesheet</title>
 <link href="/worklog/ui/css/styles.css" rel="stylesheet">
 <script src="${pageContext.request.contextPath}/ui/js/Modal.js"></script>
-<style>
-	.entry-card {
-	  max-width: 320px;
-	  padding: 1rem;
-	  background-color: #fff;
-	  border-radius: 10px;
-	  box-shadow: 20px 20px 30px rgba(0, 0, 0, .05);
-	}
-</style>
 </head>
 <body>
 <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
@@ -29,18 +20,19 @@
 		</div>
 	</div>
 	
-
-	<div class="timesheet_container">	
 		<div class="tasks-filter">
-			<div>
-				<h3>Create A New Timesheet</h3>
-			</div>
-	        <div>
-	            <label for="">Enter Work Date </label>
-	            <input class="nice-form-input"  type="date" name="work_date" id="work_date">
-	        </div>
-	    </div>
-	
+		  <div>
+		    <h3>Create Timesheet</h3>
+		  </div>
+			  <div class="tasks-filter-form">			
+			    <div class="tasks-filter-row">
+			      <div class="tasks-filter-item">
+			        <label>Work Date</label>
+			       	<input class="tasks-filter-input"  type="date" name="work_date" id="work_date">
+			      </div>
+			    </div>
+			  </div>
+		</div>
 	    <div class="create_timesheet_section">
 	        <div class="nice-form">
 	        <h3>Add Entry Form</h3>
