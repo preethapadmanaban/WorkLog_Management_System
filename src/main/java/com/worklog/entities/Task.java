@@ -1,6 +1,6 @@
 package com.worklog.entities;
 
-import com.worklog.commands.constants.TaskStatus;
+import com.worklog.constants.TaskStatus;
 
 /**
  * This class is a entity class for task.

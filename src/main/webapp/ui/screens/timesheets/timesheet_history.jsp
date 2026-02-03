@@ -1,5 +1,5 @@
 <%@page import="com.worklog.repositories.TaskDAO"%>
-<%@page import="com.worklog.commands.constants.TimeSheetStatus"%>
+<%@page import="com.worklog.constants.TimeSheetStatus"%>
 <%@page import="com.worklog.entities.TimeSheet"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"

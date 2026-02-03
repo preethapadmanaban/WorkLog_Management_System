@@ -10,6 +10,8 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.worklog.config.AppConfig;
+import com.worklog.dto.TaskResult;
 import com.worklog.entities.Employee;
 import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
@@ -22,6 +24,7 @@ import jakarta.servlet.http.HttpSession;
 
 public class ListTasksCommand implements Command {
 
+	public static int rowsPerPage = AppConfig.getPropertyInt("app.pagination.rows-per-page");
 	private static final Logger logger = LogManager.getLogger(ListTasksCommand.class);
 
 	@Override
@@ -75,10 +78,12 @@ public class ListTasksCommand implements Command {
 
 			logger.info("Manager {} is filtering tasks | empId={} status={} from={} to={}", managerId, empId, status, fromDate, toDate);
 
-			Map<String, Object> taskWithRowCountMap = dao
-							.getTasksCreatedByManager(managerId, empId, status, fromDateStr, toDateStr, pageNumber).orElse(null);
 
-			if (taskWithRowCountMap == null) {
+			TaskResult taskWithRowCount = dao
+							.getTasksCreatedByManager(managerId, empId, status, fromDateStr, toDateStr, pageNumber)
+							.orElse(null);
+
+			if (taskWithRowCount == null) {
 				request.setAttribute("message", "No data Found!");
 				return false;
 			}
@@ -94,7 +99,7 @@ public class ListTasksCommand implements Command {
 
 			request.setAttribute("members", members);
 			request.setAttribute("empNameMap", empNameMap);
-			request.setAttribute("tasks", taskWithRowCountMap.get("tasks"));
+			request.setAttribute("tasks", taskWithRowCount.getTasks());
 
 			// store selected values
 			request.setAttribute("selectedEmpId", empIdStr);
@@ -103,10 +108,10 @@ public class ListTasksCommand implements Command {
 			request.setAttribute("selectedToDate", toDateStr);
 
 			int totalPages = 1;
-			int rowCount = (Integer) taskWithRowCountMap.get("rowCount");
-			if (rowCount > TaskDAO.rowsPerPage) {
-				totalPages = rowCount / TaskDAO.rowsPerPage;
-				if (rowCount % TaskDAO.rowsPerPage > 0) {
+			int rowCount = taskWithRowCount.getRowsCount();
+			if (rowCount > rowsPerPage) {
+				totalPages = rowCount / rowsPerPage;
+				if (rowCount % rowsPerPage > 0) {
 					++totalPages;
 				}
 			}

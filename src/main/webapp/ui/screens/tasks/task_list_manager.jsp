@@ -1,4 +1,4 @@
-<%@page import="com.worklog.commands.constants.TaskStatus"%>
+<%@page import="com.worklog.constants.TaskStatus"%>
 <%@page import="com.worklog.repositories.TaskDAO"%>
 <%@page import="com.worklog.entities.Employee"%>
 <%@page import="java.util.List"%>

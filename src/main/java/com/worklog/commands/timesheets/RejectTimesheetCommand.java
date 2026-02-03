@@ -3,7 +3,7 @@ package com.worklog.commands.timesheets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.worklog.commands.constants.TimeSheetStatus;
+import com.worklog.constants.TimeSheetStatus;
 import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.TimeSheetDAO;

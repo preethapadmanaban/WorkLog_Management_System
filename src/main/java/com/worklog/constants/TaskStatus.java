@@ -1,4 +1,4 @@
-package com.worklog.commands.constants;
+package com.worklog.constants;
 
 public enum TaskStatus {
 	ASSIGNED("ASSIGNED"), IN_PROGRESS("IN PROGRESS"), COMPLETED("COMPLETED");

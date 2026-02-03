@@ -14,7 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
-import com.worklog.commands.constants.TimeSheetStatus;
+import com.worklog.constants.TimeSheetStatus;
 import com.worklog.dto.TimeSheetEntryDTO;
 import com.worklog.dto.TimeSheetJsonRequestData;
 import com.worklog.dto.TimeSheetRequestDTO;

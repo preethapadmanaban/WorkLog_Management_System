@@ -11,10 +11,10 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.worklog.db.DataSourceFactory;
 import com.worklog.dto.TimeSheetEntryDTO;
 import com.worklog.dto.TimeSheetEntryForReviewDTO;
 import com.worklog.entities.TimeSheetEntry;
+import com.worklog.factories.DataSourceFactory;
 
 public class TimeSheetEntryDAO {
 	

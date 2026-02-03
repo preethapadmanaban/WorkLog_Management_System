@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.worklog.db.DataSourceFactory;
+import com.worklog.factories.DataSourceFactory;
 
 // written by preetha
 public class PendingTimesheetCount {

@@ -1,4 +1,4 @@
-<%@page import="com.worklog.commands.constants.TaskStatus"%>
+<%@page import="com.worklog.constants.TaskStatus"%>
 <%@page import="com.worklog.entities.Task"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"

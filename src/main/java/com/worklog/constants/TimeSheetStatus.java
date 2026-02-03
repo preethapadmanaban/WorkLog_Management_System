@@ -1,4 +1,4 @@
-package com.worklog.commands.constants;
+package com.worklog.constants;
 
 public enum TimeSheetStatus {
 	PENDING, APPROVED, REJECTED;

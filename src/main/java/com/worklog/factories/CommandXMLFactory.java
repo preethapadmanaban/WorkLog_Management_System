@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.worklog.config.AppConfig;
 import com.worklog.config.CommandXMLConfig;
 import com.worklog.exceptions.CommandNotFoundException;
 import com.worklog.exceptions.RequiredResourceNotFoundException;
@@ -19,7 +20,8 @@ public class CommandXMLFactory {
 	static {
 		// Load properties only once when class is loaded
 		// try (InputStream is = CommandFactory.class.getClassLoader().getResourceAsStream("com/worklog/resources/commands.properties")) {
-		try (InputStream is = CommandXMLFactory.class.getClassLoader().getResourceAsStream("com/worklog/resources/commands.xml")) {
+		try (InputStream is = CommandXMLFactory.class.getClassLoader()
+						.getResourceAsStream(AppConfig.getProperty("app.commands.file-path"))) {
 
 			if (is == null) {
 				logger.error("commands.xml file not found in classpath");

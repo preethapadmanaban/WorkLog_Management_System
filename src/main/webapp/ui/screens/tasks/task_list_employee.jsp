@@ -1,5 +1,5 @@
 <%@page import="com.worklog.repositories.TaskDAO"%>
-<%@page import="com.worklog.commands.constants.TaskStatus"%>
+<%@page import="com.worklog.constants.TaskStatus"%>
 <%@page import="com.worklog.dto.ListTaskDTO"%>
 <%@page import="com.worklog.entities.Task"%>
 <%@page import="java.util.List"%>

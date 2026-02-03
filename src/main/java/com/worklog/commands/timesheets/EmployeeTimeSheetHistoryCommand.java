@@ -3,10 +3,10 @@ package com.worklog.commands.timesheets;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.worklog.config.AppConfig;
 import com.worklog.entities.TimeSheet;
 import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
-import com.worklog.repositories.TaskDAO;
 import com.worklog.repositories.TimeSheetDAO;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +14,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 public class EmployeeTimeSheetHistoryCommand implements Command {
+
+	public static int rowsPerPage = AppConfig.getPropertyInt("app.pagination.rows-per-page");
 
 	@Override
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) throws UnAuthorizedException {
@@ -32,9 +34,9 @@ public class EmployeeTimeSheetHistoryCommand implements Command {
 
 		int totalPages = 1;
 		int rowCount = timeSheetDAO.getTimesheetCount(id, false);
-		if (rowCount > TaskDAO.rowsPerPage) {
-			totalPages = rowCount / TaskDAO.rowsPerPage;
-			if (rowCount % TaskDAO.rowsPerPage > 0) {
+		if (rowCount > rowsPerPage) {
+			totalPages = rowCount / rowsPerPage;
+			if (rowCount % rowsPerPage > 0) {
 				++totalPages;
 			}
 		}

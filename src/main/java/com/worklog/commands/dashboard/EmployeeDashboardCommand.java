@@ -1,11 +1,10 @@
 package com.worklog.commands.dashboard;
 
-import java.util.ArrayList;
+import java.util.Collections;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.worklog.entities.Task;
 import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.TaskDAO;
@@ -37,7 +36,7 @@ public class EmployeeDashboardCommand implements Command {
 		Integer employeeId = (Integer) session.getAttribute("id");
 
 		TaskDAO taskDao = new TaskDAO();
-		request.setAttribute("pending_tasks_array", taskDao.getAllTasksForEmployee(employeeId, true, 1).orElse(new ArrayList<Task>()));
+		request.setAttribute("pending_tasks_array", taskDao.getAllTasksForEmployee(employeeId).orElse(Collections.emptyList()));
 		return true;
 	}
 

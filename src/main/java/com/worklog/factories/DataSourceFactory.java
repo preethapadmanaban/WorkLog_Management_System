@@ -1,4 +1,4 @@
-package com.worklog.db;
+package com.worklog.factories;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.worklog.config.AppConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -19,16 +20,16 @@ public class DataSourceFactory {
 		
 		HikariConfig config = new HikariConfig();
 		
-		config.setDriverClassName("org.postgresql.Driver");
+		config.setDriverClassName(AppConfig.getProperty("app.database.driver-name"));
 		
-		config.setJdbcUrl("jdbc:postgresql://localhost:5432/worklog_db");
-		config.setUsername("worklog");
-		config.setPassword("worklog");
+		config.setJdbcUrl(AppConfig.getProperty("app.database.url"));
+		config.setUsername(AppConfig.getProperty("app.database.username"));
+		config.setPassword(AppConfig.getProperty("app.database.password"));
 		
-		config.setMaximumPoolSize(5);
-		config.setMinimumIdle(1);
-		config.setConnectionTimeout(20000);
-		config.setMaxLifetime(180000);
+		config.setMaximumPoolSize(AppConfig.getPropertyInt("app.database.max-connections"));
+		config.setMinimumIdle(AppConfig.getPropertyInt("app.database.idle-connections"));
+		config.setConnectionTimeout(AppConfig.getPropertyInt("app.database.connection-timeout"));
+		config.setMaxLifetime(AppConfig.getPropertyInt("app.database.connection-max-life-time"));
 		
 		//config.setDataSourceJNDI("hikaricp");
 		

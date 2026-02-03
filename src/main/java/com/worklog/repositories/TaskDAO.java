@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,15 +15,17 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.worklog.commands.constants.TaskStatus;
-import com.worklog.db.DataSourceFactory;
+import com.worklog.config.AppConfig;
+import com.worklog.constants.TaskStatus;
+import com.worklog.dto.TaskResult;
 import com.worklog.entities.Task;
+import com.worklog.factories.DataSourceFactory;
 import com.worklog.utils.CustomDateFormatter;
 
 public class TaskDAO {
 
+	public static int rowsPerPage = AppConfig.getPropertyInt("app.pagination.rows-per-page");
 	private static final Logger logger = LogManager.getLogger(TaskDAO.class);
-	public static final int rowsPerPage = 5;
 
 	// written by vasudevan
 	private Task mapToTask(ResultSet rs) throws SQLException {
@@ -54,34 +57,45 @@ public class TaskDAO {
 	}
 
 	// written by vasudevan
-	public Optional<List<Task>> getAllTasksForEmployee(int employeeId, boolean isPending, int pageNumber) {
+	public Optional<List<Task>> getAllTasksForEmployee(int employeeId) {
 
-		String sql;
-		if (pageNumber == 0)
-			pageNumber = 1; // default 1st page
-		int offset = (pageNumber - 1) * rowsPerPage;
-
-		if (isPending == true) {
-			sql = "select * from tasks where assigned_to = " + employeeId + " and ((status ilike " + "'%" + TaskStatus.ASSIGNED.toString()
+		String query = "SELECT * FROM tasks where assigned_to = " + employeeId + " and ((status ilike " + "'%"
+						+ TaskStatus.ASSIGNED.toString()
 							+ "%' or status ilike " + "'%" + TaskStatus.IN_PROGRESS.toString() + "%'"
 							+ ") or to_char(updated_at, 'YYYY-MM-DD') = to_char(current_timestamp, 'YYYY-MM-DD')) order by created_at";
-		} else {
-			sql = "SELECT * FROM tasks where assigned_to = " + employeeId + " LIMIT " + rowsPerPage + " OFFSET " + offset;
-		}
 
-		return getTasksWithQuery(sql);
-
+		return getTasksWithQuery(query);
 	}
 
-	public Optional<List<Task>> filterTasksByStatus(int employeeId, String status, int pageNumber) {
+	public Optional<TaskResult> filterTasksByStatus(int employeeId, String status, int pageNumber) {
 
 		if (pageNumber == 0)
 			pageNumber = 1; // default 1st page
 		int offset = (pageNumber - 1) * rowsPerPage;
 
-		String sql = "SELECT * FROM tasks WHERE assigned_to =" + employeeId + " AND status ILIKE '%" + status + "%' LIMIT " + rowsPerPage
-						+ " OFFSET " + offset;
-		return getTasksWithQuery(sql);
+		String selectCount = "SELECT COUNT(*) AS row_count ";
+		String selectData = "SELECT * ";
+		String query;
+
+
+		TaskStatus statusEnum;
+		try {
+			statusEnum = TaskStatus.valueOf(status);
+		} catch (IllegalArgumentException | NullPointerException e) {
+			statusEnum = null;
+		}
+		
+		if (statusEnum != null) {
+			query = " FROM tasks WHERE assigned_to =" + employeeId + " AND status ILIKE '%" + status + "%' LIMIT " + rowsPerPage
+							+ " OFFSET " + offset;
+		}
+		else {
+			query = " FROM tasks where assigned_to = " + employeeId + " LIMIT " + rowsPerPage + " OFFSET " + offset;
+		}
+
+		List<Task> tasks = getTasksWithQuery(selectData + query).orElse(Collections.emptyList());
+		int rowCount = getRowCountForQuery(selectCount + query);
+		return Optional.of(new TaskResult(tasks, rowCount));
 
 	}
 
@@ -246,7 +260,7 @@ public class TaskDAO {
 		}
 	}
 
-	public Optional<Map<String, Object>> getTasksCreatedByManager(int managerId, Integer empId, String status, String fromDate,
+	public Optional<TaskResult> getTasksCreatedByManager(int managerId, Integer empId, String status, String fromDate,
 					String toDate, int pageNumber) {
 
 		if (pageNumber == 0)
@@ -287,10 +301,8 @@ public class TaskDAO {
 
 		List<Task> tasks = getTasksWithQuery(selectData + query).orElse(new ArrayList<Task>());
 		int rowCount = getRowCountForQuery(selectCount + query);
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("tasks", tasks);
-		map.put("rowCount", rowCount);
-		return Optional.ofNullable(map);
+		return Optional.of(new TaskResult(tasks, rowCount));
+
 	}
 
 	// public static void main(String[] args) {
