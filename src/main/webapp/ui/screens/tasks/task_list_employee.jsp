@@ -76,7 +76,7 @@
 				<td><%=task.getTitle()%></td>
 				<td><%=task.getDescription()%></td>
 				<td>
-				 <span class="task-status status-<%= task.getStatus().getDisplayValue() %>">
+				 <span class="task-status status-<%= task.getStatus().toString().toLowerCase() %>">
 	                <%= task.getStatus().getDisplayValue() %>
 	              </span>
 				</td>

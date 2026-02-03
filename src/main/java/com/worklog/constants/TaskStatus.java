@@ -12,5 +12,6 @@ public enum TaskStatus {
 	public String getDisplayValue() {
 		return this.displayValue;
 	}
+
 }
 
