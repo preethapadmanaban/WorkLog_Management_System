@@ -195,7 +195,7 @@
       String fromDateParam = request.getParameter("fromDate") == null  ? "" : request.getParameter("fromDate");
       String toDateParam = request.getParameter("toDate") == null ? "" : request.getParameter("toDate");
       String employeeId = request.getParameter("employee_id") == null ? "all" : request.getParameter("employee_id");
-    %>
+    %> 
 
     document.getElementById("status_select").value = "<%= statusSelect %>";
     document.getElementById("employee_select").value = "<%= employeeId %>";
