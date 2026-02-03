@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
 </head>
 
-<body class="tasks-page">
+<body class="tasks-page"> 
 <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
 <jsp:include page="/ui/screens/common/message.jsp"></jsp:include>
 
