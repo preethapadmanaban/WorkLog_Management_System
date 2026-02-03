@@ -1,3 +1,4 @@
+<%@page import="com.worklog.commands.constants.TaskStatus"%>
 <%@page import="com.worklog.repositories.TaskDAO"%>
 <%@page import="com.worklog.entities.Employee"%>
 <%@page import="java.util.List"%>
@@ -58,7 +59,7 @@
       <div class="tasks-filter-item">
         <label>Employee</label>
         <select name="employee_id" id="employee_select" class="tasks-filter-input">
-          <option value="all">Select Employee</option>
+          <option value="all" selected>Select Employee</option>
           <%
               if (employees != null) {
                   for (Employee emp : employees) {
@@ -77,9 +78,9 @@
         <label>Status</label>
         <select name="status" id="status_select" class="tasks-filter-input">
           <option value="all">-- All --</option>
-          <option value="Assigned">Assigned</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Completed">Completed</option>
+          <option value="<%=TaskStatus.ASSIGNED.toString()%>">Assigned</option>
+          <option value="<%=TaskStatus.IN_PROGRESS.toString()%>">In Progress</option>
+          <option value="<%=TaskStatus.COMPLETED.toString()%>">Completed</option>
         </select>
       </div>
 
@@ -167,9 +168,7 @@
       </table>
     </div>
   </div>
-  <% if(totalPages > 1) {  
-  	System.out.println("from jsp, totalPages : "+ totalPages + "pageNumber: "+pageNumber);
-  %>
+ 
    <div class="pagination-button">
  
  			<form action="controller">
@@ -186,20 +185,20 @@
    			<button class="btn btn-primary" type="submit" <%if(pageNumber >= totalPages ) { %> disabled <% } %>>Next</button>
   			</form>
    </div>
-   <% } %>
+ 
 </div>
 
 <script type="text/javascript">
   document.addEventListener('DOMContentLoaded', () => {
     <% 
       String statusSelect = request.getParameter("status") == null ? "all" : request.getParameter("status");
-      String fromDateParam = request.getParameter("fromDate") == null ? "" : request.getParameter("fromDate");
+      String fromDateParam = request.getParameter("fromDate") == null  ? "" : request.getParameter("fromDate");
       String toDateParam = request.getParameter("toDate") == null ? "" : request.getParameter("toDate");
       String employeeId = request.getParameter("employee_id") == null ? "all" : request.getParameter("employee_id");
     %>
 
-    document.getElementById("status_select").value = "<%= selectedStatus %>";
-    document.getElementById("employee_select").value = "<%= selectedEmp %>";
+    document.getElementById("status_select").value = "<%= statusSelect %>";
+    document.getElementById("employee_select").value = "<%= employeeId %>";
     document.getElementById("fromDate").value = "<%= selectedFrom %>";
     document.getElementById("toDate").value = "<%= selectedTo %>";
   });

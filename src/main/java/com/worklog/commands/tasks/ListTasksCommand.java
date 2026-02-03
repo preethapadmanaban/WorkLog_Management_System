@@ -1,6 +1,7 @@
 package com.worklog.commands.tasks;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.worklog.entities.Employee;
-import com.worklog.entities.Task;
 import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.EmployeeDAO;
@@ -41,7 +41,7 @@ public class ListTasksCommand implements Command {
 
 			TaskDAO dao = new TaskDAO();
 
-			Integer empId = null;
+			int empId = -1;
 			LocalDate fromDate = null;
 			LocalDate toDate = null;
 
@@ -55,29 +55,40 @@ public class ListTasksCommand implements Command {
 				empId = Integer.parseInt(empIdStr);
 			}
 
+
 			if (status == null || status.trim().isEmpty() || status.equalsIgnoreCase("all")) {
 				status = null;
 			}
 
 			if (fromDateStr != null && !fromDateStr.trim().isEmpty() && toDateStr != null && !toDateStr.trim().isEmpty()) {
-				fromDate = LocalDate.parse(fromDateStr);
-				toDate = LocalDate.parse(toDateStr);
+				try {
+					fromDate = LocalDate.parse(fromDateStr);
+					toDate = LocalDate.parse(toDateStr);
+					if (fromDate.isAfter(toDate)) {
+						request.setAttribute("message", "To Date Should Be Come After From Date!");
+						return false;
+					}
+				} catch (DateTimeParseException e) {
+					request.setAttribute("message", "Invalid From Date And To Date!");
+					return false;
+				}
 			}
 
 			logger.info("Manager {} is filtering tasks | empId={} status={} from={} to={}", managerId, empId, status, fromDate, toDate);
 
 
-			List<Task> taskList = dao.getTasksCreatedByManager(managerId, empId, status, fromDate, toDate, pageNumber)
-							.orElse(new ArrayList<>());
+			Map<String, Object> taskWithRowCountMap = dao
+							.getTasksCreatedByManager(managerId, empId, status, fromDateStr, toDateStr, pageNumber)
+							.orElse(null);
 
-			boolean hasFilter = (empId != null) || (status != null) || (fromDate != null && toDate != null);
-
-
-			if (!hasFilter) {
-				taskList = dao.getTasksCreatedByManager(managerId, pageNumber).orElse(new ArrayList<>());
-			} else {
-				taskList = dao.getTasksCreatedByManager(managerId, empId, status, fromDate, toDate, pageNumber).orElse(new ArrayList<>());
+			if (taskWithRowCountMap == null) {
+				request.setAttribute("message", "No data Found!");
+				return false;
 			}
+
+
+			// taskList = dao.getTasksCreatedByManager(managerId, empId, status, fromDateStr, toDateStr, pageNumber).orElse(new
+			// ArrayList<>());
 
 
 			List<Employee> members = EmployeeDAO.getAllMembers().orElse(new ArrayList<>());
@@ -88,7 +99,7 @@ public class ListTasksCommand implements Command {
 
 			request.setAttribute("members", members);
 			request.setAttribute("empNameMap", empNameMap);
-			request.setAttribute("tasks", taskList);
+			request.setAttribute("tasks", taskWithRowCountMap.get("tasks"));
 
 			// store selected values
 			request.setAttribute("selectedEmpId", empIdStr);
@@ -97,7 +108,7 @@ public class ListTasksCommand implements Command {
 			request.setAttribute("selectedToDate", toDateStr);
 			
 			int totalPages = 1;
-			int rowCount = dao.getTaskCountForEmployee(managerId, true);
+			int rowCount = (Integer) taskWithRowCountMap.get("rowCount");
 			if (rowCount > TaskDAO.rowsPerPage) {
 				totalPages = rowCount / TaskDAO.rowsPerPage;
 				if (rowCount % TaskDAO.rowsPerPage > 0) {

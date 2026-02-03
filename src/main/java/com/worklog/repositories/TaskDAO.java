@@ -5,7 +5,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -247,21 +246,65 @@ public class TaskDAO {
 		}
 	}
 
-	public Optional<List<Task>> getTasksCreatedByManager(int managerId, Integer empId, String status, LocalDate fromDate,
-					LocalDate toDate, int pageNumber) {
+	public Optional<Map<String, Object>> getTasksCreatedByManager(int managerId, Integer empId, String status, String fromDate,
+					String toDate,
+					int pageNumber) {
 
 		if (pageNumber == 0)
 			pageNumber = 1; // default 1st page
 		int offset = (pageNumber - 1) * rowsPerPage;
 
-		String sql = "select * from tasks where created_by =" + managerId + "and (" + empId + "is null or assigned_to =" + empId
-						+ ") and ( " + status + " is null or status ilike " + status + ") and ( (" + fromDate + "is null or" + toDate
-						+ "is null) or created_at::date between " + fromDate + " and " + toDate + ") order by deadline limit " + rowsPerPage
-						+ " offset " + offset;
+		String selectCount = "SELECT COUNT(*) AS row_count ";
+		String selectData = "SELECT * ";
+		String query;
 
-		return getTasksWithQuery(sql);
+		query = " FROM tasks WHERE created_by = " + managerId;
 
+		if (empId != 0 && empId != -1) {
+			query = query + " AND assigned_to = " + empId;
+		}
+		TaskStatus statusEnum;
+		try {
+			statusEnum = TaskStatus.valueOf(status);
+		} catch (IllegalArgumentException | NullPointerException e) {
+			logger.error("Status was null while filtering.", e);
+			statusEnum = null;
+		}
+
+		if (statusEnum != null) {
+			query = query + " AND status ILIKE '" + statusEnum.toString() + "'";
+		}
+
+		if (fromDate != null && toDate != null && !fromDate.strip().isEmpty() && !toDate.strip().isEmpty()) {
+			query = query + " AND created_at::DATE BETWEEN '" + fromDate + "' AND '" + toDate + "'";
+		}
+
+		query = query + " LIMIT " + TaskDAO.rowsPerPage + " OFFSET " + offset;
+
+		// String sql = "select * from tasks where created_by =" + managerId + "and (" + empId + "is null or assigned_to =" + empId
+		// + ") and ( " + status + " is null or status ilike " + status + ") and ( (" + fromDate + "is null or" + toDate
+		// + "is null) or created_at::date between " + fromDate + " and " + toDate + ") order by deadline limit " + rowsPerPage
+		// + " offset " + offset;
+
+		List<Task> tasks = getTasksWithQuery(selectData + query).orElse(new ArrayList<Task>());
+		int rowCount = getRowCountForQuery(selectCount + query);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("tasks", tasks);
+		map.put("rowCount", rowCount);
+		return Optional.ofNullable(map);
 	}
+
+	// public static void main(String[] args) {
+	// // List<Task> tasks = new TaskDAO().getTasksCreatedByManager(17, 18, "all", "2026-01-01", "2026-02-03", 1).orElse(null);
+	// List<Task> tasks = new TaskDAO().getTasksCreatedByManager(17, 18, "ASSIGNED", null, null, 1).orElse(null);
+	// System.out.println("tasks" + tasks);
+	// if (tasks != null) {
+	// for (Task task : tasks) {
+	// System.out.println(task);
+	// }
+	// }
+	//
+	// }
 
 	public Optional<List<Task>> getTasksCreatedByManager(int managerId, int pageNumber) {
 		
@@ -269,22 +312,14 @@ public class TaskDAO {
 			pageNumber = 1; // default 1st page
 		int offset = (pageNumber - 1) * rowsPerPage;
 						
-		String sql = " select * from tasks where created_by = " + managerId + " limit " + rowsPerPage + " OFFSET " + offset;
+		String sql = " select * from tasks where created_by = " + managerId + " LIMIT " + rowsPerPage + " OFFSET " + offset;
 
 		return getTasksWithQuery(sql);
 	}
 
-	public int getTaskCountForEmployee(int employeeId, boolean isManager) {
-		String sql;
-		if (isManager == false) {
-			sql = "select count(*) as row_count from tasks where assigned_to = ?";
-		} else {
-			sql = "select count(*) as row_count from tasks where created_by = ?";
-		}
+	public int getRowCountForQuery(String query) {
 
-		try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
-
-			pstmt.setInt(1, employeeId);
+		try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(query)) {
 
 			ResultSet rs = pstmt.executeQuery();
 
