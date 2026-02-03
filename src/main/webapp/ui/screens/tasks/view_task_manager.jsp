@@ -55,6 +55,7 @@
 
 	    <tr><th>Deadline</th><td><%= t.getDeadline() %></td></tr>
 	   <%--  <tr><th>Created By</th><td><%= t.getCreated_by() %></td></tr> --%>
+
 	    <tr>
 		<th>Created Date</th>
 		  <td><%= t.getCreated_at() == null ? "" : t.getCreated_at().split(" ")[0] %></td>
@@ -63,6 +64,8 @@
 		  <th>Last Updated Date</th>
 		  <td><%= t.getUpdated_at() == null ? "" : t.getUpdated_at().split(" ")[0] %></td>
 		</tr>
+
+	    
 
 	</table>
 	

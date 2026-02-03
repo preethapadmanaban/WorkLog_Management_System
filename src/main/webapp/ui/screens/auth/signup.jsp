@@ -86,8 +86,7 @@
 		</div>
 
 		<button
-			class="block w-full rounded-lg border border-orange-600 bg-orange-600 px-12 py-3 text-sm font-medium text-white transition-colors hover:bg-transparent hover:text-indigo-600"
-			onclick="validateData()">Signup</button>
+			class="block w-full rounded-lg border border-orange-600 bg-orange-600 px-12 py-3 text-sm font-medium text-white transition-colors hover:bg-transparent hover:text-indigo-600"">Signup</button>
 		<div class="flex justify-center">
 			<a href="/worklog/controller?action=loginPage"
 				class="inline-flex items-center font-medium text-fg-brand hover:underline">
@@ -122,40 +121,111 @@ form.addEventListener("submit", function(e){
 	// Full name validation
 	if(user_name === ""){
 		document.getElementById("error_message_fullname").innerText = mandatory;
+		document.getElementById("name").style.border = "2px solid red";
 		isValid = false;
 	} else if(user_name.length <= 3){
 		document.getElementById("error_message_fullname").innerText = "Please enter a valid name.";
+		document.getElementById("name").style.border = "2px solid red";
 		isValid = false;
+	}else{
+		document.getElementById("name").style.border = "0.5px solid grey";
 	}
 
 	// Email validation
+	let valid_email=true
+	let err_msg=""
 	const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 	if(email === ""){
+		
 		document.getElementById("error_message_email").innerText = mandatory;
+		
+		document.getElementById("email").style.border = "2px solid red";
 		isValid = false;
-	} else if(!email_regex.test(email)){
-		document.getElementById("error_message_email").innerText = "Please enter a valid email.";
+		valid_email=false
+	} if(email!=email.toLowerCase()){
+		err_msg=err_msg.concat("Email address must be in lowercase.\n")
+		document.getElementById("email").style.border = "2px solid red";
 		isValid = false;
+		
+	}if(!email.includes(".")){
+		err_msg=err_msg.concat("Email address must include a valid domain name '.'\n")
+		document.getElementById("email").style.border = "2px solid red";
+		isValid = false;
+		
+	}if(!email.includes("@")){
+		err_msg=err_msg.concat("Email address must contain the ‘@’ symbol.\n")
+		document.getElementById("email").style.border = "2px solid red";
+		isValid = false;
+		
+	}
+	
+	if(valid_email){
+		document.getElementById("error_message_email").innerText =err_msg;
+		if(!email_regex.test(email)){
+			err_msg=err_msg.concat("The email address format is invalid.")
+			document.getElementById("error_message_email").innerText =err_msg;
+			document.getElementById("email").style.border = "2px solid red";
+		}
+		
+	}
+	if(email_regex.test(email)){
+		document.getElementById("email").style.border = "0.5px solid grey";
 	}
 
 	// Password validation
 	const password_regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-+.]).{6,20}$/;
+	
+	err_msg=""
+	let valid_psw=true
 	if(password === ""){
 		document.getElementById("error_message_password").innerText = mandatory;
+		document.getElementById("password").style.border = "2px solid red";
 		isValid = false;
-	} else if(!password_regex.test(password)){
-		document.getElementById("error_message_password").innerText =
-			"Password should valid password";
-		isValid = false;
+		valid_psw=false
+	}else{
+		if(password.length<6){
+			err_msg=err_msg.concat("Password must be 6–20 characters\n")
+			
+			isValid=false;
+		}if(!/[A-Z]/.test(password)){
+			err_msg=err_msg.concat("Must contain at least one uppercase letter\n")
+			
+			isValid=false;
+		}if(!/[!@#$%^&*()\-+.]/.test(password)){
+			err_msg=err_msg.concat("Must contain at least one special symbol (!@#$...)\n")
+			
+			isValid=false;
+			
+		}
+		if(!/[a-z]/.test(password)){
+			err_msg=err_msg.concat("Must contain at least one lowercase letter\n")
+			
+			isValid=false;
+		}if(!/\d/.test(password)){
+			err_msg=err_msg.concat("Must contain at least one number\n")
+			isValid=false;
+			
+		}
+		document.getElementById("password").style.border = "2px solid red";
+		document.getElementById("error_message_password").innerText=err_msg;
+		
 	}
+	if(password_regex.test(password)){
+		document.getElementById("password").style.border = "0.5px solid grey";
+	}
+	
 
 	// Confirm password validation
 	if(confirm_password === ""){
 		document.getElementById("error_message_confirm_password").innerText = mandatory;
+		document.getElementById("confirm_password").style.border = "2px solid red";
 		isValid = false;
 	} else if(password !== confirm_password){
 		document.getElementById("error_message_confirm_password").innerText ="Passwords and confirm password do not match.";
+		document.getElementById("confirm_password").style.border = "2px solid red";
 		isValid = false;
+	}else if(password===confirm_password){
+		document.getElementById("confirm_password").style.border = "0.5px solid grey";
 	}
 
 	if(isValid){
@@ -163,6 +233,5 @@ form.addEventListener("submit", function(e){
 	}
 });
 </script>
-
 </body>
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<%@page import="org.mindrot.jbcrypt.BCrypt"%>
+
 <html>
 <head>
 <meta charset="UTF-8">
@@ -11,7 +11,7 @@
 <body>
 <div class="mobile_auth_page">
 	<div class="app_name_div"><h3>Worklog Management</h3></div>
-
+	
 	<!-- <form action="login" method="post" class="mx-auto my-20 max-w-md space-y-4 rounded-lg border border-gray-300 bg-gray-100 p-6"> -->
 	<form action="/worklog/controller" method="post" class="mx-auto my-20 max-w-md space-y-4 rounded-lg border border-gray-300 bg-gray-100 p-6 myform">
 	  
@@ -68,23 +68,92 @@
 		let password=document.getElementById("password").value;
 		let isValid=true;
 		
-		//email format validation
+		let valid_email=true
+		let err_msg=""
 		const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-		if(!email_regex.test(email)){
-			document.getElementById("error_message_email").innerText="chech email format"
-			isValid=false;
+		if(email === ""){
+			
+			document.getElementById("error_message_email").innerText = mandatory;
+			
+			document.getElementById("email").style.border = "2px solid red";
+			isValid = false;
+			valid_email=false
+		} if(email!=email.toLowerCase()){
+			err_msg=err_msg.concat("Email address must be in lowercase.\n")
+			document.getElementById("email").style.border = "2px solid red";
+			isValid = false;
+			
+		}if(!email.includes(".")){
+			err_msg=err_msg.concat("Email address must include a valid domain name '.'\n")
+			document.getElementById("email").style.border = "2px solid red";
+			isValid = false;
+			
+		}if(!email.includes("@")){
+			err_msg=err_msg.concat("Email address must contain the @ symbol.\n")
+			document.getElementById("email").style.border = "2px solid red";
+			isValid = false;
+			
 		}
+		
+		if(valid_email){
+			document.getElementById("error_message_email").innerText =err_msg;
+			if(!email_regex.test(email)){
+				err_msg=err_msg.concat("The email address format is invalid.")
+				document.getElementById("error_message_email").innerText =err_msg;
+				document.getElementById("email").style.border = "2px solid red";
+			}
+			
+		}
+		if(email_regex.test(email)){
+			document.getElementById("email").style.border = "0.5px solid grey";
+		}
+
 		
 		//password format validation
 		const password_regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-+.]).{6,20}$/;
-		if(!password_regex.test(password)){
-			document.getElementById("error_message_password").innerText="chech pssword format"
-			isValid=false;
-		}
 		
+		err_msg=""
+		let valid_psw=true
+		if(password === ""){
+			document.getElementById("error_message_password").innerText = mandatory;
+			document.getElementById("password").style.border = "2px solid red";
+			isValid = false;
+			valid_psw=false
+		}else{
+			if(password.length<6){
+				err_msg=err_msg.concat("Password must be 6 to 20 characters\n")
+				
+				isValid=false;
+			}if(!/[A-Z]/.test(password)){
+				err_msg=err_msg.concat("Must contain at least one uppercase letter\n")
+				
+				isValid=false;
+			}if(!/[!@#$%^&*()\-+.]/.test(password)){
+				err_msg=err_msg.concat("Must contain at least one special symbol (!@#$...)\n")
+				
+				isValid=false;
+				
+			}
+			if(!/[a-z]/.test(password)){
+				err_msg=err_msg.concat("Must contain at least one lowercase letter\n")
+				
+				isValid=false;
+			}if(!/\d/.test(password)){
+				err_msg=err_msg.concat("Must contain at least one number\n")
+				isValid=false;
+				
+			}
+			document.getElementById("password").style.border = "2px solid red";
+			document.getElementById("error_message_password").innerText=err_msg;
+			
+		}
+		if(password_regex.test(password)){
+			document.getElementById("password").style.border = "0.5px solid grey";
+		}
 		if(isValid){
 			form.submit();
 		}
+		
 	})
 </script>
 </body>

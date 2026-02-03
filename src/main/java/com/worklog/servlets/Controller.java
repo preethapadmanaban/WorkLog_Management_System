@@ -70,7 +70,6 @@ public class Controller extends HttpServlet {
 			} else if (isDownloadRequest) {
 				response.setContentType("text/csv");
 				response.setCharacterEncoding("UTF-8");
-
 				return;
 			}
 
