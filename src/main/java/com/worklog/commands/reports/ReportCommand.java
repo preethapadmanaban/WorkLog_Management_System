@@ -33,7 +33,7 @@ public class ReportCommand implements Command{
 			throw new UnAuthorizedException("access_denied");
 		}
 
-		if (request.getParameter("filter") == null) {
+		if (request.getParameter("filter")==null) {
 			return false;
 		}
 
@@ -57,7 +57,7 @@ public class ReportCommand implements Command{
 			List<ReportEmployeeDTO> reports = timeSheetDAO.getReportDailyworkhours(fromDate, toDate, managerId)
 							.orElse(new ArrayList<ReportEmployeeDTO>());
 
-			if (request.getParameter("download") == null) {
+			if (!request.getRequestURI().contains("/download")) {
 				logger.info("Manager {} generated report from {} to {}", managerId, fromDate, toDate);
 				if (reports != null) {
 					request.setAttribute("report", reports);

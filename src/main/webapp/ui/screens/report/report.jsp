@@ -86,10 +86,16 @@
 			<%
 			if (reportEmployees != null && reportEmployees.size() != 0) {
 			%>
-				<div style="width: 100%; text-align: center;"> 
-				 	<a href="<%=(request.getContextPath() + "/controller/download/?" + request.getQueryString())%>"><button class="submit_button">Download Report</button></a>
-				</div>
-			<% } %>
+				<form action="controller/download" method="post">
+					<input type="hidden" name="filter" value="true">
+					<input type="hidden" name="action" value="report">
+					<input type="hidden" name="download" value="download">
+					<input type="hidden" name="type" value="employee"> 
+					<input type="hidden" name="fromDate" value=<%=request.getParameter("fromDate") %>>
+					<input type="hidden" name="toDate" value=<%=request.getParameter("toDate") %>>
+					<button type="submit">download report</button>
+				</form>
+			<% }%>
 		</div>
 		</div>
 </body>

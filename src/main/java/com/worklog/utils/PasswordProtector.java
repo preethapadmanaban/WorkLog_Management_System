@@ -24,4 +24,5 @@ public class PasswordProtector {
 		Objects.requireNonNull(hashedPassword, "password from db is null.");
 		return BCrypt.checkpw(password, hashedPassword);
 	}
+	
 }
