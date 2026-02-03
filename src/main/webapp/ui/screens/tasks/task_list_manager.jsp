@@ -188,21 +188,13 @@
  
 </div>
 
-<script type="text/javascript">
-  document.addEventListener('DOMContentLoaded', () => {
-    <% 
-      String statusSelect = request.getParameter("status") == null ? "all" : request.getParameter("status");
-      String fromDateParam = request.getParameter("fromDate") == null  ? "" : request.getParameter("fromDate");
-      String toDateParam = request.getParameter("toDate") == null ? "" : request.getParameter("toDate");
-      String employeeId = request.getParameter("employee_id") == null ? "all" : request.getParameter("employee_id");
-    %> 
-
-    document.getElementById("status_select").value = "<%= statusSelect %>";
-    document.getElementById("employee_select").value = "<%= employeeId %>";
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById("status_select").value = "<%= selectedStatus %>";
+    document.getElementById("employee_select").value = "<%= selectedEmp %>";
     document.getElementById("fromDate").value = "<%= selectedFrom %>";
     document.getElementById("toDate").value = "<%= selectedTo %>";
-  });
-  
+});
 </script>
 
 </body>

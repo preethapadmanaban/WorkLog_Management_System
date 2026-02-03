@@ -16,7 +16,6 @@
 </head>
 <body class="create-task-page">
 <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
-<jsp:include page="/ui/screens/common/message.jsp"></jsp:include>
 <jsp:include page="/ui/screens/common/modal.jsp"></jsp:include>
 
 
@@ -74,7 +73,8 @@
       
       </form>
     </section>
-    
+   
+   <script src="${pageContext.request.contextPath}/ui/js/Modal.js"></script>
    <script>
 		function setError(field, errorId, msg){
 		  field.classList.add("input-error");
@@ -172,21 +172,6 @@
 		});
 		
 	</script>
-<<<<<<< Updated upstream
-	
-	
-=======
-
-	<div id="modalOverlay" class="modal-overlay" style="display:none;">
-	  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-	    <h4 id="modalTitle" class="modal-title">Message</h4>
-	    <p id="modalText" class="modal-text"></p>
-	    <div class="modal-actions">
-	      <button type="button" class="modal-ok" onclick="closePopup()">OK</button>
-	    </div>
-	  </div>
-	</div>
->>>>>>> Stashed changes
 
 </body>
 </html>

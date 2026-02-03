@@ -849,18 +849,6 @@ textarea.nice-form-input{
   letter-spacing: 0.4px;
 }
 
-.status-assigned{ 
-	background:#dbeafe; color:#1d4ed8; 
-}
-
-.status-in-progress{ 
-	background:#fef3c7; color:#92400e; 
-}
-
-.status-completed{ 
-	background:#dcfce7; color:#166534; 
-}
-
 .actions-cell{ 
 	white-space: nowrap; 
 }
@@ -919,21 +907,6 @@ textarea.nice-form-input{
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.4px;
-}
-
-.status-completed {
-  background: #e6f4ea;
-  color: #137333;
-}
-
-.status-assigned {
-  background: #e8f0fe;
-  color: #1a73e8;
-}
-
-.status-in-progress {
-  background: #fef7e0;
-  color: #b06000;
 }
 
 /* ===========================
@@ -1213,3 +1186,33 @@ textarea.nice-form-input{
     opacity: 0.7;
 }
 
+.cardLink{
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+}
+
+.card.clickable{
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card.clickable:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+}
+
+.status-completed {
+  background: #5fb877;
+  color: white;
+}
+
+.status-assigned {
+  background: #5291f8;
+  color: white;
+}
+
+.status-in-progress {
+  background: #f9ce3c;
+  color: white;
+}

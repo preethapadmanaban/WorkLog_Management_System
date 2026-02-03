@@ -55,7 +55,6 @@ public class ListTasksCommand implements Command {
 				empId = Integer.parseInt(empIdStr);
 			}
 
-
 			if (status == null || status.trim().isEmpty() || status.equalsIgnoreCase("all")) {
 				status = null;
 			}
@@ -76,20 +75,16 @@ public class ListTasksCommand implements Command {
 
 			logger.info("Manager {} is filtering tasks | empId={} status={} from={} to={}", managerId, empId, status, fromDate, toDate);
 
-
 			Map<String, Object> taskWithRowCountMap = dao
-							.getTasksCreatedByManager(managerId, empId, status, fromDateStr, toDateStr, pageNumber)
-							.orElse(null);
+							.getTasksCreatedByManager(managerId, empId, status, fromDateStr, toDateStr, pageNumber).orElse(null);
 
 			if (taskWithRowCountMap == null) {
 				request.setAttribute("message", "No data Found!");
 				return false;
 			}
 
-
 			// taskList = dao.getTasksCreatedByManager(managerId, empId, status, fromDateStr, toDateStr, pageNumber).orElse(new
 			// ArrayList<>());
-
 
 			List<Employee> members = EmployeeDAO.getAllMembers().orElse(new ArrayList<>());
 			Map<Integer, String> empNameMap = new HashMap<>();
@@ -106,7 +101,7 @@ public class ListTasksCommand implements Command {
 			request.setAttribute("selectedStatus", status);
 			request.setAttribute("selectedFromDate", fromDateStr);
 			request.setAttribute("selectedToDate", toDateStr);
-			
+
 			int totalPages = 1;
 			int rowCount = (Integer) taskWithRowCountMap.get("rowCount");
 			if (rowCount > TaskDAO.rowsPerPage) {
@@ -118,30 +113,7 @@ public class ListTasksCommand implements Command {
 
 			request.setAttribute("totalPages", totalPages);
 
-			/*
-			 * request.setAttribute("totalCount", result.getTotalCount()); request.setAttribute("page", page); request.setAttribute("size",
-			 * size); request.setAttribute("totalPages", result.getTotalPages(size));
-			 */
-
 			return true;
-
-			/*
-			 * else {
-			 * 
-			 * logger.info("Manager {} is viewing all created tasks", managerId);
-			 * 
-			 * List<Task> taskList = dao.getTasksCreatedByManager(managerId).orElse(new ArrayList<>());
-			 * 
-			 * List<Employee> members = EmployeeDAO.getAllMembers().orElse(new ArrayList<>());
-			 * 
-			 * Map<Integer, String> empNameMap = new HashMap<>(); for (Employee e : members) { empNameMap.put(e.getId(), e.getName()); }
-			 * 
-			 * request.setAttribute("members", members); request.setAttribute("empNameMap", empNameMap);
-			 * 
-			 * request.setAttribute("tasks", taskList);
-			 * 
-			 * return true; }
-			 */
 
 		}
 

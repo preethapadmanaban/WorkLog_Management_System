@@ -247,8 +247,7 @@ public class TaskDAO {
 	}
 
 	public Optional<Map<String, Object>> getTasksCreatedByManager(int managerId, Integer empId, String status, String fromDate,
-					String toDate,
-					int pageNumber) {
+					String toDate, int pageNumber) {
 
 		if (pageNumber == 0)
 			pageNumber = 1; // default 1st page
@@ -307,11 +306,11 @@ public class TaskDAO {
 	// }
 
 	public Optional<List<Task>> getTasksCreatedByManager(int managerId, int pageNumber) {
-		
+
 		if (pageNumber == 0)
 			pageNumber = 1; // default 1st page
 		int offset = (pageNumber - 1) * rowsPerPage;
-						
+
 		String sql = " select * from tasks where created_by = " + managerId + " LIMIT " + rowsPerPage + " OFFSET " + offset;
 
 		return getTasksWithQuery(sql);

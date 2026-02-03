@@ -21,28 +21,34 @@
 		
 		<form action="controller" method="post" class="header-form">
 		
-		<div class="filter_section">
-				<input type="hidden" name="action" value="report">
-			  	<input type="hidden" name="filter" value="true">
-			  	
-			    
-			    <!-- <select name="type" class="nice-form-input">
-				    <option value="">Select</option>
-				    <option value="employee">Employee</option>
-				    <option value="task">Task</option>
-				</select> -->
-
-				<input type="hidden" name="type" value="employee"> 
-		   
-		    	From date:
-			    <input type="date" name="fromDate" class="nice-form-input">
-			
-			    To date:
-			    <input type="date" name="toDate" class="nice-form-input" max="<%=LocalDate.now().toString()%>">
+		<div class="tasks-filter">
+		  <div>
+		    <h3>Employee Reports</h3>
+		  </div>
 		
-		   		<button type="submit" class="submit_button">Generate report</button>
-		   		
-			</div>
+		  <form action="controller" method="post" class="tasks-filter-form">
+		    <input type="hidden" name="action" value="report">
+		    <input type="hidden" name="filter" value="true">
+		    <input type="hidden" name="type" value="employee">
+		
+		    <div class="tasks-filter-row">
+		      <div class="tasks-filter-item">
+		        <label>From</label>
+		        <input type="date" name="fromDate" id="fromDate" class="tasks-filter-input">
+		      </div>
+		
+		      <div class="tasks-filter-item">
+		        <label>To</label>
+		        <input type="date" name="toDate" id="toDate" class="tasks-filter-input">
+		      </div>
+		
+		      <div class="tasks-filter-actions">
+		        <button type="submit" class="tasks-filter-btn">Generate</button>
+		      </div>
+		    </div>
+		  </form>
+		</div>
+
 		</form>
 </div>
 
