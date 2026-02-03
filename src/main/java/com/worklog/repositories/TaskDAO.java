@@ -23,7 +23,7 @@ import com.worklog.utils.CustomDateFormatter;
 public class TaskDAO {
 
 	private static final Logger logger = LogManager.getLogger(TaskDAO.class);
-	private static final int rowsPerPage = 5;
+	public static final int rowsPerPage = 5;
 
 	// written by vasudevan
 	private Task mapToTask(ResultSet rs) throws SQLException {
@@ -247,129 +247,56 @@ public class TaskDAO {
 		}
 	}
 
-	// written by preetha (pagination + dynamic filters)
-	/*
-	 * public Optional<PagedResult<Task>> getTasksCreatedByManager(int managerId, Integer empId, String status, LocalDate fromDate,
-	 * LocalDate toDate, int page, int size) {
-	 * 
-	 * List<Task> tasks = new ArrayList<>();
-	 * 
-	 * if (page < 1) page = 1; if (size < 1) size = 10;
-	 * 
-	 * int offset = (page - 1) * size;
-	 * 
-	 * StringBuilder sql = new StringBuilder(); sql.append("select t.*, count(*) over() as total_count "); sql.append("from tasks t ");
-	 * sql.append("where t.created_by = ? ");
-	 * 
-	 * if (empId != null) { sql.append(" and t.assigned_to = ? "); }
-	 * 
-	 * if (status != null && !status.isBlank() && !status.equalsIgnoreCase("all")) { sql.append(" and t.status ilike ? "); }
-	 * 
-	 * if (fromDate != null && toDate != null) { sql.append("and t.created_at::date between ? and ? "); }
-	 * 
-	 * sql.append(" order by t.deadline "); sql.append(" limit ? offset ? ");
-	 * 
-	 * try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql.toString())) {
-	 * 
-	 * int idx = 1;
-	 * 
-	 * pstmt.setInt(idx++, managerId);
-	 * 
-	 * if (empId != null) { pstmt.setInt(idx++, empId); }
-	 * 
-	 * if (status != null && !status.isBlank() && !status.equalsIgnoreCase("all")) { pstmt.setString(idx++, "%" + status + "%"); }
-	 * 
-	 * if (fromDate != null && toDate != null) { pstmt.setDate(idx++, java.sql.Date.valueOf(fromDate)); pstmt.setDate(idx++,
-	 * java.sql.Date.valueOf(toDate)); }
-	 * 
-	 * pstmt.setInt(idx++, size); pstmt.setInt(idx++, offset);
-	 * 
-	 * ResultSet rs = pstmt.executeQuery();
-	 * 
-	 * int totalCount = 0;
-	 * 
-	 * while (rs.next()) { tasks.add(mapToTask(rs)); totalCount = rs.getInt("total_count"); // same value for every row }
-	 * 
-	 * return Optional.of(new PagedResult<>(tasks, totalCount));
-	 * 
-	 * } catch (SQLException e) {
-	 * logger.error("DB error in getTasksCreatedByManager(managerId={}, empId={}, status={}, from={}, to={}, page={}, size={})", managerId,
-	 * empId, status, fromDate, toDate, page, size, e); return Optional.empty(); } }
-	 */
-
 	public Optional<List<Task>> getTasksCreatedByManager(int managerId, Integer empId, String status, LocalDate fromDate,
-					LocalDate toDate) {
+					LocalDate toDate, int pageNumber) {
 
-		List<Task> tasks = new ArrayList<>();
+		if (pageNumber == 0)
+			pageNumber = 1; // default 1st page
+		int offset = (pageNumber - 1) * rowsPerPage;
 
-		String sql = "select * from tasks " + "where created_by = ? " + "and (? is null or assigned_to = ?) "
-						+ "and (? is null or status ilike ?) " + "and ( (? is null or ? is null) or deadline::date between ? and ? ) "
-						+ "order by deadline";
+		String sql = "select * from tasks where created_by =" + managerId + "and (" + empId + "is null or assigned_to =" + empId
+						+ ") and ( " + status + " is null or status ilike " + status + ") and ( (" + fromDate + "is null or" + toDate
+						+ "is null) or created_at::date between " + fromDate + " and " + toDate + ") order by deadline limit " + rowsPerPage
+						+ " offset " + offset;
 
-		try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
+		return getTasksWithQuery(sql);
 
-			int idx = 1;
-
-			pstmt.setInt(idx++, managerId);
-
-			// emp filter
-			if (empId == null) {
-				pstmt.setNull(idx++, java.sql.Types.INTEGER);
-				pstmt.setNull(idx++, java.sql.Types.INTEGER);
-			} else {
-				pstmt.setInt(idx++, empId);
-				pstmt.setInt(idx++, empId);
-			}
-
-			// status filter
-			String st = (status == null) ? null : "%" + status + "%";
-			pstmt.setString(idx++, status);
-			pstmt.setString(idx++, st);
-
-			// date filter
-			java.sql.Date f = (fromDate == null) ? null : java.sql.Date.valueOf(fromDate);
-			java.sql.Date t = (toDate == null) ? null : java.sql.Date.valueOf(toDate);
-
-			pstmt.setDate(idx++, f);
-			pstmt.setDate(idx++, t);
-			pstmt.setDate(idx++, f);
-			pstmt.setDate(idx++, t);
-
-			try (ResultSet rs = pstmt.executeQuery()) {
-				while (rs.next()) {
-					tasks.add(mapToTask(rs));
-				}
-			}
-
-			return Optional.of(tasks);
-
-		} catch (SQLException e) {
-			logger.error("DB error in getTasksCreatedByManager(managerId={}, empId={}, status={}, from={}, to={})", managerId, empId,
-							status, fromDate, toDate, e);
-			return Optional.empty();
-		}
 	}
 
-	public Optional<List<Task>> getTasksCreatedByManager(int managerId) {
+	public Optional<List<Task>> getTasksCreatedByManager(int managerId, int pageNumber) {
+		
+		if (pageNumber == 0)
+			pageNumber = 1; // default 1st page
+		int offset = (pageNumber - 1) * rowsPerPage;
+						
+		String sql = " select * from tasks where created_by = " + managerId + " limit " + rowsPerPage + " OFFSET " + offset;
 
-		List<Task> tasks = new ArrayList<>();
-		String sql = " select * from tasks where created_by = ? ";
+		return getTasksWithQuery(sql);
+	}
+
+	public int getTaskCountForEmployee(int employeeId, boolean isManager) {
+		String sql;
+		if (isManager == false) {
+			sql = "select count(*) as row_count from tasks where assigned_to = ?";
+		} else {
+			sql = "select count(*) as row_count from tasks where created_by = ?";
+		}
 
 		try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
 
-			pstmt.setInt(1, managerId);
+			pstmt.setInt(1, employeeId);
 
-			try (ResultSet rs = pstmt.executeQuery()) {
-				while (rs.next()) {
-					tasks.add(mapToTask(rs));
-				}
+			ResultSet rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				return rs.getInt("row_count");
 			}
 
-			return Optional.of(tasks);
+			return 0;
 
 		} catch (SQLException e) {
-			logger.error("DB error in getTasksCreatedByManager(managerId={})", managerId, e);
-			return Optional.empty();
+			logger.error("DB error in get task count ", e);
+			return -1;
 		}
 	}
 

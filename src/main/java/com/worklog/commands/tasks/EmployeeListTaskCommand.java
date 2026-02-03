@@ -37,7 +37,16 @@ public class EmployeeListTaskCommand implements Command {
 			tasks = repo.filterTasksByStatus(employeeId, status, pageNumber).orElse(new ArrayList<Task>());
 		}
 
+		int totalPages = 1;
+		int rowCount = repo.getTaskCountForEmployee(employeeId, false);
+		if (rowCount > TaskDAO.rowsPerPage) {
+			totalPages = rowCount / TaskDAO.rowsPerPage;
+			if (rowCount % TaskDAO.rowsPerPage > 0) {
+				++totalPages;
+			}
+		}
 		request.setAttribute("tasks", tasks);
+		request.setAttribute("totalPages", totalPages);
 
 		return true;
 	}

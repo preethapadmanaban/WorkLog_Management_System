@@ -1,3 +1,4 @@
+<%@page import="com.worklog.repositories.TaskDAO"%>
 <%@page import="com.worklog.entities.Employee"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Map"%>
@@ -116,7 +117,10 @@
 
         <tbody>
         <%
+	 		int totalPages = request.getAttribute("totalPages") != null ? (int)request.getAttribute("totalPages") : 1;
+			int pageNumber = request.getParameter("pageNumber") != null ? Integer.parseInt(request.getParameter("pageNumber")) : 1;
             if (list != null && !list.isEmpty()) {
+        		int currentSerialSequence = TaskDAO.rowsPerPage * (pageNumber - 1);
                 for (int i = 0; i < list.size(); i++) {
                     Task t = list.get(i);
 
@@ -130,7 +134,7 @@
         %>
 
           <tr>
-            <td><%= (i + 1) %></td>
+            <td><%=++currentSerialSequence %></td>
             <td><%= t.getTitle() %></td>
 
             <td><%= empName %></td>
@@ -163,6 +167,26 @@
       </table>
     </div>
   </div>
+  <% if(totalPages > 1) {  
+  	System.out.println("from jsp, totalPages : "+ totalPages + "pageNumber: "+pageNumber);
+  %>
+   <div class="pagination-button">
+ 
+ 			<form action="controller">
+   			<input type="hidden" name="action" value="listTasks">
+   			<input type="hidden" name="pageNumber" value="<%=pageNumber - 1%>">
+   			<button class="btn btn-primary" type="submit" <%if(pageNumber <= 1) { %> disabled <% } %> >Prev</button>
+  			</form>
+  			
+  			<span><%=pageNumber%></span>
+  			
+  			<form action="controller">
+  				<input type="hidden" name="action" value="listTasks">
+   			<input type="hidden" name="pageNumber" value="<%=pageNumber + 1%>">
+   			<button class="btn btn-primary" type="submit" <%if(pageNumber >= totalPages ) { %> disabled <% } %>>Next</button>
+  			</form>
+   </div>
+   <% } %>
 </div>
 
 <script type="text/javascript">

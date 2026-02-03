@@ -93,13 +93,19 @@ public class TimeSheetDAO {
 //	    String sql = "select * from timesheets where employee_id=?";
 //
 
-	public Optional<List<TimeSheet>> getAllTimeSheetsForEmployee(int id, String status) {
+public Optional<List<TimeSheet>> getAllTimeSheetsForEmployee(int id, String status, int pageNumber) {
 		String sql;
 		if (status.equalsIgnoreCase("all")) {
 			sql = "select * from timesheets where employee_id=? order by work_date";
 		} else {
 			sql = "select * from timesheets where employee_id=? and status ilike ? order by work_date";
 		}
+
+		if (pageNumber == 0)
+			pageNumber = 1; // default 1st page
+		int offset = (pageNumber - 1) * TaskDAO.rowsPerPage;
+
+		sql = sql + " LIMIT " + TaskDAO.rowsPerPage + " OFFSET " + offset;
 
 		try(Connection conn=DataSourceFactory.getConnectionInstance();
 			PreparedStatement pstmt=conn.prepareStatement(sql);
@@ -249,6 +255,34 @@ public class TimeSheetDAO {
 			logger.error("DB error while updating timesheet status. timesheetId={}", timesheetId, e);
 			return false;
 		}
+	}
+
+	public int getTimesheetCount(int employeeId, boolean isManager) {
+
+		String sql;
+		if (isManager == true) {
+			sql = "SELECT * FROM timesheets WHERE manager_id = ?";
+		} else {
+			sql = "SELECT * FROM timesheets WHERE employee_id = ?";
+		}
+
+		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			pstmt.setInt(1, employeeId);
+
+			ResultSet rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				return rs.getInt("row_count");
+			}
+
+			return 0;
+
+		} catch (SQLException e) {
+			logger.error("DB error while getting timesheet count", e);
+			return -1;
+		}
+
 	}
 	
 }
