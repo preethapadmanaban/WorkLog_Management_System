@@ -79,18 +79,9 @@ public class ListTasksCommand implements Command {
 
 			logger.info("Manager {} is filtering tasks | empId={} status={} from={} to={}", managerId, empId, status, fromDate, toDate);
 
-			boolean hasFilter = (empId != null) || (status != null) || (fromDate != null && toDate != null);
-
-			List<Task> taskList;
-
-			if (!hasFilter) {
-				taskList = dao.getTasksCreatedByManager(managerId).orElse(new ArrayList<>());
-			} else {
-				taskList = dao.getTasksCreatedByManager(managerId, empId, status, fromDate, toDate).orElse(new ArrayList<>());
-			}
+			List<Task> taskList = dao.getTasksCreatedByManager(managerId, empId, status, fromDate, toDate).orElse(new ArrayList<>());
 
 			List<Employee> members = EmployeeDAO.getAllMembers().orElse(new ArrayList<>());
-
 			Map<Integer, String> empNameMap = new HashMap<>();
 			for (Employee e : members) {
 				empNameMap.put(e.getId(), e.getName());
@@ -98,8 +89,13 @@ public class ListTasksCommand implements Command {
 
 			request.setAttribute("members", members);
 			request.setAttribute("empNameMap", empNameMap);
-
 			request.setAttribute("tasks", taskList);
+
+			// store selected values
+			request.setAttribute("selectedEmpId", empIdStr);
+			request.setAttribute("selectedStatus", status);
+			request.setAttribute("selectedFromDate", fromDateStr);
+			request.setAttribute("selectedToDate", toDateStr);
 
 			/*
 			 * request.setAttribute("totalCount", result.getTotalCount()); request.setAttribute("page", page); request.setAttribute("size",

@@ -33,11 +33,37 @@
  		 <tr><th>Title</th><td><%= t.getTitle() %></td></tr>
 	    <tr><th>Description</th><td><%= t.getDescription() %></td></tr>
 <%-- 	    <tr><th>Assigned To</th><td><%= t.getAssigned_to() %></td></tr>--%>
-	    <tr><th>Status</th><td><%= t.getStatus() %></td></tr>
+	    <tr>
+		    <th>Status</th>
+		    <td>
+		        <%
+		            String cssClass = "";
+		            String status = t.getStatus().name();   
+		            if ("COMPLETED".equals(status)) {
+		                cssClass = "status-completed";
+		            } else if ("ASSIGNED".equals(status)) {
+		                cssClass = "status-assigned";
+		            } else if ("INPROGRESS".equals(status)) {
+		                cssClass = "status-progress";
+		            }
+		        %>
+		        <span class="status-badge <%= cssClass %>">
+		            <%= status %>
+		        </span>
+		    </td>
+		</tr>
+
 	    <tr><th>Deadline</th><td><%= t.getDeadline() %></td></tr>
 	   <%--  <tr><th>Created By</th><td><%= t.getCreated_by() %></td></tr> --%>
-	    <tr><th>Created Date</th><td><%= t.getCreated_at().toLocalDateTime().toString().split("T")[0]%></td></tr>
-	    <tr><th>Last Updated Date</th><td><%= t.getUpdated_at().toLocalDateTime().toString().split("T")[0] %></td></tr>
+	    <tr>
+		<th>Created Date</th>
+		  <td><%= t.getCreated_at() == null ? "" : t.getCreated_at().split(" ")[0] %></td>
+		</tr>
+		<tr>
+		  <th>Last Updated Date</th>
+		  <td><%= t.getUpdated_at() == null ? "" : t.getUpdated_at().split(" ")[0] %></td>
+		</tr>
+
 	</table>
 	
 	<br>

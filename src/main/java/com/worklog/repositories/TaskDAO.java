@@ -303,7 +303,7 @@ public class TaskDAO {
 		List<Task> tasks = new ArrayList<>();
 
 		String sql = "select * from tasks " + "where created_by = ? " + "and (? is null or assigned_to = ?) "
-						+ "and (? is null or status ilike ?) " + "and ( (? is null or ? is null) or created_at::date between ? and ? ) "
+						+ "and (? is null or status ilike ?) " + "and ( (? is null or ? is null) or deadline::date between ? and ? ) "
 						+ "order by deadline";
 
 		try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
@@ -313,12 +313,18 @@ public class TaskDAO {
 			pstmt.setInt(idx++, managerId);
 
 			// emp filter
-			pstmt.setObject(idx++, empId);
-			pstmt.setObject(idx++, empId);
+			if (empId == null) {
+				pstmt.setNull(idx++, java.sql.Types.INTEGER);
+				pstmt.setNull(idx++, java.sql.Types.INTEGER);
+			} else {
+				pstmt.setInt(idx++, empId);
+				pstmt.setInt(idx++, empId);
+			}
 
 			// status filter
+			String st = (status == null) ? null : "%" + status + "%";
 			pstmt.setString(idx++, status);
-			pstmt.setString(idx++, status);
+			pstmt.setString(idx++, st);
 
 			// date filter
 			java.sql.Date f = (fromDate == null) ? null : java.sql.Date.valueOf(fromDate);

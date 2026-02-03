@@ -22,6 +22,23 @@
     List<Task> list = (List<Task>) request.getAttribute("tasks");
     Map<Integer, String> empNameMap = (Map<Integer, String>) request.getAttribute("empNameMap");
     List<Employee> employees = (List<Employee>) request.getAttribute("members");
+ 
+    String selectedStatus = (String) request.getAttribute("selectedStatus");
+    if (selectedStatus == null) selectedStatus = request.getParameter("status");
+    if (selectedStatus == null) selectedStatus = "all";
+
+    String selectedEmp = (String) request.getAttribute("selectedEmpId");
+    if (selectedEmp == null) selectedEmp = request.getParameter("employee_id");
+    if (selectedEmp == null) selectedEmp = "all";
+
+    String selectedFrom = (String) request.getAttribute("selectedFromDate");
+    if (selectedFrom == null) selectedFrom = request.getParameter("fromDate");
+    if (selectedFrom == null) selectedFrom = "";
+
+    String selectedTo = (String) request.getAttribute("selectedToDate");
+    if (selectedTo == null) selectedTo = request.getParameter("toDate");
+    if (selectedTo == null) selectedTo = "";
+
 %>
 
 <div class="tasks-filter">
@@ -33,7 +50,7 @@
         onsubmit="document.getElementById('filter').value='true';">
     <input type="hidden" name="action" value="listTasks">
     <input type="hidden" name="filter" id="filter" value="false">
-    <input type="hidden" name="page" id="page">
+    <input type="hidden" name="page" id="page" value="1">
     <input type="hidden" name="size" value="5">
 
     <div class="tasks-filter-row">
@@ -108,8 +125,8 @@
                         ? empNameMap.getOrDefault(t.getAssigned_to(), "Emp-" + t.getAssigned_to())
                         : ("Emp-" + t.getAssigned_to());
 
-                    String statusCss = t.getStatus().getDisplayValue();
                     String statusText = t.getStatus().getDisplayValue();
+                    String statusCss  = statusText.toLowerCase().replace(" ", "-");
         %>
 
           <tr>
@@ -120,8 +137,8 @@
 
             <td>
               <span class="task-status status-<%= statusCss %>">
-                <%= statusText %>
-              </span>
+			  	<%= statusText %>
+			  </span>
             </td>
 
             <td><%= t.getDeadline() %></td>
@@ -157,11 +174,12 @@
       String employeeId = request.getParameter("employee_id") == null ? "all" : request.getParameter("employee_id");
     %>
 
-    document.getElementById("status_select").value = "<%= statusSelect %>";
-    document.getElementById("employee_select").value = "<%= employeeId %>";
-    document.getElementById("fromDate").value = "<%= fromDateParam %>";
-    document.getElementById("toDate").value = "<%= toDateParam %>";
+    document.getElementById("status_select").value = "<%= selectedStatus %>";
+    document.getElementById("employee_select").value = "<%= selectedEmp %>";
+    document.getElementById("fromDate").value = "<%= selectedFrom %>";
+    document.getElementById("toDate").value = "<%= selectedTo %>";
   });
+  
 </script>
 
 </body>

@@ -1016,6 +1016,15 @@ textarea.nice-form-input{
   transform: translateY(1px);
 }
 
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 12px;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    display: inline-block;
+}
+
 .tasks-page .task-status{
   display: inline-block;
   padding: 5px 12px;
@@ -1069,6 +1078,7 @@ textarea.nice-form-input{
   font-weight:600;
 }
 
+<<<<<<< Updated upstream
 /* Timesheet Entry Card */
 .entry-card {
   background: #ffffff;
@@ -1169,4 +1179,43 @@ textarea.nice-form-input{
 	align-items: center;
 	gap: 10px;
 }
+=======
+.status-completed { 
+	background-color: #28a745; 
+}  
+
+.status-assigned  { 
+	background-color: #007bff; 
+} 
+
+.status-progress  { 
+	background-color: #ff9800; 
+} 
+
+.cancel_button{
+  padding: 12px 30px;
+  border: none;
+  border-radius: 10px;
+  background: #dc3545;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 10px;
+}
+.cancel_button:hover{
+  opacity: 0.9;
+}
+
+.submit_button:disabled {
+    background: #9da8b3;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+
+
+
+
+
+>>>>>>> Stashed changes
 
