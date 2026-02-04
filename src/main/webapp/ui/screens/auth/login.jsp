@@ -8,7 +8,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <link rel="stylesheet" href="/worklog/ui/css/styles.css">
 </head>
-<body>
+<body> 
 <div class="mobile_auth_page">
 	<div class="app_name_div"><h3>Worklog Management</h3></div>
 	
