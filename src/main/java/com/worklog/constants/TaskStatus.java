@@ -1,7 +1,7 @@
 package com.worklog.constants;
 
 public enum TaskStatus {
-	ASSIGNED("ASSIGNED"), IN_PROGRESS("IN PROGRESS"), COMPLETED("COMPLETED");
+	ASSIGNED("ASSIGNED"), IN_PROGRESS("IN PROGRESS"), COMPLETED("COMPLETED"), UNKNOWN("N/A");
 
 	private String displayValue;
 

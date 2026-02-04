@@ -12,6 +12,7 @@
 <title>Timesheet history</title>
 <jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
 <link rel="stylesheet" href="<%=request.getContextPath()%>/ui/css/styles.css">
+<!-- <link href="/worklog/ui/css/bootstrap.min.css" rel="stylesheet" type="text/css"> -->
 </head>
 <body>
 	<jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
@@ -69,7 +70,8 @@
 							<td><%=++currentSerialSequence %></td>
 							<td><%=timesheet.getWork_date() %></td>
 							<td><%=timesheet.getTotal_hours() %> hrs</td>
-							<td><%=timesheet.getStatus().toString() %></td>
+							<td>
+							   <span class="task-status status-<%= timesheet.getStatus().toString().toLowerCase() %>"><%=timesheet.getStatus().toString() %></span></td>
 					<%
 						String managerComment = timesheet.getManager_comment() == null ? "No Comment" : timesheet.getManager_comment();
 					%>
@@ -94,23 +96,23 @@
 			    
 			  </tbody>
 	     </table>
-	     <% if(totalPages > 1) {  %>
+	     <%-- <% if(totalPages > 1) {  %> --%>
 	     <div class="pagination-button">
-	   			<form action="controller">
-	     			<input type="hidden" name="action" value="timesheetHistory">
-	     			<input type="hidden" name="pageNumber" value="<%=pageNumber - 1%>">
-	     			<button class="btn btn-primary" type="submit" <%if(pageNumber <= 1) { %> disabled <% } %> >Prev</button>
+	   				<form action="controller">
+		     			<input type="hidden" name="action" value="timesheetHistory">
+		     			<input type="hidden" name="pageNumber" value="<%=pageNumber - 1%>">
+	     				<button class="btn btn-primary" type="submit" <%if(pageNumber <= 1) { %> disabled <% } %> >Prev</button>
 	    			</form>
 	    			
 	    			<span><%=pageNumber%></span>
-	    			
+	    			<%-- <%System.out.println("Page Number: "+(pageNumber<=1)); %> --%>
 	    			<form action="controller">
 	    				<input type="hidden" name="action" value="timesheetHistory">
-	     			<input type="hidden" name="pageNumber" value="<%=pageNumber + 1%>">
-	     			<button class="btn btn-primary" type="submit" <%if(pageNumber >= totalPages) { %> disabled <% } %>>Next</button>
+		     			<input type="hidden" name="pageNumber" value="<%=pageNumber + 1%>">
+	     				<button class="btn btn-primary" type="submit" <%if(pageNumber >= totalPages ) { %> disabled <% } %>>Next</button>
 	    			</form>
 	     </div>
-	     <% } %>
+	     <%-- <% } %> --%>
 	    </div>
  	</div>
 </div>

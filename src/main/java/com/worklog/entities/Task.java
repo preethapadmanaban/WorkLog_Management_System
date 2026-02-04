@@ -1,5 +1,6 @@
 package com.worklog.entities;
 
+import com.worklog.constants.TaskPriority;
 import com.worklog.constants.TaskStatus;
 
 /**
@@ -20,6 +21,7 @@ public class Task {
 	private int created_by;
 	private String created_at;
 	private String updated_at;
+	private TaskPriority priority;
 
 
 	public Task(Task.Builder builder) {
@@ -29,6 +31,7 @@ public class Task {
 		this.description = builder.description;
 		this.assigned_to = builder.assigned_to;
 		this.status = builder.status;
+		this.priority = builder.priority;
 		this.deadline = builder.deadline;
 		this.created_by = builder.created_by;
 		this.created_at = builder.created_at;
@@ -73,6 +76,14 @@ public class Task {
 		return updated_at;
 	}
 
+	public TaskPriority getPriority() {
+		return priority;
+	}
+
+	public void setPriority(TaskPriority priority) {
+		this.priority = priority;
+	}
+
 	// Builder class
 	public static class Builder {
 		private int id;
@@ -80,6 +91,7 @@ public class Task {
 		private String description;
 		private int assigned_to;
 		private TaskStatus status;
+		private TaskPriority priority;
 		private String deadline;
 		private int created_by;
 		private String created_at;
@@ -111,6 +123,11 @@ public class Task {
 
 		public Builder setStatus(TaskStatus status) {
 			this.status = status;
+			return this;
+		}
+
+		public Builder setPriority(TaskPriority priority) {
+			this.priority = priority;
 			return this;
 		}
 

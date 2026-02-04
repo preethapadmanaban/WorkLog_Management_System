@@ -12,7 +12,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Tasks</title>
 <jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
-<link href="/worklog/ui/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
 </head>
 <body>
@@ -76,7 +75,7 @@
 				<td><%=task.getTitle()%></td>
 				<td><%=task.getDescription()%></td>
 				<td>
-				 <span class="task-status status-<%= task.getStatus().toString().toLowerCase() %>">
+				 <span class="task-status status-<%= task.getStatus().toString().toLowerCase().replace("_", "-") %>">
 	                <%= task.getStatus().getDisplayValue() %>
 	              </span>
 				</td>

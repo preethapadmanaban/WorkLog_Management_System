@@ -1,9 +1,7 @@
 package com.worklog.commands.timesheets;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.worklog.config.AppConfig;
+import com.worklog.dto.ListResultWithRowCount;
 import com.worklog.entities.TimeSheet;
 import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
@@ -29,11 +27,18 @@ public class EmployeeTimeSheetHistoryCommand implements Command {
 		String status = request.getParameter("status") == null ? "all" : request.getParameter("status");//if filter is not selected default all
 		int pageNumber = request.getParameter("pageNumber") == null ? 1 : Integer.parseInt(request.getParameter("pageNumber"));
 		TimeSheetDAO timeSheetDAO = new TimeSheetDAO();
-		List<TimeSheet> timeSheets = timeSheetDAO.getAllTimeSheetsForEmployee(id, status, pageNumber).orElse(new ArrayList<TimeSheet>());
-		request.setAttribute("timesheets", timeSheets);
+		ListResultWithRowCount<TimeSheet> timeSheetWithRowCount = timeSheetDAO.getAllTimeSheetsForEmployee(id, status, pageNumber)
+						.orElse(null);
+
+		if (timeSheetWithRowCount == null) {
+			request.setAttribute("message", "Unable to find Data!");
+			return false;
+		}
+
+		request.setAttribute("timesheets", timeSheetWithRowCount.getTasks());
 
 		int totalPages = 1;
-		int rowCount = timeSheetDAO.getTimesheetCount(id, false);
+		int rowCount = timeSheetWithRowCount.getRowsCount();
 		if (rowCount > rowsPerPage) {
 			totalPages = rowCount / rowsPerPage;
 			if (rowCount % rowsPerPage > 0) {

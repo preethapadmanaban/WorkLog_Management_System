@@ -11,8 +11,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.worklog.config.AppConfig;
-import com.worklog.dto.TaskResult;
+import com.worklog.dto.ListResultWithRowCount;
 import com.worklog.entities.Employee;
+import com.worklog.entities.Task;
 import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.EmployeeDAO;
@@ -79,7 +80,7 @@ public class ListTasksCommand implements Command {
 			logger.info("Manager {} is filtering tasks | empId={} status={} from={} to={}", managerId, empId, status, fromDate, toDate);
 
 
-			TaskResult taskWithRowCount = dao
+			ListResultWithRowCount<Task> taskWithRowCount = dao
 							.getTasksCreatedByManager(managerId, empId, status, fromDateStr, toDateStr, pageNumber)
 							.orElse(null);
 

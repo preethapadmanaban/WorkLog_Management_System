@@ -1,7 +1,8 @@
 package com.worklog.commands.tasks;
 
 import com.worklog.config.AppConfig;
-import com.worklog.dto.TaskResult;
+import com.worklog.dto.ListResultWithRowCount;
+import com.worklog.entities.Task;
 import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.TaskDAO;
@@ -30,7 +31,7 @@ public class EmployeeListTaskCommand implements Command {
 
 		TaskDAO repo = new TaskDAO();
 
-		TaskResult tasksWithRowCount = repo.filterTasksByStatus(employeeId, status, pageNumber).orElse(null);
+		ListResultWithRowCount<Task> tasksWithRowCount = repo.filterTasksByStatus(employeeId, status, pageNumber).orElse(null);
 
 		if (tasksWithRowCount == null) {
 			request.setAttribute("message", "No data found!");

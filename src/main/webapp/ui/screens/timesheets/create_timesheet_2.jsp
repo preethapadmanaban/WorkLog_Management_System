@@ -34,7 +34,7 @@
 			  </div>
 		</div>
 	    <div class="create_timesheet_section">
-	        <div class="nice-form">
+	        <div class="timesheet-entry-form">
 	        <h3>Add Entry Form</h3>
 	            <form onsubmit="add_enrty(event)">
 	                <div class="nice-form-group">

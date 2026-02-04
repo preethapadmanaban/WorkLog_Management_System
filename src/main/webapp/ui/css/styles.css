@@ -1,5 +1,20 @@
 @charset "UTF-8";
 
+/* Inter Regular */
+@font-face {
+    font-family: 'Inter';
+    src: url('ui/assets/fonts/Inter/Inter_18pt-Regular.ttf') format('truetype'),
+         url('/assets/fonts/Inter/Inter_18pt-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+
+html, body{
+	background-color: white;
+	font-family: 'Inter', sans-serif;
+    font-weight: 400; /* default body text */
+}
 
 
 /* Create Timesheet Section */
@@ -10,10 +25,50 @@
 }
 
 .create_timesheet_section{
-    display: flex;
-    /* flex-wrap: wrap; */
-    justify-content: space-between;
+    display: grid;
+   	grid-template-columns: 1fr 1fr;
     gap: 20px;
+    width: 60rem;
+  	margin: 0px auto;
+  	justify-self: center; 
+}
+
+.timesheet-entry-form{
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 1.2em;
+}
+
+
+.entry_section{
+    width: 30em;
+	border: 1px solid #e5e7eb;
+	padding: 20px;
+	border: 1px solid #e5e7eb;
+	padding: 20px;
+	border-radius: 20px;
+	color: #6b7280;
+	font-size: 14px;
+}
+#error_message{
+    color: red;
+    font-weight: bold;
+}
+
+.full_div_action_button{
+	text-align: center;
+	margin: 3em 0em 0em 3em;
+}
+
+
+
+.timesheet_review_detail_with_image{
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+}
+
+.timesheet_status_img_div img{
+	width: 200px;
 }
 
 .title {
@@ -92,25 +147,6 @@
   outline-offset: 2px;
 }
 
-.entry_section{
-    width: 40%;
-    margin: 40px auto;
-	border: 1px solid #e5e7eb;
-	padding: 20px;
-	border: 1px solid #e5e7eb;
-	padding: 20px;
-	border-radius: 20px;
-	color: #6b7280;
-	font-size: 14px;
-}
-#error_message{
-    color: red;
-    font-weight: bold;
-}
-
-.full_div_action_button{
-	text-align: center;
-}
 
 /* Create timesheet ends */
 
@@ -233,47 +269,155 @@
 	margin: 10px auto;
 }
 
-#task_card_array{
+/* Task Card Desgin */
+
+.task-section{
 	display: flex;
-	flex-direction: column;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    align-items: center;
+	align-items: start;
+	justify-content: space-around;
+	flex-wrap: wrap;
 }
 
-#task_section{
-	display: flex;
-    justify-content: space-around;
-    overflow: scroll;
+.task-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    width: 300px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border-left: 5px solid #4a90e2; /* Blue accent */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 15px;
 }
 
-.task_card{
-/* 	border: 1px solid grey; */
-	border-radius: 5px;
-    width: 280px;
-    padding: 10px 15px;
-    margin: 10px 10px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+.task-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.task-header {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.task-title {
+    font-size: 1.1rem;
+    color: #2c3e50;
+    margin: 0;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.status-badge {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Status Colors */
+.status-pending { background: #fff3cd; color: #856404; }
+.status-completed { background: #d4edda; color: #155724; }
+
+.task-footer {
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+.deadline {
+    display: flex;
     align-items: center;
+    color: #7f8c8d;
+    font-size: 0.9rem;
 }
 
-.task_card_label{
-	font-weight: bold;
+.icon {
+    margin-right: 8px;
 }
 
-.task_card_value{
-	font-style: italic;
+.date-text strong {
+    color: #e74c3c; /* Red for the date to grab attention */
 }
 
-.task_card_row{
-	 margin: 10px 0px;
+.task-footer {
+    display: flex;
+    justify-content: space-between; /* Pushes date to left and button to right */
+    align-items: center;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+    margin-top: 10px;
 }
 
-.deadline{
-	color: orange;
+.edit-btn {
+    text-decoration: none;
+    font-size: 0.85rem;
+    color: #4a90e2;
+    border: 1px solid #4a90e2;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
+
+.edit-btn:hover {
+    background: #4a90e2;
+    color: white;
+    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.4);
+}
+
+.edit-icon {
+    font-size: 0.9rem;
+}
+
+.status-badge-div{
+	display: flex;
+	flex-direction: column;
+	align-items: end;
+	gap: .5em;
+}
+
+/* HIGH priority card */
+.task-card.priority-high {
+    border-left: 5px solid #e53935; /* strong red */
+    box-shadow: 0 6px 20px rgba(229, 57, 53, 0.18);
+}
+
+
+.priority-badge {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-left: 6px;
+}
+
+/* High priority badge */
+.priority-badge.high {
+    background: #fdecea;
+    color: #c62828;
+    border: 1px solid #e53935;
+}
+
+.priority-badge.medium{
+	background: #f9ce3c;
+   	color: white;
+}
+
+.priority-badge.low{
+    background: #eef4ff;
+  	color: #2952cc;
+}
+
+
+
+/* Task Card design ends */
 
 .message{
 	font-weight: bold;
@@ -317,11 +461,6 @@
 	outline: none;
 }
 
-body{
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background: #f5f6fa;
-}
 
 /* NAVBAR */
 .navbar{
@@ -840,7 +979,7 @@ textarea.nice-form-input{
 	background: #f3f4f6; 
 }
 
-.task-status{
+/* .task-status{
   display: inline-block;
   padding: 6px 12px;
   border-radius: 999px;
@@ -848,7 +987,7 @@ textarea.nice-form-input{
   font-size: 12px;
   letter-spacing: 0.4px;
 }
-
+ */
 .actions-cell{ 
 	white-space: nowrap; 
 }
@@ -901,13 +1040,13 @@ textarea.nice-form-input{
   border-color: #86efac;
 }
 
-.task-status {
+/* .task-status {
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.4px;
-}
+} */
 
 /* ===========================
    TASKS PAGE - FINAL POLISH
@@ -1008,19 +1147,23 @@ textarea.nice-form-input{
   letter-spacing: 0.3px;
 }
 
-.status-completed{
-  background: #eaf7ee;
-  color: #1f6f3d;
+.status-completed, .status-approved{
+  color: #eaf7ee;
+  background-color: #1f6f3d;
 }
 
 .status-assigned{
-  background: #eef4ff;
-  color: #2952cc;
+  color: #eef4ff;
+  background: #2952cc;
+}
+.status-rejected{
+	background-color : #e74c3c;
+	color: white;
 }
 
-.status-in-progress{
-  background: #fff6e6;
-  color: #8a5a00;
+.status-in-progress, .status-pending{
+   background: #f9ce3c;
+   color: white;
 }
 
 .tasks-page .tasks-pagination{
@@ -1131,6 +1274,12 @@ textarea.nice-form-input{
   color: white;
 }
 
+.btn-primary:disabled,.btn-primary:disabled:hover {
+    background: #a5b4fc;
+    color: #f3f4f6;  /* slightly darker text for contrast */
+    cursor: not-allowed;
+}
+
 .btn-primary:hover {
   background: #4338ca;
 }
@@ -1154,7 +1303,7 @@ textarea.nice-form-input{
 	gap: 10px;
 }
 
-.status-completed { 
+/* .status-completed { 
 	background-color: #28a745; 
 }  
 
@@ -1164,7 +1313,7 @@ textarea.nice-form-input{
 
 .status-progress  { 
 	background-color: #ff9800; 
-} 
+}  */
 
 .cancel_button{
   padding: 12px 30px;
@@ -1202,17 +1351,9 @@ textarea.nice-form-input{
   box-shadow: 0 6px 18px rgba(0,0,0,0.10);
 }
 
-.status-completed {
+/* .status-completed {
   background: #5fb877;
   color: white;
-}
+} */
 
-.status-assigned {
-  background: #5291f8;
-  color: white;
-}
 
-.status-in-progress {
-  background: #f9ce3c;
-  color: white;
-}

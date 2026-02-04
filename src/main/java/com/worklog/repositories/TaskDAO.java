@@ -16,8 +16,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.worklog.config.AppConfig;
+import com.worklog.constants.TaskPriority;
 import com.worklog.constants.TaskStatus;
-import com.worklog.dto.TaskResult;
+import com.worklog.dto.ListResultWithRowCount;
 import com.worklog.entities.Task;
 import com.worklog.factories.DataSourceFactory;
 import com.worklog.utils.CustomDateFormatter;
@@ -36,7 +37,7 @@ public class TaskDAO {
 						.updatedAt(CustomDateFormatter.toLocalFormat(rs.getString("updated_at"), true)).build();
 	}
 
-	public Optional<List<Task>> getTasksWithQuery(String query) {
+	private Optional<List<Task>> getTasksWithQuery(String query) {
 
 		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(query)) {
 
@@ -56,18 +57,94 @@ public class TaskDAO {
 		}
 	}
 
-	// written by vasudevan
-	public Optional<List<Task>> getAllTasksForEmployee(int employeeId) {
+	public Optional<List<Task>> getWorkingTasksByEmployee(int employeeId) {
 
-		String query = "SELECT * FROM tasks where assigned_to = " + employeeId + " and ((status ilike " + "'%"
-						+ TaskStatus.ASSIGNED.toString()
-							+ "%' or status ilike " + "'%" + TaskStatus.IN_PROGRESS.toString() + "%'"
-							+ ") or to_char(updated_at, 'YYYY-MM-DD') = to_char(current_timestamp, 'YYYY-MM-DD')) order by created_at";
+		String query = String.format(
+						"SELECT * FROM tasks WHERE assigned_to = %d AND ( status ILIKE \'%s\' OR (status ILIKE \'%s\' AND updated_at::DATE = CURRENT_DATE) ) ORDER BY updated_at",
+						employeeId, TaskStatus.IN_PROGRESS.toString(), TaskStatus.COMPLETED.toString());
 
 		return getTasksWithQuery(query);
+
 	}
 
-	public Optional<TaskResult> filterTasksByStatus(int employeeId, String status, int pageNumber) {
+	// written by vasudevan
+	public Optional<Map<String, List<Task>>> getAllTasksForEmployee(int employeeId) {
+
+		String query = String.format("SELECT id,title, description, deadline, status," + " CASE"
+						+ " WHEN status = 'ASSIGNED' AND deadline > CURRENT_DATE THEN 'LOW'"
+						+ " WHEN status = 'ASSIGNED' AND deadline <= CURRENT_DATE THEN 'HIGH'"
+						+ " WHEN status = 'IN_PROGRESS' AND deadline <= CURRENT_DATE THEN 'HIGH'"
+						+ " WHEN status = 'IN_PROGRESS' AND deadline > CURRENT_DATE THEN 'LOW'"
+						+ " ELSE 'LOW'"
+						+ " END AS priority"
+						+ " FROM tasks WHERE assigned_to = %d AND ((status ILIKE \'%s\' or status ILIKE \'%s\')"
+						+ " OR updated_at::DATE = CURRENT_DATE)" + " ORDER BY deadline", employeeId, TaskStatus.ASSIGNED.toString(),
+						TaskStatus.IN_PROGRESS.toString());
+
+
+		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+			ResultSet rs = pstmt.executeQuery();
+
+			// List<Task> tasks = new ArrayList<Task>();
+			Map<String, List<Task>> tasks = new HashMap<String, List<Task>>();
+
+			while (rs.next()) {
+
+				TaskStatus status;
+
+				try {
+					status = TaskStatus.valueOf(rs.getString("status").toUpperCase());
+				} catch (IllegalArgumentException | NullPointerException e) {
+					status = TaskStatus.UNKNOWN;
+				}
+				TaskPriority priority;
+				try {
+					priority = TaskPriority.valueOf(rs.getString("priority").toUpperCase());
+				} catch (IllegalArgumentException | NullPointerException e) {
+					priority = TaskPriority.UNKNOWN;
+				}
+
+				Task task = new Task.Builder().withId(rs.getInt("id")).withTitle(rs.getString("title"))
+								.withDescription(rs.getString("description"))
+								.withDeadline(CustomDateFormatter.toLocalFormat(rs.getString("deadline")))
+								.setStatus(status).setPriority(priority).build();
+
+				if (status.equals(TaskStatus.ASSIGNED)) {
+					List<Task> assignedTasks = tasks.get(TaskStatus.ASSIGNED.name());
+					if (assignedTasks == null) {
+						tasks.put(TaskStatus.ASSIGNED.name(), new ArrayList<Task>());
+						assignedTasks = tasks.get(TaskStatus.ASSIGNED.name());
+					}
+					assignedTasks.add(task);
+
+				} else if (status.equals(TaskStatus.IN_PROGRESS)) {
+					List<Task> inProgressTasks = tasks.get(TaskStatus.IN_PROGRESS.name());
+					if (inProgressTasks == null) {
+						tasks.put(TaskStatus.IN_PROGRESS.name(), new ArrayList<Task>());
+						inProgressTasks = tasks.get(TaskStatus.IN_PROGRESS.name());
+					}
+					inProgressTasks.add(task);
+				} else {
+					List<Task> completedTasks = tasks.get(TaskStatus.COMPLETED.name());
+					if (completedTasks == null) {
+						tasks.put(TaskStatus.COMPLETED.name(), new ArrayList<Task>());
+						completedTasks = tasks.get(TaskStatus.COMPLETED.name());
+					}
+					completedTasks.add(task);
+				}
+
+			}
+
+			return Optional.of(tasks);
+
+		} catch (SQLException e) {
+			logger.error("Exception while fetch the task.", e);
+			return Optional.empty();
+		}
+	}
+
+	public Optional<ListResultWithRowCount<Task>> filterTasksByStatus(int employeeId, String status, int pageNumber) {
 
 		if (pageNumber == 0)
 			pageNumber = 1; // default 1st page
@@ -95,7 +172,7 @@ public class TaskDAO {
 
 		List<Task> tasks = getTasksWithQuery(selectData + query).orElse(Collections.emptyList());
 		int rowCount = getRowCountForQuery(selectCount + query);
-		return Optional.of(new TaskResult(tasks, rowCount));
+		return Optional.of(new ListResultWithRowCount<Task>(tasks, rowCount));
 
 	}
 
@@ -150,29 +227,6 @@ public class TaskDAO {
 		}
 	}
 
-	// changed by vasu for manager only tasks.
-	public Optional<List<Task>> getAllTasks(int employeeId) {
-
-		List<Task> task = new ArrayList<>();
-
-		String sql = "select * from tasks where assigned_to = ?";
-
-		try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
-
-			pstmt.setInt(1, employeeId);
-
-			ResultSet rs = pstmt.executeQuery();
-
-			while (rs.next()) {
-				task.add(mapToTask(rs));
-			}
-			return Optional.of(task);
-
-		} catch (SQLException e) {
-			logger.error("DB error in getAllTasks(employeeId={})", employeeId, e);
-			return Optional.ofNullable(null);
-		}
-	}
 
 	public Optional<Task> getTaskById(int id) {
 
@@ -221,25 +275,6 @@ public class TaskDAO {
 		}
 	}
 
-	public Optional<List<Task>> getAllCompletedTakEmployeeId(int id) {
-
-		List<Task> tasks = new ArrayList<>();
-		String sql = "select * from task where assigned_to=? and status='COMPLETED' ";
-		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setInt(1, id);
-			ResultSet rs = pstmt.executeQuery();
-			while (rs.next()) {
-
-				tasks.add(mapToTask(rs));
-
-			}
-			return Optional.ofNullable(tasks);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			logger.error("DB error in getAllCompletedTakEmployeeId(employeeId={})", id, e);
-			return null;
-		}
-	}
 
 	public boolean updateTask(int id, String status) {
 
@@ -260,7 +295,7 @@ public class TaskDAO {
 		}
 	}
 
-	public Optional<TaskResult> getTasksCreatedByManager(int managerId, Integer empId, String status, String fromDate,
+	public Optional<ListResultWithRowCount<Task>> getTasksCreatedByManager(int managerId, Integer empId, String status, String fromDate,
 					String toDate, int pageNumber) {
 
 		if (pageNumber == 0)
@@ -301,7 +336,7 @@ public class TaskDAO {
 
 		List<Task> tasks = getTasksWithQuery(selectData + query).orElse(new ArrayList<Task>());
 		int rowCount = getRowCountForQuery(selectCount + query);
-		return Optional.of(new TaskResult(tasks, rowCount));
+		return Optional.of(new ListResultWithRowCount<Task>(tasks, rowCount));
 
 	}
 

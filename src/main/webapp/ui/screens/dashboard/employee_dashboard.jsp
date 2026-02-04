@@ -1,3 +1,4 @@
+<%@page import="java.util.Map"%>
 <%@page import="com.worklog.constants.TaskStatus"%>
 <%@page import="com.worklog.entities.Task"%>
 <%@page import="java.util.List"%>
@@ -11,7 +12,6 @@
 <title>Employee dashboard</title>
 <jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
 <link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
 
@@ -21,51 +21,49 @@
 	<div class="container">
 		<h1>Hello, <%=request.getSession().getAttribute("name")%></h1>
 		<div>
-		 <div id="task_section">
-			<% if(request.getAttribute("pending_tasks_array") != null)
+		 <div class="task-section" id="task_section">
+			<% if(request.getAttribute("tasksMap") != null)
 			{
 
-				List<Task> tasks = (List<Task>)request.getAttribute("pending_tasks_array");
+				Map<String, List<Task>> tasks = (Map<String, List<Task>>)request.getAttribute("tasksMap");
 				
 				String employeeUpdateTaskUrl = "/worklog/controller?action=employeeUpdateTask&task_id=";
 				
-				List<Task> pendingTasks =  tasks.stream().filter(t->t.getStatus().equals(TaskStatus.ASSIGNED)).toList();
+		/* 		List<Task> pendingTasks =  tasks.stream().filter(t->t.getStatus().equals(TaskStatus.ASSIGNED)).toList();
 				
 				List<Task> progressTasks = tasks.stream().filter(t->t.getStatus().equals(TaskStatus.IN_PROGRESS)).toList();
 				
-				List<Task> completedTasks = tasks.stream().filter(t->t.getStatus().equals(TaskStatus.COMPLETED)).toList();
+				List<Task> completedTasks = tasks.stream().filter(t->t.getStatus().equals(TaskStatus.COMPLETED)).toList(); */
 			
 			%>
 			<div class="pending_task_array task_card_array">
-				<h3>Pending Tasks</h3>
-				<% if(pendingTasks.size() > 0)
+				<h3>Assigned Tasks</h3>
+				<% if(tasks.get(TaskStatus.ASSIGNED.name()) != null && tasks.get(TaskStatus.ASSIGNED.name()).size() > 0)
 				{
-				for(Task task:pendingTasks)
+				for(Task task:tasks.get(TaskStatus.ASSIGNED.name()))
 				 {
 				 %>
-					<div class="task_card">
-				
-						<div>
-							<div class="task_card_row">
-								<span class="task_card_label">Title: </span>
-								<span class="task_card_value"><%=task.getTitle()%></span>	
-							</div>
-							<div class="task_card_row">
-								<span class="task_card_label">Status: </span>
-								<span class="task_card_value"><%=task.getStatus().getDisplayValue()%></span>	
-							</div>
-							<div class="task_card_row">
-								<span class="task_card_label">Deadline: </span>
-								<span class="task_card_value deadline"><%=task.getDeadline()%></span>	
-							</div>	
-						</div>
-						
-						<div>
-							<a class="edit_button" href="<%= employeeUpdateTaskUrl + task.getId()%>" >
-								<i class="fa-solid fa-pen-to-square fa-lg"></i>
-							</a>
-						</div>
-									
+				    <div class="task-card priority-<%=task.getPriority().toString().toLowerCase()%>">
+					    <div class="task-header">
+					        <h3 class="task-title"><%=task.getTitle() %></h3>
+					        <div class="status-badge-div">
+						    	<span class="priority-badge <%=task.getPriority().toString().toLowerCase()%>"><%=task.getPriority().toString()%> PRIORITY</span>
+						    	<span class="task-status status-<%= task.getStatus().toString().toLowerCase() %>"><%=task.getStatus().getDisplayValue() %></span>
+					    	</div>
+					    </div>
+					    
+					    <div class="task-footer">
+					        <div class="deadline">
+					            <span class="icon">📅</span>
+					            <span class="date-text">Deadline: <strong><%=task.getDeadline() %></strong></span>
+					        </div>
+					        
+					        <div class="task-actions">
+					            <a href="<%= employeeUpdateTaskUrl + task.getId()%>" class="edit-btn">
+					                View & Update
+					            </a>
+					        </div>
+					    </div>
 					</div>
 				<%	 
 				 }
@@ -80,34 +78,32 @@
 			
 			<div class="progress_task_array task_card_array">
 				<h3>In Progress Tasks</h3>
-				<% if(progressTasks.size() > 0)
+				<% if(tasks.get(TaskStatus.IN_PROGRESS.name()) != null && tasks.get(TaskStatus.IN_PROGRESS.name()).size() > 0)
 				{
-					for(Task task:progressTasks)
+					for(Task task:tasks.get(TaskStatus.IN_PROGRESS.name()))
 				 {
 				 %>
-					<div class="task_card">
-				
-						<div>
-							<div class="task_card_row">
-								<span class="task_card_label">Title: </span>
-								<span class="task_card_value"><%=task.getTitle()%></span>	
-							</div>
-							<div class="task_card_row">
-								<span class="task_card_label">Status: </span>
-								<span class="task_card_value"><%=task.getStatus().getDisplayValue()%></span>	
-							</div>
-							<div class="task_card_row">
-								<span class="task_card_label">Deadline: </span>
-								<span class="task_card_value deadline"><%=task.getDeadline()%></span>	
-							</div>	
-						</div>
-						
-						<div>
-							<a class="edit_button" href="<%= employeeUpdateTaskUrl + task.getId()%>" >
-								<i class="fa-solid fa-pen-to-square fa-lg"></i>
-							</a>
-						</div>
-									
+					<div class="task-card priority-<%=task.getPriority().toString().toLowerCase()%>">
+					    <div class="task-header">
+					        <h3 class="task-title"><%=task.getTitle() %></h3>
+					        <div class="status-badge-div">
+						    	<span class="priority-badge <%=task.getPriority().toString().toLowerCase()%>"><%=task.getPriority().toString() %> PRIORITY</span>
+						    	<span class="task-status status-<%= task.getStatus().toString().toLowerCase().replace("_", "-")%>"><%=task.getStatus().getDisplayValue() %></span>
+					    	</div>
+					    </div>
+					    
+					    <div class="task-footer">
+					        <div class="deadline">
+					            <span class="icon">📅</span>
+					            <span class="date-text">Deadline: <strong><%=task.getDeadline() %></strong></span>
+					        </div>
+					        
+					        <div class="task-actions">
+					            <a href="<%= employeeUpdateTaskUrl + task.getId()%>" class="edit-btn">
+					                View & Update
+					            </a>
+					        </div>
+					    </div>
 					</div>
 				<%	 
 				 }
@@ -121,27 +117,31 @@
 			
 			<div class="completed_task_array task_card_array">
 				<h3>Completed Tasks</h3>
-				<% if(completedTasks.size() > 0)
+				<% if(tasks.get(TaskStatus.COMPLETED.name()) != null && tasks.get(TaskStatus.COMPLETED.name()).size() > 0)
 				{
-					for(Task task:completedTasks)
+					for(Task task:tasks.get(TaskStatus.COMPLETED.name()))
 				 {
 				 %>
-					<div class="task_card">
-				
-						<div>
-							<div class="task_card_row">
-								<span class="task_card_label">Title: </span>
-								<span class="task_card_value"><%=task.getTitle()%></span>	
-							</div>
-							<div class="task_card_row">
-								<span class="task_card_label">Status: </span>
-								<span class="task_card_value"><%=task.getStatus().getDisplayValue()%></span>	
-							</div>
-							<div class="task_card_row">
-								<span class="task_card_label">Deadline: </span>
-								<span class="task_card_value deadline"><%=task.getDeadline()%></span>	
-							</div>	
-						</div>
+					<div class="task-card priority-<%=task.getPriority().toString().toLowerCase()%>">
+					    <div class="task-header">
+					     	<h3 class="task-title"><%=task.getTitle() %></h3>
+					    	<div class="status-badge-div">
+						    	<span class="task-status status-<%= task.getStatus().toString().toLowerCase()%>"><%=task.getStatus().getDisplayValue() %></span>
+					    	</div>
+					    </div>
+					    
+					    <div class="task-footer">
+					        <div class="deadline">
+					            <span class="icon">📅</span>
+					            <span class="date-text">Deadline: <strong><%=task.getDeadline() %></strong></span>
+					        </div>
+					        
+					        <div class="task-actions">
+					            <a href="<%= employeeUpdateTaskUrl + task.getId()%>" class="edit-btn">
+					                View
+					            </a>
+					        </div>
+					    </div>
 					</div>
 				<%	 
 				 }

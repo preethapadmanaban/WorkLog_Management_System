@@ -13,6 +13,9 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.worklog.config.AppConfig;
+import com.worklog.constants.TimeSheetStatus;
+import com.worklog.dto.ListResultWithRowCount;
 import com.worklog.dto.ReportEmployeeDTO;
 import com.worklog.entities.TimeSheet;
 import com.worklog.exceptions.DuplicateTimesheetCreationException;
@@ -22,6 +25,8 @@ import com.worklog.utils.CustomDateFormatter;
 
 public class TimeSheetDAO {
 	
+	private static final int rowsPerPage = AppConfig.getPropertyInt("app.pagination.rows-per-page");
+
 	private static final Logger logger = LogManager.getLogger(TimeSheetDAO.class);
 
 	private TimeSheet mapToTimeSheet(ResultSet rs) throws SQLException {
@@ -89,41 +94,55 @@ public class TimeSheetDAO {
 		}
 	}
 	
-//	public Optional<List<TimeSheet>> getAllTimeSheetsForEmployee(int id) {
-//	    String sql = "select * from timesheets where employee_id=?";
-//
+	// public Optional<List<TimeSheet>> getAllTimeSheetsForEmployee(int id) {
+	// String sql = "select * from timesheets where employee_id=?";
+	//
 
-public Optional<List<TimeSheet>> getAllTimeSheetsForEmployee(int id, String status, int pageNumber) {
-		String sql;
-		if (status.equalsIgnoreCase("all")) {
-			sql = "select * from timesheets where employee_id=? order by work_date";
-		} else {
-			sql = "select * from timesheets where employee_id=? and status ilike ? order by work_date";
-		}
+	public Optional<ListResultWithRowCount<TimeSheet>> getAllTimeSheetsForEmployee(int id, String status, int pageNumber) {
 
+		// calculating the offset value
 		if (pageNumber == 0)
 			pageNumber = 1; // default 1st page
-		int offset = (pageNumber - 1) * TaskDAO.rowsPerPage;
+		int offset = (pageNumber - 1) * rowsPerPage;
 
-		sql = sql + " LIMIT " + TaskDAO.rowsPerPage + " OFFSET " + offset;
+		String query;
+
+		String selectCount = "SELECT COUNT(*) as row_count ";
+		String selectData = "SELECT * ";
+		
+		TimeSheetStatus statusEnum;
+		try {
+			statusEnum = TimeSheetStatus.valueOf(status);
+		}
+		catch (IllegalArgumentException | NullPointerException e) {
+			statusEnum = null;
+		}
+
+		if (statusEnum != null) {
+			query = " FROM timesheets WHERE employee_id=" + id + " AND status ILIKE '" + statusEnum.toString()
+							+ "'";
+		} else {
+			query = " FROM timesheets WHERE employee_id=" + id;
+		}
+
+		String paginationQuery = " ORDER BY work_date LIMIT " + rowsPerPage + " OFFSET " + offset;
 
 		try(Connection conn=DataSourceFactory.getConnectionInstance();
-			PreparedStatement pstmt=conn.prepareStatement(sql);
-			){
+						PreparedStatement pstmt = conn.prepareStatement(selectData + query + paginationQuery);
+		) {
 
-				List<TimeSheet> timeSheets = new ArrayList<>();
-
-			pstmt.setInt(1, id);
-			if (!status.equalsIgnoreCase("all")) {
-				pstmt.setString(2, "%" + status + "%");
-			}
+			List<TimeSheet> timeSheets = new ArrayList<>();
 
 			ResultSet rs = pstmt.executeQuery();
+
 			while (rs.next()) {
 				timeSheets.add(mapToTimeSheet(rs));
 			}
 
-			return Optional.of(timeSheets);
+			int rowCount = getRowCountForQuery(selectCount + query);
+
+			return Optional.of(new ListResultWithRowCount<TimeSheet>(timeSheets, rowCount));
+
 		} catch (SQLException e) {
 			logger.error("DB error in getAllTimeSheetsForEmployee(employeeId={}, status={})", id, status, e);
 			return Optional.empty();
@@ -285,4 +304,22 @@ public Optional<List<TimeSheet>> getAllTimeSheetsForEmployee(int id, String stat
 
 	}
 	
+	public int getRowCountForQuery(String query) {
+
+		try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(query)) {
+
+			ResultSet rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				return rs.getInt("row_count");
+			}
+
+			return 0;
+
+		} catch (SQLException e) {
+			logger.error("DB error in get task count ", e);
+			return -1;
+		}
+	}
+
 }
