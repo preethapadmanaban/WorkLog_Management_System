@@ -64,14 +64,14 @@
 	                    <span id="error_message"></span> 
 	                </div>
 	                <div>
-	                    <button type="submit" class="submit_button">Add Entry</button>
+	                    <button type="submit" class="button button-secondary">Add Entry</button>
 	                </div>
 	            </form>
 	        </div>
 	        <div class="entry_section" id="entry_section"><h3>Entry Section</h3></div>
 	    </div>
 	    <div class="full_div_action_button">
-	        <button onclick="createTimesheet()" class="submit_button" >Create Timesheet</button>
+	        <button onclick="createTimesheet()" class="button button-primary" >Create Timesheet</button>
 	    </div>
 	</div>
     <script>
@@ -126,16 +126,17 @@
             entry_object[hourseSpentInput.name] = hourseSpentValue;
             if(isNull(hourseSpentValue))
             {
-                hourseSpentInput.nextElementSibling.innerText = "Please enter Hourse spend in numbers."
+                hourseSpentInput.nextElementSibling.innerText = "Please enter hours spent in numbers."
                 hourseSpentInput.value = "";
             }
             else if(hourseSpentValue <= 0.0 || hourseSpentValue >8.0)
             {
-                hourseSpentInput.nextElementSibling.innerText = "Hourse spend duration should 0.1 - 8 hours."
+                hourseSpentInput.nextElementSibling.innerText = "Hourse spend duration should be 1 - 8 hours."
                 hourseSpentInput.value = "";
             }   
             else if(!(/^\d*(\.\d+)?$|^\d+\.\d*$/.test(hourseSpentValue))){
-                hourseSpentInput.nextElementSibling.innerText = "Please enter Hourse spend in numbers."
+                hourseSpentInput.nextElementSibling.innerText = "Please enter hours spent in numbers."
+                hourseSpentInput.value = "";
             }
             else
             {
@@ -217,11 +218,11 @@
         
             enrty_card.innerHTML = '<div class="entry-card" id=entry_'+ entry_object.task_id + '>'+
 							            '<div class="entry-card-header">' + 
-							            '<h3 class="task-title"> '+ entry_object.title +'</h3>' +
+							            '<h3 class="task-title"> Task : '+ entry_object.title +'</h3>' +
 							            '<span class="task-duration">⏱  '+ entry_object.hours_spent +' hrs</span>' + 
 							          '</div>' +
 								
-							          '<p class="task-notes">' + 
+							          '<p class="task-notes"> Notes : ' + 
 							            entry_object.notes + 
 							          '</p>' + 							
 							          '<div class="task-actions">' + 
@@ -280,7 +281,14 @@
 			console.log("payload => ", {"manager_id" : manager_id, 
 				  "work_date" : work_date, 
 				  "entries" : entries});
-			
+			openPopup("Please Create Atleast One Entry!", "Message", "error", {
+		            showCancel: true,
+		            okText: "Yes, Proceed!",
+		            cancelText: "Cancel",
+		            onOk: () => {alert("Action Confirmed!")},
+		            onCancel: () => {} // do nothing
+			});
+			return;
 			fetch("/worklog/controller/api?action=createTimesheet", {
 				method: "POST",
 				header: {"Content-Type": "application/json"},

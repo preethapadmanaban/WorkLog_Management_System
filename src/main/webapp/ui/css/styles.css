@@ -53,6 +53,8 @@ html, body{
 #error_message{
     color: red;
     font-weight: bold;
+    margin: 5px 0px;
+    font-size: 12px;
 }
 
 .full_div_action_button{
@@ -722,7 +724,7 @@ textarea.nice-form-input{
   min-height: 110px;
 }
 
-.submit_button{
+.button{
   display: inline-block;    
   width: auto;               
   min-width: 140px;           
@@ -732,9 +734,17 @@ textarea.nice-form-input{
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  background: #2563eb;
-  color: #fff;
   transition: transform 0.08s ease, background 0.2s ease;
+}
+
+.button-primary{
+	background: #2563eb;
+    color: #fff;
+}
+
+.button-secondary{
+	background: #51414F;
+    color: #fff;
 }
 
 .submit_button:hover{
@@ -1268,6 +1278,7 @@ textarea.nice-form-input{
   background: #fee2e2;
   color: #b91c1c;
 }
+
 
 .btn-primary {
   background: #4f46e5;

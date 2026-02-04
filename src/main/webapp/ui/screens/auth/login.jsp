@@ -135,9 +135,20 @@ img{
 height:20px;
 width:20px;
 }
+
 .error_message {
   color: red;
   font-size: 12px;
+}
+
+.server_error_message {
+  color: red;
+  font-size: 12px;
+  text-align: center;
+  margin: 0px auto;
+}
+.close-eye{
+	display: none;
 }
 
 </style>
@@ -159,26 +170,34 @@ width:20px;
                    id="email"
                    name="email"
                    class="field"
+                   placeholder="sample@gmail.com"
                    >
 			<p id="error_message_email" class="error_message"></p>
             <label for="password">Password</label>
 
 			<div id="password-wrapper">
-    			<input type="password" id="password" name="password" class="field" >
+    			<input type="password" id="password" name="password" class="field" placeholder="Your password">
    				<span class="eye" id="togglePassword">
-        		<img src="<%=request.getContextPath()%>/ui/images/eye-open-svgrepo-com.svg">
+        		<img class="open-eye" id="open-eye" src="<%=request.getContextPath()%>/ui/icons/eye-open.svg">
+        		<img class="close-eye" id="close-eye" src="<%=request.getContextPath()%>/ui/icons/eye-slash.svg">
     			</span>
 			</div>
 
          <p id="error_message_password" class="error_message"></p>
 
-
+			<% if(request.getAttribute("message") != null){
+			%>
+			<p class="server_error_message"><%=request.getAttribute("message") %></p>
+			<%
+				}
+			 %>
+	
             <button type="submit" class="btn-primary">
-                Login in
+                Login
             </button>
 
             <a href="/worklog/controller?action=signup" class="create-link">
-                Create new account
+                Create New Account
             </a>
 
         </form>
@@ -203,7 +222,6 @@ function clearAllErrorMessage(){
 		let email=document.getElementById("email").value;
 		let password=document.getElementById("password").value;
 		let isValid=true;
-		console.log("hii")
 		let valid_email=true
 		let err_msg=""
 		const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -297,8 +315,12 @@ function clearAllErrorMessage(){
 	let password = document.getElementById("password");
 
 	 if (password.type === "password") {
-	   password.type = "text";
+		password.type = "text";
+		document.getElementById("open-eye").style.display = "block";
+		document.getElementById("close-eye").style.display = "none";
 	 } else {
+		document.getElementById("open-eye").style.display = "none";
+		document.getElementById("close-eye").style.display = "block";
 	   password.type = "password";
 	 }
 	});

@@ -19,7 +19,6 @@
 	<div class="timesheet_container">
 		<div class="filter_section">
 			<div>
-				<div class="back_button" onclick="goBack()"><img alt="Back" src="ui/images/left.png"></div>
 				<h3>Update Task Screen</h3>
 			</div>
 		</div>
@@ -53,23 +52,21 @@
 			  	
 			%>
 			
+			
+			
+			<div class="full_div_action_button">
 			<% if(!task.getStatus().equals(TaskStatus.COMPLETED)){
 			%>
-			
-			<div>
-				<button class="submit_button" onclick="updateStatus()">Change Status to <%=nextStatus.getDisplayValue()%></button>		
-			</div>
-			
-			<%
+				<button class="button button-primary" onclick="updateStatus()">Change Status to <%=nextStatus.getDisplayValue()%></button>
+				<%
 			}			
 			%>
-	
-			
-			
+				<button class="button button-secondary" onclick="backToHome()">Back To Dashboard</button>		
+			</div>
 			<script>
 			
-				function goBack(){
-					window.history.back();
+				function backToHome(){
+					window.location.href='controller?action=routing';
 				}
 				
 				function updateStatus(){

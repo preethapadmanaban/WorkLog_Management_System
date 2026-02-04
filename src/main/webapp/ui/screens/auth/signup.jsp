@@ -143,24 +143,24 @@ label {
     <h2>Worklog Management System</h2>
 
     <div class="card">
-        <div class="logo">Sign Up</div>
+        <div class="logo">Create Employee Account</div>
 
         <form id="myForm" method="post" action="/worklog/controller?action=signup">
 
             <!-- Full Name -->
             <label for="fullname">Employee Full Name</label>
-            <input type="text" id="fullname" class="field">
+            <input type="text" id="fullname" class="field" placeholder="Enter your fullname">
             <p id="error_message_fullname" class="error_message"></p>
 
             <!-- Email -->
             <label for="email">Email Address</label>
-            <input type="text" id="email" class="field">
+            <input type="text" id="email" class="field" placeholder="sample@vastpro.in">
             <p id="error_message_email" class="error_message"></p>
 
             <!-- Password -->
             <label for="password">Password</label>
             <div class="password-wrapper" id="password-wrapper">
-                <input type="password" id="password" class="field">
+                <input type="password" id="password" class="field" placeholder="Enter your password">
                 <span class="eye" id="togglePassword">
                     <img src="<%=request.getContextPath()%>/ui/images/eye-open-svgrepo-com.svg" alt="eye">
                 </span>
@@ -171,16 +171,16 @@ label {
             <!-- Confirm Password -->
             <label for="confirmPassword">Confirm Password</label>
             <div class="password-wrapper">
-                <input type="password" id="confirmPassword" class="field">
+                <input type="password" id="confirmPassword" class="field" placeholder="Confirm the password">
             </div>
             <p id="error_message_confirm_password" class="error_message"></p>
 
             <!-- Button -->
-            <button type="submit" class="btn-primary">Sign Up</button>
+            <button type="submit" class="btn-primary">Create Account</button>
 
             <!-- Login link -->
             <a href="/worklog/controller?action=loginPage" class="create-link">
-                Already have an account? Login
+                Already have an account? Go to Login
             </a>
 
         </form>
