@@ -27,8 +27,7 @@ public class EmployeeTimeSheetHistoryCommand implements Command {
 		String status = request.getParameter("status") == null ? "all" : request.getParameter("status");//if filter is not selected default all
 		int pageNumber = request.getParameter("pageNumber") == null ? 1 : Integer.parseInt(request.getParameter("pageNumber"));
 		TimeSheetDAO timeSheetDAO = new TimeSheetDAO();
-		ListResultWithRowCount<TimeSheet> timeSheetWithRowCount = timeSheetDAO.getAllTimeSheetsForEmployee(id, status, pageNumber)
-						.orElse(null);
+		ListResultWithRowCount<TimeSheet> timeSheetWithRowCount = timeSheetDAO.getAllTimeSheetsForEmployee(id, status, pageNumber).orElse(null);
 
 		if (timeSheetWithRowCount == null) {
 			request.setAttribute("message", "Unable to find Data!");

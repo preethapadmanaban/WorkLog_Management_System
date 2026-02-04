@@ -20,6 +20,7 @@
 
 <jsp:include page="/ui/screens/common/navbar.jsp"/>
 <jsp:include page="/ui/screens/common/message.jsp"/>
+<jsp:include page="/ui/screens/common/modal.jsp"></jsp:include>
 
 <%
     // ---- Safe session & role handling ----
@@ -84,7 +85,7 @@
 		        %>
 		        <select name="status" class="nice-form-input">
 		            <option value="ASSIGNED"   <%= "ASSIGNED".equals(statusVal) ? "selected" : "" %>>Assigned</option>
-		            <option value="INPROGRESS" <%= "INPROGRESS".equals(statusVal) ? "selected" : "" %>>In Progress</option>
+		            <option value="IN_PROGRESS" <%= "IN_PROGRESS".equals(statusVal) ? "selected" : "" %>>In Progress</option>
 		            <option value="COMPLETED"  <%= "COMPLETED".equals(statusVal) ? "selected" : "" %>>Completed</option>
 		        </select>
 		    </div>
@@ -180,38 +181,9 @@
 </section>
 
 <% } %>
+<script src="${pageContext.request.contextPath}/ui/js/Modal.js"></script>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById("editTaskForm");
-    const submitBtn = document.getElementById("submitBtn");
-
-    if (!form || !submitBtn) return;
-
-    // consider only enabled fields (disabled fields don't matter)
-    const fields = Array.from(form.querySelectorAll("input, select, textarea"))
-                        .filter(f => f.name && !f.disabled);
-
-    const initial = {};
-    fields.forEach(f => initial[f.name] = f.value);
-
-    function checkChanged() {
-        let changed = false;
-        for (const f of fields) {
-            if (initial[f.name] !== f.value) {
-                changed = true;
-                break;
-            }
-        }
-        submitBtn.disabled = !changed;
-    }
-
-    form.addEventListener("input", checkChanged);
-    form.addEventListener("change", checkChanged);
-
-    checkChanged();
-});
-
 const base = "<%= request.getContextPath() %>";
 let redirectUrlAfterOk = null;
 
@@ -231,62 +203,69 @@ function openPopup(msg, popupTitle="Message", type="info", redirectUrl=null){
 
 function closePopup() {
   document.getElementById("modalOverlay").style.display = "none";
-
-  if (redirectUrlAfterOk) {
-    window.location.href = redirectUrlAfterOk;
-  }
+  if (redirectUrlAfterOk) window.location.href = redirectUrlAfterOk;
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("editTaskForm");
+  const submitBtn = document.getElementById("submitBtn");
+  if (!form || !submitBtn) return;
+
+  const fields = Array.from(form.querySelectorAll("input, select, textarea"))
+                      .filter(f => f.name && !f.disabled);
+
+  const initial = {};
+  fields.forEach(f => initial[f.name] = f.value);
+
+  function checkChanged() {
+    let changed = false;
+    for (const f of fields) {
+      if (initial[f.name] !== f.value) {
+        changed = true;
+        break;
+      }
+    }
+    submitBtn.disabled = !changed;
+  }
+
+  form.addEventListener("input", checkChanged);
+  form.addEventListener("change", checkChanged);
+  checkChanged();
+});
+
 async function updateTask(){
-	  const form = document.getElementById("editTaskForm");
-	  const submitBtn = document.getElementById("submitBtn");
+  const form = document.getElementById("editTaskForm");
+  const submitBtn = document.getElementById("submitBtn");
+  const payload = new URLSearchParams(new FormData(form));
 
-	  const payload = new URLSearchParams(new FormData(form));
+  try {
+    const res = await fetch(base + "/controller", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-Requested-With": "fetch"
+      },
+      body: payload.toString()
+    });
 
-	  try {
-	    const res = await fetch(base + "/controller", {
-	      method: "POST",
-	      headers: {
-	        "Content-Type": "application/x-www-form-urlencoded",
-	        "X-Requested-With": "fetch"
-	      },
-	      body: payload.toString()
-	    });
+    const text = await res.text();
 
-	    const data = await res.json();
+    if (text.includes('"success":true') || text.toLowerCase().includes("task updated successfully")) {
+      openPopup("Task updated successfully.", "Success ✅", "success",
+        base + "/controller?action=listTasks"
+      );
+      if(submitBtn) submitBtn.disabled = true;
+      return;
+    }
 
-	    if(data.success){
-	      openPopup(
-	        "Task updated successfully.",
-	        "Success ✅",
-	        "success",
-	        base + "/controller?action=listTasks"
-	      );
+    openPopup("Task updation failed.", "Error ❌", "error");
 
-	      // after success disable submit again
-	      if(submitBtn) submitBtn.disabled = true;
-
-	    } else {
-	      openPopup(data.message || "Task updation failed.", "Error ❌", "error");
-	    }
-
-	  } catch(e){
-	    console.error(e);
-	    openPopup("Server error. Please try again.", "Error ❌", "error");
-	  }
-	}
-
+  } catch (e) {
+    console.error(e);
+    openPopup("Server error. Please try again.", "Error ❌", "error");
+  }
+}
 </script>
-
-<div id="modalOverlay" class="modal-overlay" style="display:none;">
-	  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-	    <h4 id="modalTitle" class="modal-title">Message</h4>
-	    <p id="modalText" class="modal-text"></p>
-	    <div class="modal-actions">
-	      <button type="button" class="modal-ok" onclick="closePopup()">OK</button>
-	    </div>
-	  </div>
-</div>
 
 </body>
 </html>

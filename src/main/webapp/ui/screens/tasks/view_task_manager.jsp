@@ -37,19 +37,28 @@
 		    <th>Status</th>
 		    <td>
 		        <%
-		            String cssClass = "";
-		            String status = t.getStatus().name();   
-		            if ("COMPLETED".equals(status)) {
-		                cssClass = "status-completed";
-		            } else if ("ASSIGNED".equals(status)) {
-		                cssClass = "status-assigned";
-		            } else if ("INPROGRESS".equals(status)) {
-		                cssClass = "status-progress";
-		            }
-		        %>
-		        <span class="status-badge <%= cssClass %>">
-		            <%= status %>
-		        </span>
+				    String cssClass = "";
+				    String status = "";
+				
+				    if (t.getStatus() != null) {
+				        status = t.getStatus().name();
+				
+				        if ("COMPLETED".equals(status)) {
+				            cssClass = "status-completed";
+				        } else if ("ASSIGNED".equals(status)) {
+				            cssClass = "status-assigned";
+				        } else if ("IN_PROGRESS".equals(status)) {   
+				            cssClass = "status-in-progress";         
+				        }
+				    } else {
+				        status = "N/A";
+				        cssClass = "status-assigned"; // or keep empty
+				    }
+				%>
+				
+				<span class="status-badge <%= cssClass %>">
+				    <%= status %>
+				</span>
 		    </td>
 		</tr>
 
@@ -71,8 +80,15 @@
 	
 	<br>
 	
-	<a class="info_anchor" href="controller?action=listTasks">Back to Task List</a>
-	
+	<a class="info_anchor"
+	   href="controller?action=listTasks
+	   &employee_id=<%= request.getParameter("employee_id") %>
+	   &status=<%= request.getParameter("status") %>
+	   &fromDate=<%= request.getParameter("fromDate") %>
+	   &toDate=<%= request.getParameter("toDate") %>">
+	   Back to Task List
+	</a>
+
 	<%
 	    }
 	%>

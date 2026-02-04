@@ -32,12 +32,13 @@ import jakarta.servlet.http.HttpSession;
 
 /**
  * CreateTimeSheetCommand - This class is used for creating timesheets
+ * 
  * @author Vasudevan
  * @since 20-01-2026
  */
 
 public class CreateTimeSheetCommand implements Command {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(CreateTimeSheetCommand.class);
 
 	private boolean createTimesheet(HttpServletRequest request, HttpServletResponse response, TimeSheet timesheet, int employeeId,
@@ -84,7 +85,7 @@ public class CreateTimeSheetCommand implements Command {
 		return true;
 	}
 
-    @Override
+	@Override
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) throws UnAuthorizedException {
 
 		HttpSession session = request.getSession(false);
@@ -168,7 +169,6 @@ public class CreateTimeSheetCommand implements Command {
 			TimeSheetRequestDTO timeSheetRequest = new TimeSheetRequestDTO(Integer.parseInt(managerIdStr), LocalDate.parse(workDateString),
 							total_hours_spend, entries);
 
-
 			// create a new timesheet entity object from timesheet request dto
 			TimeSheet timesheet = new TimeSheet();
 			timesheet.setManager_id(Integer.parseInt(managerIdStr));
@@ -223,7 +223,5 @@ public class CreateTimeSheetCommand implements Command {
 			return true;
 		}
 
-
-        
-    }
+	}
 }

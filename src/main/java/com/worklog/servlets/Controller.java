@@ -60,14 +60,17 @@ public class Controller extends HttpServlet {
 				response.setCharacterEncoding("UTF-8");
 
 				String msg = (String) request.getAttribute("message");
-				if (msg != null) {
-					msg = msg.replace("\"", "\\\"");
-				}
-				String status = flag == true ? "success" : "error";
+				if (msg == null)
+					msg = "";
+				msg = msg.replace("\"", "\\\"");
 
-				response.getWriter().write("{\"status\": \"" + status + "\",\"message\":\"" + msg + "\"}");
+				boolean success = flag;
+
+				response.getWriter().write("{\"success\":" + success + ",\"message\":\"" + msg + "\"}");
 				return;
-			} else if (isDownloadRequest) {
+			}
+
+			else if (isDownloadRequest) {
 				response.setContentType("text/csv");
 				response.setCharacterEncoding("UTF-8");
 				return;

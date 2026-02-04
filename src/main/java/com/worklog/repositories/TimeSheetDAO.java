@@ -22,28 +22,26 @@ import com.worklog.exceptions.DuplicateTimesheetCreationException;
 import com.worklog.factories.DataSourceFactory;
 import com.worklog.utils.CustomDateFormatter;
 
-
 public class TimeSheetDAO {
-	
+
 	private static final int rowsPerPage = AppConfig.getPropertyInt("app.pagination.rows-per-page");
 
 	private static final Logger logger = LogManager.getLogger(TimeSheetDAO.class);
 
 	private TimeSheet mapToTimeSheet(ResultSet rs) throws SQLException {
-	    TimeSheet timeSheet = new TimeSheet();
+		TimeSheet timeSheet = new TimeSheet();
 
-	    timeSheet.setApproved(rs.getBoolean("approved"));
+		timeSheet.setApproved(rs.getBoolean("approved"));
 		timeSheet.setCreated_at(CustomDateFormatter.toLocalFormat(rs.getString("created_at"), true));
-	    timeSheet.setEmployee_id(rs.getInt("employee_id"));
-	    timeSheet.setId(rs.getInt("id"));
-	    timeSheet.setStatus(rs.getString("status"));
-	    timeSheet.setManager_comment(rs.getString("manager_comment")); // correct column name
-	    timeSheet.setTotal_hours(rs.getDouble("total_hours"));
-	    timeSheet.setManager_id(rs.getInt("manager_id"));
+		timeSheet.setEmployee_id(rs.getInt("employee_id"));
+		timeSheet.setId(rs.getInt("id"));
+		timeSheet.setStatus(rs.getString("status"));
+		timeSheet.setManager_comment(rs.getString("manager_comment")); // correct column name
+		timeSheet.setTotal_hours(rs.getDouble("total_hours"));
+		timeSheet.setManager_id(rs.getInt("manager_id"));
 		timeSheet.setWork_date(CustomDateFormatter.toLocalFormat(rs.getString("work_date")));
-	    return timeSheet;
+		return timeSheet;
 	}
-
 
 	public int getTimeSheetId(TimeSheet timesheet) {
 		String sql = "SELECT id FROM timesheets where employee_id = ? and work_date = ? and total_hours = ? and status = ? and manager_id = ?";
@@ -93,7 +91,7 @@ public class TimeSheetDAO {
 			return false;
 		}
 	}
-	
+
 	// public Optional<List<TimeSheet>> getAllTimeSheetsForEmployee(int id) {
 	// String sql = "select * from timesheets where employee_id=?";
 	//
@@ -109,27 +107,24 @@ public class TimeSheetDAO {
 
 		String selectCount = "SELECT COUNT(*) as row_count ";
 		String selectData = "SELECT * ";
-		
+
 		TimeSheetStatus statusEnum;
 		try {
 			statusEnum = TimeSheetStatus.valueOf(status);
-		}
-		catch (IllegalArgumentException | NullPointerException e) {
+		} catch (IllegalArgumentException | NullPointerException e) {
 			statusEnum = null;
 		}
 
 		if (statusEnum != null) {
-			query = " FROM timesheets WHERE employee_id=" + id + " AND status ILIKE '" + statusEnum.toString()
-							+ "'";
+			query = " FROM timesheets WHERE employee_id=" + id + " AND status ILIKE '" + statusEnum.toString() + "'";
 		} else {
 			query = " FROM timesheets WHERE employee_id=" + id;
 		}
 
 		String paginationQuery = " ORDER BY work_date LIMIT " + rowsPerPage + " OFFSET " + offset;
 
-		try(Connection conn=DataSourceFactory.getConnectionInstance();
-						PreparedStatement pstmt = conn.prepareStatement(selectData + query + paginationQuery);
-		) {
+		try (Connection conn = DataSourceFactory.getConnectionInstance();
+						PreparedStatement pstmt = conn.prepareStatement(selectData + query + paginationQuery);) {
 
 			List<TimeSheet> timeSheets = new ArrayList<>();
 
@@ -148,7 +143,6 @@ public class TimeSheetDAO {
 			return Optional.empty();
 		}
 	}
-
 
 	public Optional<List<TimeSheet>> getPendingTimesheet() {
 
@@ -177,7 +171,6 @@ public class TimeSheetDAO {
 		}
 	}
 
-
 	public Optional<List<ReportEmployeeDTO>> getReportDailyworkhours(LocalDate fromDate, LocalDate toDate, int manager_id) {
 		String sql = """
 						select t.assigned_to as "employee_id",e.name as "employee_name", ts.work_date as "work_date" , t.id as "task_id",
@@ -189,16 +182,14 @@ public class TimeSheetDAO {
 						group by t.id, t.title, e.name, tse.notes, ts.work_date
 						order by ts.work_date;
 						""";
-		try(Connection conn=DataSourceFactory.getConnectionInstance();
-			PreparedStatement pstmt=conn.prepareStatement(sql)
-						){
-							pstmt.setInt(1, manager_id);
-							pstmt.setInt(2, manager_id);
-							pstmt.setDate(3, Date.valueOf(fromDate));
-							pstmt.setDate(4, Date.valueOf(toDate));
-			ResultSet rs=pstmt.executeQuery();
+		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setInt(1, manager_id);
+			pstmt.setInt(2, manager_id);
+			pstmt.setDate(3, Date.valueOf(fromDate));
+			pstmt.setDate(4, Date.valueOf(toDate));
+			ResultSet rs = pstmt.executeQuery();
 			List<ReportEmployeeDTO> list = new ArrayList<>();
-			while(rs.next()) {
+			while (rs.next()) {
 				ReportEmployeeDTO reportEmployeeDTO = new ReportEmployeeDTO();
 				reportEmployeeDTO.setEmp_id(rs.getInt("employee_id"));
 				reportEmployeeDTO.setEmp_name(rs.getString("employee_name"));
@@ -209,56 +200,47 @@ public class TimeSheetDAO {
 				reportEmployeeDTO.setTask_duration(rs.getDouble("task_duration"));
 				list.add(reportEmployeeDTO);
 			}
-			
+
 			return Optional.ofNullable(list);
 
-		}catch(SQLException e) {
+		} catch (SQLException e) {
 			logger.error("Error generating work hours report for manager {}", manager_id, e);
 			return Optional.ofNullable(null);
 		}
 	}
 
-	public Optional<TimeSheet> getTimesheetByid(int id){
-		
+	public Optional<TimeSheet> getTimesheetByid(int id) {
+
 		String sql = "select * from timesheets where id=?";
-		
-		try (Connection conn = DataSourceFactory.getConnectionInstance();
-						PreparedStatement pstmt = conn.prepareStatement(sql)){
-			
+
+		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
 			pstmt.setInt(1, id);
 			ResultSet rs = pstmt.executeQuery();
-			
-			if(rs.next()) {
-				
-				TimeSheet ts = new TimeSheet(
-								rs.getInt("id"),
-								rs.getInt("employee_id"),
-								CustomDateFormatter.toLocalFormat(rs.getString("work_date")),
-								rs.getDouble("total_hours"),
-								rs.getString("status"),
-								rs.getInt("manager_id"),
-								rs.getString("manager_comment"),
-								rs.getBoolean("approved"),
-								CustomDateFormatter.toLocalFormat(rs.getString("created_at"), true)
-								);
-								return Optional.ofNullable(ts);
-				
+
+			if (rs.next()) {
+
+				TimeSheet ts = new TimeSheet(rs.getInt("id"), rs.getInt("employee_id"),
+								CustomDateFormatter.toLocalFormat(rs.getString("work_date")), rs.getDouble("total_hours"),
+								rs.getString("status"), rs.getInt("manager_id"), rs.getString("manager_comment"), rs.getBoolean("approved"),
+								CustomDateFormatter.toLocalFormat(rs.getString("created_at"), true));
+				return Optional.ofNullable(ts);
+
 			}
 			return Optional.empty();
-			
-		}catch(SQLException e) {
+
+		} catch (SQLException e) {
 			logger.error("DB error in getTimesheetByid(id={})", id, e);
 			return Optional.ofNullable(null);
 		}
-		
+
 	}
-	
+
 	public boolean updateTimesheetStatus(int timesheetId, String status, int managerId, String comment, boolean approved) {
 
 		String sql = "update timesheets set status=?, manager_id=?, manager_comment=?, approved=? where id=?";
 
-		try (Connection conn = DataSourceFactory.getConnectionInstance();
-				PreparedStatement pstmt = conn.prepareStatement(sql)) {
+		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
 			pstmt.setString(1, status);
 			pstmt.setInt(2, managerId);
@@ -303,7 +285,7 @@ public class TimeSheetDAO {
 		}
 
 	}
-	
+
 	public int getRowCountForQuery(String query) {
 
 		try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(query)) {
@@ -321,5 +303,4 @@ public class TimeSheetDAO {
 			return -1;
 		}
 	}
-
 }

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
 <%@ page import="com.worklog.entities.TimeSheet" %>
+<%@ page import="java.util.Map" %>
 
 <!DOCTYPE html>
 <html>
@@ -19,13 +20,15 @@
 <h2>Pending Timesheets</h2>
 
 <%
-    List<TimeSheet> pendingList =
-        (List<TimeSheet>) request.getAttribute("pending");
+    List<TimeSheet> pendingList = (List<TimeSheet>) request.getAttribute("pending");
+
+	Map<Integer, String> empNameMap = (Map<Integer, String>) request.getAttribute("empNameMap");
+
 %>
 <div class="container_70">
 <table class="table table-striped table-hover">
     <tr>
-        <th>Employee ID</th>
+        <th>Employee Name</th>
         <th>Work Date</th>
         <th>Total Hours</th>
         <th>Status</th>
@@ -38,7 +41,9 @@
         for (TimeSheet t : pendingList) {
 %>
     <tr>
-        <td><%= t.getEmployee_id() %></td>
+        <td>
+		    <%= empNameMap != null? empNameMap.getOrDefault(t.getEmployee_id(), "Emp-" + t.getEmployee_id()): "Emp-" + t.getEmployee_id()%>
+		</td>
         <td><%= t.getWork_date() %></td>
         <td><%= t.getTotal_hours() %> hrs</td>
         <td><%= t.getStatus().toString() %></td>
