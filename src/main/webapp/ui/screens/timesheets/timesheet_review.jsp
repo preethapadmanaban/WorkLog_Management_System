@@ -15,7 +15,7 @@
 </head>
 <body>
 <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
-
+<jsp:include page="/ui/screens/common/modal.jsp"></jsp:include>
 
 	<%
 	
@@ -40,7 +40,7 @@
 	<h3>Timesheet Details</h3>
 	<div class="timesheet_review_detail_with_image">
 	<table class="table table-striped table-hover border border-secondary">
-		    <tr><th>Employee Id</th><td><%= ts.getEmployee_id() %></td></tr>
+		    <tr><th>Employee Name</th><td><%= request.getAttribute("employeeName") %></td></tr>
 		    <tr><th>Work Date</th><td><%= ts.getWork_date() %></td></tr>
 		    <tr><th>Total Hours</th><td><%= ts.getTotal_hours() %> hours</td></tr>
 		    <% String comment = ts.getManager_comment() == null ? "No Comment" : ts.getManager_comment();%>
@@ -124,23 +124,23 @@
 		if(((String)session.getAttribute("role")).equalsIgnoreCase("manager"))
 		{
 	%>
-	<h3>Manager Action</h3>
-
-	<form id="managerActionForm" action="<%=request.getContextPath()%>/controller" method="post">
-	    <input type="hidden" name="timesheetId" value="<%= ts.getId() %>">
-	    <input type="hidden" name="action" id="actionField" value="">
-	
-	    <div class="nice-form-group">
-	      <label>Comment <span class="required">*</span></label>
-	      <textarea id="manager_comment" name="manager_comment" rows="4" cols="50"></textarea>
-	      <small class="error-text" id="commentError"></small>
-	    </div>
+	<h3>Manager Action</h3>	
+	<div class="nice-form">
+		<form id="managerActionForm" action="<%=request.getContextPath()%>/controller" method="post">
+		    <input type="hidden" name="timesheetId" value="<%= ts.getId() %>">
+		    <input type="hidden" name="action" id="actionField" value="">
 		
-		<button class="submit_button" type="button" id="approveBtn">Approve</button>
-		<button class="reject_button" type="button" id="rejectBtn">Reject</button>
-
-	</form>
-
+		    <div class="nice-form-group">
+		      <label>Comment <span class="required">*</span></label>
+		      <textarea class="nice-form-input" id="manager_comment" name="manager_comment" rows="4" cols="50"></textarea>
+		      <small class="error-text" id="commentError"></small>
+		    </div>
+			
+			<button class="submit_button" type="button" id="approveBtn">Approve</button>
+			<button class="reject_button" type="button" id="rejectBtn">Reject</button>
+	
+		</form>
+	</div>	
 	<br>
 	
 	<br>
@@ -161,24 +161,14 @@
 	}
 	%>
 	</div>
-	
-	<div id="modalOverlay" class="modal-overlay" style="display:none;">
-	  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-	    <h4 id="modalTitle" class="modal-title">Message</h4>
-	    <p id="modalText" class="modal-text"></p>
-	    <div class="modal-actions">
-	      <button type="button" class="modal-cancel" id="modalCancelBtn" style="display:none;">Cancel</button>
-	      <button type="button" class="modal-ok" id="modalOkBtn">OK</button>
-	    </div>
-	  </div>
-	</div>
 
-	
+<script src="${pageContext.request.contextPath}/ui/js/Modal.js"></script>
+
 <script>
   let onOk = null;
   let onCancel = null;
 
-  function openPopup(msg, popupTitle="Message", type="info", options={}) {
+  function openPopup(msg, popupTitle = "Message", type = "info", options = {}) {
     const box = document.querySelector(".modal-box");
     box.classList.remove("success", "error");
 
@@ -212,43 +202,24 @@
     onCancel = null;
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const okBtn = document.getElementById("modalOkBtn");
-    const cancelBtn = document.getElementById("modalCancelBtn");
-
-    okBtn.addEventListener("click", () => {
-      const fn = onOk;
-      closePopup();
-      if (fn) fn();
-    });
-
-    cancelBtn.addEventListener("click", () => {
-      const fn = onCancel;
-      closePopup();
-      if (fn) fn();
-    });
-  });
-
-  function setError(field, errorId, msg){
-    if(field) field.classList.add("input-error");
+  function setError(field, errorId, msg) {
+    if (field) field.classList.add("input-error");
     const el = document.getElementById(errorId);
-    if(el) el.textContent = msg;
+    if (el) el.textContent = msg;
   }
 
-  function clearError(field, errorId){
-    if(field) field.classList.remove("input-error");
+  function clearError(field, errorId) {
+    if (field) field.classList.remove("input-error");
     const el = document.getElementById(errorId);
-    if(el) el.textContent = "";
+    if (el) el.textContent = "";
   }
 
-  async function submitManagerAction(actionValue) {
-    const form = document.getElementById("managerActionForm");
+  function ensureCommentPresent() {
     const comment = document.getElementById("manager_comment");
-    const actionField = document.getElementById("actionField");
 
     clearError(comment, "commentError");
 
-    const val = comment.value.trim();
+    const val = (comment?.value || "").trim();
     if (!val) {
       setError(comment, "commentError", "Please enter your comment.");
       openPopup(
@@ -256,13 +227,22 @@
         "Comment required",
         "error"
       );
-      comment.focus();
-      return;
+      comment?.focus();
+      return false;
     }
+    return true;
+  }
+
+  async function submitManagerAction(actionValue) {
+    const form = document.getElementById("managerActionForm");
+    const comment = document.getElementById("manager_comment");
+    const actionField = document.getElementById("actionField");
+
+    // safety check (in case someone calls submit directly)
+    if (!ensureCommentPresent()) return;
 
     actionField.value = actionValue;
 
-    // build form payload
     const payload = new URLSearchParams(new FormData(form));
 
     try {
@@ -278,21 +258,20 @@
       const data = await res.json();
 
       if (data.success) {
-        // Success popup then redirect to pending list
-        const successMsg = (actionValue === "approveTimesheet")
-          ? "Timesheet has been approved successfully."
-          : "Timesheet has been rejected successfully.";
+        const successMsg =
+          actionValue === "approveTimesheet"
+            ? "Timesheet has been approved successfully."
+            : "Timesheet has been rejected successfully.";
 
         openPopup(successMsg, "Success ✅", "success", {
           onOk: () => {
-            window.location.href = "<%=request.getContextPath()%>/controller?action=pending";
+            window.location.href =
+              "<%=request.getContextPath()%>/controller?action=pending";
           }
         });
-
       } else {
         openPopup(data.message || "Action failed.", "Error ❌", "error");
       }
-
     } catch (e) {
       console.error(e);
       openPopup("Server error. Please try again.", "Error ❌", "error");
@@ -300,17 +279,64 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
+    const okBtn = document.getElementById("modalOkBtn");
+    const cancelBtn = document.getElementById("modalCancelBtn");
+
+    if (okBtn) {
+      okBtn.addEventListener("click", () => {
+        const fn = onOk;
+        closePopup();
+        if (fn) fn();
+      });
+    }
+
+    if (cancelBtn) {
+      cancelBtn.addEventListener("click", () => {
+        const fn = onCancel;
+        closePopup();
+        if (fn) fn();
+      });
+    }
+  });
+
+  // 2) Comment input clear + Approve/Reject confirmations
+  document.addEventListener("DOMContentLoaded", () => {
     const approveBtn = document.getElementById("approveBtn");
     const rejectBtn = document.getElementById("rejectBtn");
+    const comment = document.getElementById("manager_comment");
+
+    // remove red border + error msg as soon as user types
+    if (comment) {
+      comment.addEventListener("input", () => {
+        if (comment.value.trim().length > 0) {
+          clearError(comment, "commentError");
+        }
+      });
+    }
 
     if (approveBtn) {
       approveBtn.addEventListener("click", () => {
-        submitManagerAction("approveTimesheet");
+        if (!ensureCommentPresent()) return;
+
+        openPopup(
+          "Are you sure you want to approve this timesheet?",
+          "Confirm Approval",
+          "info",
+          {
+            showCancel: true,
+            okText: "OK",
+            cancelText: "Cancel",
+            onOk: () => submitManagerAction("approveTimesheet"),
+            onCancel: () => {}
+          }
+        );
       });
     }
 
     if (rejectBtn) {
       rejectBtn.addEventListener("click", () => {
+        if (!ensureCommentPresent()) return;
+
         openPopup(
           "Are you sure you want to reject this timesheet?",
           "Confirm Rejection",
@@ -320,14 +346,13 @@
             okText: "OK",
             cancelText: "Cancel",
             onOk: () => submitManagerAction("rejectTimesheet"),
-            onCancel: () => {} // do nothing
+            onCancel: () => {}
           }
         );
       });
     }
   });
 </script>
-
 	
 </body>
 </html>

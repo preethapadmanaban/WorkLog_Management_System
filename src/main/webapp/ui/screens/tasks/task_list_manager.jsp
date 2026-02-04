@@ -44,6 +44,18 @@
 %>
 
 <div class="tasks-filter">
+
+	<%
+	    session.setAttribute("selectedEmp", selectedEmp);
+	    session.setAttribute("selectedStatus", selectedStatus);
+	    session.setAttribute("selectedFrom", selectedFrom);
+	    session.setAttribute("selectedTo", selectedTo);
+	
+	    String pageNo = request.getParameter("pageNumber");
+	    if(pageNo == null) pageNo = "1";
+	    session.setAttribute("selectedPageNumber", pageNo);
+	%>
+	
   <div>
     <h3>List of Tasks</h3>
   </div>
@@ -174,6 +186,11 @@
  			<form action="controller">
    			<input type="hidden" name="action" value="listTasks">
    			<input type="hidden" name="pageNumber" value="<%=pageNumber - 1%>">
+   			<!-- carry filters -->
+		    <input type="hidden" name="employee_id" value="<%= selectedEmp %>">
+		    <input type="hidden" name="status" value="<%= selectedStatus %>">
+		    <input type="hidden" name="fromDate" value="<%= selectedFrom %>">
+		    <input type="hidden" name="toDate" value="<%= selectedTo %>">
    			<button class="btn btn-primary" type="submit" <%if(pageNumber <= 1) { %> disabled <% } %> >Prev</button>
   			</form>
   			
@@ -182,6 +199,11 @@
   			<form action="controller">
   				<input type="hidden" name="action" value="listTasks">
    			<input type="hidden" name="pageNumber" value="<%=pageNumber + 1%>">
+   			<!-- carry filters -->
+		    <input type="hidden" name="employee_id" value="<%= selectedEmp %>">
+		    <input type="hidden" name="status" value="<%= selectedStatus %>">
+		    <input type="hidden" name="fromDate" value="<%= selectedFrom %>">
+		    <input type="hidden" name="toDate" value="<%= selectedTo %>">
    			<button class="btn btn-primary" type="submit" <%if(pageNumber >= totalPages ) { %> disabled <% } %>>Next</button>
   			</form>
    </div>

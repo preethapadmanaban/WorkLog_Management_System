@@ -12,29 +12,28 @@ import com.worklog.factories.DataSourceFactory;
 
 // written by preetha
 public class PendingTimesheetCount {
-	
+
 	private static final Logger logger = LogManager.getLogger(PendingTimesheetCount.class);
-	
+
 	public static int pendingTimeSheet(int managerId) {
-		
+
 		int count = 0;
-		
-		String sql = "select count(*) from timesheets where status = 'pending' and manager_id = ? ";
-		
-		try(Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
-			
+
+		String sql = "select count(*) from timesheets where status ilike 'pending' and manager_id = ? ";
+
+		try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
+
 			pstmt.setInt(1, managerId);
 
 			ResultSet rs = pstmt.executeQuery();
 
-			if(rs.next()) {
-			    count = rs.getInt(1);
+			if (rs.next()) {
+				count = rs.getInt(1);
 			}
 
 			// System.out.println("Pending Timesheets Count = " + count);
-		}
-		catch(SQLException e) {
-		    logger.error("Error fetching pending timesheet count for manager {}", managerId, e);
+		} catch (SQLException e) {
+			logger.error("Error fetching pending timesheet count for manager {}", managerId, e);
 		}
 		return count;
 	}

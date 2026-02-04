@@ -34,35 +34,36 @@
 
         <!-- SUMMARY CARDS -->
         <div class="cards">
-
-            <div class="card">
-                <h4>Team Members</h4>
-                <p><%= (members == null ? 0 : members.size()) %></p>
-            </div>
+		  <a class="cardLink" href="...">
+		    <div class="card card-team">
+		      <h4>Team Members</h4>
+		      <p>3</p>
+		    </div>
+		  </a>
 
             <a class="cardLink" href="<%=request.getContextPath()%>/controller?action=pending">
-			    <div class="card clickable">
+			    <div class="card clickable card-pending">
 			      <h4>Pending Timesheets</h4>
 			      <p><%= (pendingCount == null ? 0 : pendingCount) %></p>
 			    </div>
 		  	</a>
 
             <a class="cardLink" href="<%=request.getContextPath()%>/controller?action=listTasks&status=ASSIGNED">
-			  <div class="card clickable">
+			  <div class="card clickable card-assigned">
 			    <h4>Assigned</h4>
 			    <p><%= (assigned == null ? 0 : assigned) %></p>
 			  </div>
 			</a>
 			
 			<a class="cardLink" href="<%=request.getContextPath()%>/controller?action=listTasks&status=IN_PROGRESS">
-			  <div class="card clickable">
+			  <div class="card clickable card-progress">
 			    <h4>In Progress</h4>
 			    <p><%= (inProgress == null ? 0 : inProgress) %></p>
 			  </div>
 			</a>
 			
 			<a class="cardLink" href="<%=request.getContextPath()%>/controller?action=listTasks&status=COMPLETED">
-			  <div class="card clickable">
+			  <div class="card clickable card-completed">
 			    <h4>Completed</h4>
 			    <p><%= (completed == null ? 0 : completed) %></p>
 			  </div>

@@ -12,7 +12,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
 <jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
-<script src="${pageContext.request.contextPath}/ui/js/Modal.js"></script>
 </head>
 <body class="create-task-page">
 <jsp:include page="/ui/screens/common/navbar.jsp"></jsp:include>
@@ -73,7 +72,7 @@
       
       </form>
     </section>
-   
+
    <script src="${pageContext.request.contextPath}/ui/js/Modal.js"></script>
    <script>
 		function setError(field, errorId, msg){
@@ -139,19 +138,18 @@
 				  body: payload.toString()
 				});
 		
-		    const data = await res.json();
-		
-		    if(data.status === "success"){
-		    	  openPopup("Your task has been submitted successfully.", "Success ✅", "success");
+			  const data = await res.json();
 
-		    	  title.value = "";
-		    	  desc.value  = "";
-		    	  emp.value   = "";
-		    	  dead.value  = "";
+			  if (data.success === true) {
+			    openPopup(data.message || "Task assigned successfully!", "Success ✅", "success");
 
-		    	} else {
-		    	  openPopup(data.message || "Task creation failed.", "Error ❌", "error");
-		    	}
+			    title.value = "";
+			    desc.value  = "";
+			    emp.value   = "";
+			    dead.value  = "";
+			  } else {
+			    openPopup(data.message || "Task creation failed.", "Error ❌", "error");
+			  }
 		    
 		  } catch (e) {
 		    console.error(e);
