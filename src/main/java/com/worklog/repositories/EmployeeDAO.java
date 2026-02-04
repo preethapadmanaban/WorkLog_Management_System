@@ -11,12 +11,15 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+
+import com.worklog.commands.dashboard.ManagerDashboardCommand;
 import com.worklog.entities.Employee;
 import com.worklog.factories.DataSourceFactory;
 
 public class EmployeeDAO {
 
 	private static final Logger logger = LogManager.getLogger(EmployeeDAO.class);
+	public static final int rowsPerPage = 5;
 
 	public boolean createEmployee(Employee employee) throws SQLException {
 
@@ -60,16 +63,26 @@ public class EmployeeDAO {
 	}
 
 	// written by preetha
-	public static Optional<List<Employee>> getAllMembers() {
+	public static Optional<List<Employee>> getAllMembers(String manager,int offset) {
 
 		List<Employee> employeeList = new ArrayList<>();
 
-		String sql = "select id,name,role from employees where role ilike 'Employee' ";
-
+		String sql = "";
+		int limit=0;
+		if(manager.equalsIgnoreCase("managerdashboard")) {
+			 limit= ManagerDashboardCommand.PAGE_SIZE;
+			sql="SELECT * FROM employees LIMIT ? OFFSET ?";
+		}else {
+			sql="select id,name,role from employees where role ilike 'Employee' ";
+		}
 		try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
-
+			if(manager.equalsIgnoreCase("managerDashboard")) {
+				
+				pstmt.setInt(1, limit);
+				pstmt.setInt(2,offset);
+			}
 			ResultSet rs = pstmt.executeQuery();
-
+			
 			while (rs.next()) {
 				int id = rs.getInt("id");
 				String name = rs.getString("name");
@@ -77,6 +90,7 @@ public class EmployeeDAO {
 				// list.add(new Employee(id,name,role));
 				employeeList.add(new Employee.Builder().withId(id).withName(name).withrole(role).build());
 			}
+			System.out.println("employeeList"+employeeList);
 
 			return Optional.ofNullable(employeeList);
 
@@ -108,5 +122,22 @@ public class EmployeeDAO {
 		return Optional.empty();
 
 	}
+	public static int getEmployeeCount() {
+		String sql="select count(*) as count from employees";
+		try (Connection con = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = con.prepareStatement(sql)) {
+			ResultSet rs=pstmt.executeQuery();
+			
+			while(rs.next()) {
+				return rs.getInt("count");
+			}
+			return 0;
+		} catch (SQLException e) {
+			logger.error("Error fetching employee names", e);
+			return 0;
+			
+		}
+		
+	}
+	
 
 }

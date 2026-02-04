@@ -2,6 +2,8 @@ package com.worklog.commands.auth;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +21,7 @@ import jakarta.servlet.http.HttpSession;
 public class LoginCommand implements Command{
 	private static final Logger logger = LogManager.getLogger(LoginCommand.class);
 	private static final int MAX_ATTEMPTS=3;
-
+	
 	private void setInfoInSession(HttpSession session, Employee employee) {
 		session.setAttribute("id",employee.getId());
 		session.setAttribute("name", employee.getName());
@@ -56,42 +58,67 @@ public class LoginCommand implements Command{
 	}
 
 	@Override
+	
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) {
+	   
+	    String emailRegex = "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$";
+	    String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()\\-+.]).{6,20}$";
 
-		HttpSession session=request.getSession();
-		if (isValidLoginRequest(session)) {
-			String email = request.getParameter("email");
-			String password = request.getParameter("password");
-			if (email != null && password != null) {
-				LoginDAO loginDAO = new LoginDAO();
-				Employee emp = loginDAO.getDetails(email).orElse(null);
-				if (emp != null && (PasswordProtector.checkPassword(password, emp.getPassword()))) {
-					setInfoInSession(session, emp);
-					// for route this into routing command.
-					request.setAttribute("action", "routing");
-					logger.info("user logged in successfully - email: " + emp.getEmail());
-					return true;
-				} else {
-					request.setAttribute("message", "Invalid credentials!");
-					addAttempt(session);
-					logger.info("user login attempt failed - email: " + email);
-					return false;
-				}
-			}
-			else {
-				request.setAttribute("message","Invalid credentials!");
-				addAttempt(session);
-				logger.error("Exception: User name or password missing in login request, email: " + email + ", password: " + password);
-				return false;
-			}
-		}
-		else {
-			request.setAttribute("message", "Account locked, Max Attempts reached.");
-			logger.error("Exception: User login attempt failed, email: " + session.getAttribute("name"));
-			return false;
-		}
+	    Pattern emailPattern = Pattern.compile(emailRegex);
+	    Pattern passwordPattern = Pattern.compile(passwordRegex);
 
+	    HttpSession session = request.getSession();
+
+	    if (!isValidLoginRequest(session)) {
+	        request.setAttribute("message","Account locked, Max Attempts reached.");
+	        logger.error("User login attempt failed, email: " + session.getAttribute("name"));
+	        return false;
+	    }
+
+	    String email = request.getParameter("email");
+	    String password = request.getParameter("password");
+
+	    if(email == null || email.isBlank()) {
+	        request.setAttribute("err_msg","Email is mandatory");
+	        return false;
+	    }
+	    if(password == null || password.isBlank()) {
+	        request.setAttribute("err_msg","Password is mandatory");
+	        return false;
+	    }
+
+	    
+	    if(!email.contains(".")) {
+	        request.setAttribute("err_msg","Email must contain a dot (.) in domain");
+	        return false;
+	    }
+
+	    Matcher emailMatcher = emailPattern.matcher(email);
+	    Matcher passwordMatcher = passwordPattern.matcher(password);
+
+	    if(!emailMatcher.matches()) {
+	        request.setAttribute("err_msg","Invalid email format");
+	        return false;
+	    }
+	    if(!passwordMatcher.matches()) {
+	        request.setAttribute("err_msg","Password must be 6-20 chars, include uppercase, lowercase, number & special symbol");
+	        return false;
+	    }
+	    LoginDAO loginDAO = new LoginDAO();
+	    Employee emp = loginDAO.getDetails(email).orElse(null);
+	    if(emp != null && PasswordProtector.checkPassword(password, emp.getPassword())) {
+	        setInfoInSession(session, emp);
+	        request.setAttribute("action", "routing");
+	        logger.info("user logged in successfully - email: " + emp.getEmail());
+	        return true;
+	    } else {
+	        request.setAttribute("message", "Invalid credentials!");
+	        addAttempt(session);
+	        logger.info("user login attempt failed - email: " + email);
+	        return false;
+	    }
 	}
+
 	 
 
 }

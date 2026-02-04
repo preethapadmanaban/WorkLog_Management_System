@@ -92,7 +92,7 @@ public class ListTasksCommand implements Command {
 			// taskList = dao.getTasksCreatedByManager(managerId, empId, status, fromDateStr, toDateStr, pageNumber).orElse(new
 			// ArrayList<>());
 
-			List<Employee> members = EmployeeDAO.getAllMembers().orElse(new ArrayList<>());
+			List<Employee> members = EmployeeDAO.getAllMembers("",0).orElse(new ArrayList<>());
 			Map<Integer, String> empNameMap = new HashMap<>();
 			for (Employee e : members) {
 				empNameMap.put(e.getId(), e.getName());

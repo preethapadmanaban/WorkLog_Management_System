@@ -63,7 +63,7 @@ public class EditTaskCommand implements Command {
 		request.setAttribute("task", task);
 		request.setAttribute("assignedToName", employeeName);
 		request.setAttribute("managerCanEdit", managerCanEdit);
-		request.setAttribute("employeeList", EmployeeDAO.getAllMembers().orElse(new ArrayList<>()));
+		request.setAttribute("employeeList", EmployeeDAO.getAllMembers("",0).orElse(new ArrayList<>()));
 
 		return true;
 	}

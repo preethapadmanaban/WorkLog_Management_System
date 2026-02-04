@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,6 +29,7 @@ import jakarta.servlet.http.HttpSession;
 public class ManagerDashboardCommand implements Command{
 	
 	private static final Logger logger = LogManager.getLogger(ManagerDashboardCommand.class);
+	public static final int PAGE_SIZE=5;
 
 	@Override
 	public boolean execute(HttpServletRequest request, HttpServletResponse response) throws UnAuthorizedException {
@@ -42,9 +44,9 @@ public class ManagerDashboardCommand implements Command{
 		String role = (String) session.getAttribute("role");
 		
 		if(role != null && role.equalsIgnoreCase("Manager")) {
-			
-			List<Employee> emp_list = EmployeeDAO.getAllMembers().orElse(new ArrayList<Employee>());
-			request.setAttribute("Members", emp_list);
+			int currentPage = 1; 
+//			List<Employee> emp_list = EmployeeDAO.getAllMembers("managedashboard",).orElse(new ArrayList<Employee>());
+//			request.setAttribute("Members", emp_list);
 			
 			int timesheet_count = PendingTimesheetCount.pendingTimeSheet((int) session.getAttribute("id"));
 			request.setAttribute("PendingTimesheetCount", timesheet_count);
@@ -55,6 +57,30 @@ public class ManagerDashboardCommand implements Command{
 			request.setAttribute("InProgress", status.getOrDefault("In Progress", 0));
 			request.setAttribute("Completed", status.getOrDefault("Completed", 0));
 			
+			int page=1;
+			if (request.getParameter("page") != null) {
+			    page = Integer.parseInt(request.getParameter("page"));
+			}
+			int offset = (page - 1) * PAGE_SIZE;
+			
+			Optional<List<Employee>> optional=EmployeeDAO.getAllMembers("managerDashboard",offset);
+			List<Employee> emp_list=null;
+			if(optional.isPresent()) {
+				emp_list=optional.get();
+			}else {
+				emp_list=new ArrayList<>();
+			}
+			
+			int employee_count =EmployeeDAO.getEmployeeCount();
+			int totalPages = (int) Math.ceil((double) employee_count / PAGE_SIZE);
+
+			
+			
+			request.setAttribute("employees",emp_list );
+		    request.setAttribute("currentPage", page);
+		    request.setAttribute("totalPages", totalPages);
+		    System.out.println("emp list: "+emp_list);
+		    System.out.println(employee_count);
 			
 			return true;
 		}

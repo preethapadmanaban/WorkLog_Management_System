@@ -29,7 +29,7 @@ public class CreateTaskPageCommand implements Command {
 			return false;
 		}
 
-		List<Employee> members = EmployeeDAO.getAllMembers().orElse(new ArrayList<Employee>());
+		List<Employee> members = EmployeeDAO.getAllMembers("",0).orElse(new ArrayList<Employee>());
 		request.setAttribute("members", members);
 
 		return true;

@@ -20,7 +20,7 @@
 
 
     <%
-        List<Employee> members = (List<Employee>) request.getAttribute("Members");
+        List<Employee> members = (List<Employee>) request.getAttribute("employees");
         Integer pendingCount = (Integer) request.getAttribute("PendingTimesheetCount");
 
         Integer assigned = (Integer) request.getAttribute("Assigned");
@@ -107,6 +107,28 @@
 			  </tbody>
 			</table>
         </div>
+         <% if(members != null && members.size() > 5) {  %>
+	     <div class="pagination-button">
+	     		<%
+	     		  int totalPages = request.getAttribute("totalPages") != null ? (int)request.getAttribute("totalPages") : 1;
+	    		  int pageNumber = request.getParameter("currentPage") != null ? Integer.parseInt(request.getParameter("pageNumber")) : 1;
+	     			
+	     			%>	
+	   			<form action="controller" method="post">
+	     			<input type="hidden" name="action" value="listEmployeeTasks">
+	     			<input type="hidden" name="page" value="<%=pageNumber - 1%>">
+	     			<button class="btn btn-primary" type="submit" <%if(pageNumber <= 1) { %> disabled <% } %> >Prev</button>
+	    			</form>
+	    			
+	    			<span><%=pageNumber%></span>
+	    			
+	    			<form action="controller" method="post">
+	    				<input type="hidden" name="action" value="listEmployeeTasks">
+	     			<input type="hidden" name="pageNumber" value="<%=pageNumber + 1%>">
+	     			<button class="btn btn-primary" type="submit" <%if(pageNumber >= totalPages ) { %> disabled <% } %>>Next</button>
+	    			</form>
+	     </div>
+     <% } %>
 
     </div>
 

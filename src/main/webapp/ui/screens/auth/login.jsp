@@ -1,73 +1,209 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Worklog management system</title>
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-<link rel="stylesheet" href="/worklog/ui/css/styles.css">
+<title>Work Log | Login</title>
+
+<style>
+:root {
+    --primary: #1F3A5F;
+    --primary-hover: #162C46;
+    --border: #D1D5DB;
+    --bg: #F4F6F9;
+    --text: #2E2E2E;
+    --muted: #6B7280;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.container {
+    height: 100vh;
+    display: flex;
+flex-direction:column;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    background: #ffffff;
+    width: 380px;
+    padding: 28px;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+.logo {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 20px;
+}
+
+/* Label */
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+.field {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 6px;
+    border-radius: 6px;
+    font-size: 14px;
+  border: 1px solid var(--border);
+}
+
+.field:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+#password-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--border);  
+    border-radius: 6px;  
+    height: 45px;
+}
+
+#password-wrapper .field{
+   border: none;
+   background: none;
+}
+
+
+
+.eye {    
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--muted);
+    margin-right: .5em;
+}
+
+.eye:hover {
+    color: var(--primary);
+}
+
+/* Button */
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary);
+    border: none;
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 6px;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+}
+
+/* Anchor link */
+.create-link {
+    display: block;
+    margin-top: 16px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.create-link:hover {
+    text-decoration: underline;
+}
+img{
+height:20px;
+width:20px;
+}
+.error_message {
+  color: red;
+  font-size: 12px;
+}
+
+</style>
 </head>
-<body> 
-<div class="mobile_auth_page">
-	<div class="app_name_div"><h3>Worklog Management</h3></div>
-	
-	<!-- <form action="login" method="post" class="mx-auto my-20 max-w-md space-y-4 rounded-lg border border-gray-300 bg-gray-100 p-6"> -->
-	<form action="/worklog/controller" method="post" class="mx-auto my-20 max-w-md space-y-4 rounded-lg border border-gray-300 bg-gray-100 p-6 myform">
-	  
-		<div class="flex justify-center">
-		 	<label class="block text-md text-2xl font-medium text-gray-900">Login Screen</label>
-		</div>	
-		<div>
-			<input class="mt-1 w-full rounded-lg border-black-700 border p-2" value="login" name="action" id="action" type="hidden">
-		</div>
-		<div>
-			<label class="block text-sm font-medium text-gray-900" for="email">Your Email</label>
-			<input class="mt-1 w-full rounded-lg border-black-700 border p-2" name="email" id="email" type="text" placeholder="Your email">
-			<div  class="flex justify-center">
-				<span id="error_message_email" class="text-red-700 font-medium error_message"></span>
+
+
+<body>
+
+<div class="container">
+	<h2>Worklog Management System</h2>
+    <div class="card">
+
+        <div class="logo">Login Screen</div>
+
+        <form action="/worklog/controller" method="post" class="myform">
+			<input type="hidden" name="action" value="login">
+            <label for="email">Email address</label>
+            <input type="text"
+                   id="email"
+                   name="email"
+                   class="field"
+                   >
+			<p id="error_message_email" class="error_message"></p>
+            <label for="password">Password</label>
+
+			<div id="password-wrapper">
+    			<input type="password" id="password" name="password" class="field" >
+   				<span class="eye" id="togglePassword">
+        		<img src="<%=request.getContextPath()%>/ui/images/eye-open-svgrepo-com.svg">
+    			</span>
 			</div>
-		</div>
-		
-		<div>
-		  	<label class="block text-sm font-medium text-gray-900" for="message">Your Password</label>
-			<input class="mt-1 w-full rounded-lg border-black-700 border p-2" name="password" id="password" type="password" placeholder="Your password">
-			<div  class="flex justify-center">
-				<span id="error_message_password" class="text-red-700 font-medium error_message"></span>
-			</div>
-		</div>
-		<div class="flex justify-center">
-		 	<span  class="text-red-700 font-medium"><%=request.getAttribute("message") !=null ? request.getAttribute("message"): "" %></span>
-		</div>
-	
-		<button class="block w-full rounded-lg border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white transition-colors hover:bg-transparent hover:text-indigo-600" type="submit">
-		  	Login
-		</button>
-		 <div class="flex justify-center">
-			<a href="/worklog/controller?action=signupPage" class="mx-auto inline-flex items-center font-medium text-fg-brand hover:underline">
-				New Employee? Create account 
-				<svg class="w-5 h-5 ms-1 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"/></svg>
-			</a>
-		</div>
-	</form>
-	
+
+         <p id="error_message_password" class="error_message"></p>
+
+
+            <button type="submit" class="btn-primary">
+                Login in
+            </button>
+
+            <a href="/worklog/controller?action=signup" class="create-link">
+                Create new account
+            </a>
+
+        </form>
+
+    </div>
 </div>
+
 <script>
-	function clearAllErrorMessage(){
-		const errorElementsArray = document.querySelectorAll(".error_message");
-		for(let i=0;i<errorElementsArray.length;i++){
-			errorElementsArray[i].innerText="";
-		}
+
+
+function clearAllErrorMessage(){
+	const errorElementsArray = document.querySelectorAll(".error_message");
+	for(let i=0;i<errorElementsArray.length;i++){
+		errorElementsArray[i].innerText="";
 	}
+}
 	let form=document.querySelector(".myform");
-	
+	let mandatory="This field is mandatory"
 	form.addEventListener("submit",(e)=>{
 		e.preventDefault();
 		clearAllErrorMessage()
 		let email=document.getElementById("email").value;
 		let password=document.getElementById("password").value;
 		let isValid=true;
-		
+		console.log("hii")
 		let valid_email=true
 		let err_msg=""
 		const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -116,7 +252,7 @@
 		let valid_psw=true
 		if(password === ""){
 			document.getElementById("error_message_password").innerText = mandatory;
-			document.getElementById("password").style.border = "2px solid red";
+			document.getElementById("password-wrapper").style.border = "2px solid red";
 			isValid = false;
 			valid_psw=false
 		}else{
@@ -143,18 +279,31 @@
 				isValid=false;
 				
 			}
-			document.getElementById("password").style.border = "2px solid red";
+			document.getElementById("password-wrapper").style.border = "2px solid red";
 			document.getElementById("error_message_password").innerText=err_msg;
 			
 		}
 		if(password_regex.test(password)){
-			document.getElementById("password").style.border = "0.5px solid grey";
+			document.getElementById("password-wrapper").style.border = "0.5px solid grey";
 		}
 		if(isValid){
 			form.submit();
 		}
 		
-	})
+	});
+	let button = document.getElementById("togglePassword");
+
+	button.addEventListener("click", () => {
+	let password = document.getElementById("password");
+
+	 if (password.type === "password") {
+	   password.type = "text";
+	 } else {
+	   password.type = "password";
+	 }
+	});
+
 </script>
+
 </body>
 </html>
