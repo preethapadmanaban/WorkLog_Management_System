@@ -7,6 +7,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Worklog Report</title>
 	<link rel="stylesheet" href="/worklog/ui/css/styles.css" type="text/css">
 	<jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>

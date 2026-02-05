@@ -57,7 +57,7 @@
 	{ 
 	%>
 	<div class="timesheet_status_img_div" id="timesheet_approved_img">
-		<img class="timesheet_status_img" alt="Approved" src="<%=request.getContextPath()%>/ui/icons/timesheet_approved.png">
+		<img class="timesheet_status_img" alt="Approved" src="<%=request.getContextPath()%>/ui/assets/icons/timesheet_approved.png">
 	</div>
 	<%
 	}
@@ -65,7 +65,7 @@
 	{
 	%>
 	<div class="timesheet_status_img_div" id="timesheet_rejected_img">
-		<img class="timesheet_status_img" alt="Approved" src="<%=request.getContextPath()%>/ui/icons/timesheet_rejected.png">
+		<img class="timesheet_status_img" alt="Approved" src="<%=request.getContextPath()%>/ui/assets/icons/timesheet_rejected.png">
 	</div>
 	<%
 	}
@@ -73,7 +73,7 @@
 	{
 	%>
 	<div class="timesheet_status_img_div" id="timesheet_pending_img">
-		<img class="timesheet_status_img" alt="Approved" src="<%=request.getContextPath()%>/ui/icons/timesheet_pending.png">
+		<img class="timesheet_status_img" alt="Approved" src="<%=request.getContextPath()%>/ui/assets/icons/timesheet_pending.png">
 	</div>
 	<%} 
 	}
@@ -136,7 +136,7 @@
 		      <small class="error-text" id="commentError"></small>
 		    </div>
 			
-			<button class="submit_button" type="button" id="approveBtn">Approve</button>
+			<button class="button button-primary" type="button" id="approveBtn">Approve</button>
 			<button class="reject_button" type="button" id="rejectBtn">Reject</button>
 	
 		</form>

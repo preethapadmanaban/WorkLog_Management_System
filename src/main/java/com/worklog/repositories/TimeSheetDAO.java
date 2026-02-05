@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +18,8 @@ import com.worklog.config.AppConfig;
 import com.worklog.constants.TimeSheetStatus;
 import com.worklog.dto.ListResultWithRowCount;
 import com.worklog.dto.ReportEmployeeDTO;
+import com.worklog.dto.TimeSheetEntryDTO;
 import com.worklog.entities.TimeSheet;
-import com.worklog.exceptions.DuplicateTimesheetCreationException;
 import com.worklog.factories.DataSourceFactory;
 import com.worklog.utils.CustomDateFormatter;
 
@@ -44,13 +45,10 @@ public class TimeSheetDAO {
 	}
 
 	public int getTimeSheetId(TimeSheet timesheet) {
-		String sql = "SELECT id FROM timesheets where employee_id = ? and work_date = ? and total_hours = ? and status = ? and manager_id = ?";
+		String sql = "SELECT id FROM timesheets where employee_id = ? and work_date = ?";
 		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setInt(1, timesheet.getEmployee_id());
 			pstmt.setDate(2, Date.valueOf(timesheet.getWork_date()));
-			pstmt.setDouble(3, timesheet.getTotal_hours());
-			pstmt.setString(4, timesheet.getStatus());
-			pstmt.setInt(5, timesheet.getManager_id());
 
 			ResultSet rs = pstmt.executeQuery();
 
@@ -66,29 +64,72 @@ public class TimeSheetDAO {
 		}
 	}
 
-	public boolean createTimeSheet(TimeSheet timesheet) throws DuplicateTimesheetCreationException {
-		String sql = "INSERT INTO timesheets(employee_id, work_date, total_hours, status, manager_id) VALUES(?, ?, ?, ?, ?)";
-		try (Connection conn = DataSourceFactory.getConnectionInstance(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setInt(1, timesheet.getEmployee_id());
-			pstmt.setDate(2, Date.valueOf(timesheet.getWork_date()));
-			pstmt.setDouble(3, timesheet.getTotal_hours());
-			pstmt.setString(4, timesheet.getStatus());
-			pstmt.setInt(5, timesheet.getManager_id());
+	/*
+	 * This method is used to Create timesheet and timesheet entries.
+	 *
+	 * @param Timesheet(Entity), List<TimeSheetEntryDTO>(DTO)
+	 * 
+	 * @return true if timesheet & timesheet entry are created successfully otherwise false
+	 * 
+	 */
+	public boolean createTimeSheet(TimeSheet timesheet, List<TimeSheetEntryDTO> entries) {
 
-			int affectedRows = pstmt.executeUpdate();
+		String insertTimesheetQuery = "INSERT INTO timesheets(employee_id, work_date, total_hours, status, manager_id) VALUES(?, ?, ?, ?, ?)";
+		// String insertTimeSheetQuery = ;
+		String insertTimeSheetEntryQuery = TimeSheetEntryDAO.createQuery(entries);
 
-			if (affectedRows <= 0) {
-				throw new SQLException("Timesheet insertion failed.");
+		Connection conn = DataSourceFactory.getConnectionInstance();
+
+		try (PreparedStatement insertTimesheet = conn.prepareStatement(insertTimesheetQuery, Statement.RETURN_GENERATED_KEYS);
+						PreparedStatement insertTimesheetEntry = conn.prepareStatement(insertTimeSheetEntryQuery)) {
+
+			// BEGIN Transaction.
+			conn.setAutoCommit(false);
+
+			insertTimesheet.setInt(1, timesheet.getEmployee_id());
+			insertTimesheet.setDate(2, Date.valueOf(timesheet.getWork_date()));
+			insertTimesheet.setDouble(3, timesheet.getTotal_hours());
+			insertTimesheet.setString(4, timesheet.getStatus());
+			insertTimesheet.setInt(5, timesheet.getManager_id());
+
+			// create timesheet
+			insertTimesheet.executeUpdate();
+
+			ResultSet rs = insertTimesheet.getGeneratedKeys();
+			int timesheetId;
+			if (rs.next()) {
+				timesheetId = rs.getInt(1);
+			} else {
+				throw new SQLException("Timsheet Creation Failed.");
 			}
+
+			PreparedStatement dataBindedTimesheetEntry = TimeSheetEntryDAO.bindQuery(timesheetId, insertTimesheetEntry, entries);
+			
+			// create timesheet entry
+			dataBindedTimesheetEntry.executeUpdate();
+
+			// END Transaction.
+			conn.commit();
 
 			return true;
 
 		} catch (SQLException e) {
 			logger.error("Error creating timesheet for employee {}", timesheet.getEmployee_id(), e);
-			if (e.getMessage().contains("duplicate") || e.getMessage().contains("unique_timesheet")) {
-				throw new DuplicateTimesheetCreationException("Timesheet Already Found for this Work date.", e);
+			try {
+				conn.rollback();
+				logger.error("Insert Timesheet Transaction Rolled Back ", e);
+				return false;
+			} catch (SQLException e1) {
+				return false;
 			}
-			return false;
+		}
+		finally {
+			try {
+				conn.close();
+				conn.setAutoCommit(true);
+			} catch (SQLException e) {
+				logger.error("Exception while closing the connection.", e);
+			}
 		}
 	}
 

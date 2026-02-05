@@ -164,7 +164,7 @@
 
         <div style="margin-top: 16px;">
 		    <% if (canEdit) { %> 
-				<button type="submit" class="submit_button" id="submitBtn" disabled>Submit</button>
+				<button type="submit" class="button button-primary" id="submitBtn" disabled>Submit</button>
 		    <% } else { %>
 		        <p style="color:#dc3545; font-weight:600;">
 		            You can't edit this task because work is already started (Status: <%= t.getStatus() %>).

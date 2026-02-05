@@ -1,7 +1,6 @@
 package com.worklog.commands.timesheets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.time.LocalDate;
 
 import org.slf4j.Logger;
@@ -15,11 +14,9 @@ import com.worklog.constants.TimeSheetStatus;
 import com.worklog.dto.TimeSheetEntryDTO;
 import com.worklog.dto.TimeSheetJsonRequestData;
 import com.worklog.entities.TimeSheet;
-import com.worklog.exceptions.DuplicateTimesheetCreationException;
 import com.worklog.exceptions.UnAuthorizedException;
 import com.worklog.interfaces.Command;
 import com.worklog.repositories.TimeSheetDAO;
-import com.worklog.repositories.TimeSheetEntryDAO;
 import com.worklog.utils.LocalDateAdapter;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,9 +40,8 @@ public class CreateTimesheetCommandJson implements Command {
 
 			Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).create();
 
-			PrintWriter out = null;
 			try {
-				out = response.getWriter();
+
 				TimeSheetJsonRequestData timeSheetRequest = gson.fromJson(request.getReader(), TimeSheetJsonRequestData.class);
 
 				// validate the input
@@ -61,47 +57,30 @@ public class CreateTimesheetCommandJson implements Command {
 				timesheet.setStatus(TimeSheetStatus.PENDING.toString());
 				timesheet.setEmployee_id(employeeId);
 				timesheet.setTotal_hours(total_hours_spent);
-
-				System.out.println(timeSheetRequest);
-
-				//return createTimesheet(request, response, timesheet, employeeId, requestObj.getWork_date(), requestObj);
 				
 				TimeSheetDAO repo = new TimeSheetDAO();
-				boolean flag;
-				try {
-					flag = repo.createTimeSheet(timesheet);
-				} catch (DuplicateTimesheetCreationException e) {
-					request.setAttribute("message", e.getMessage());
+
+				int timeSheetId = repo.getTimeSheetId(timesheet);
+
+				// this method returns -1 if timesheet not found, otherwise returns the timesheet id.
+				if (timeSheetId != -1) {
+					logger.error("Timesheet already created for this Work Date Employee id, Work Date.", employeeId,
+									timeSheetRequest.getWork_date());
+					request.setAttribute("message", "Timesheet already created for this Work Date.");
 					return false;
 				}
-				if (flag == false) {
+
+				if (repo.createTimeSheet(timesheet, timeSheetRequest.getEntries()) == false) {
 					logger.error("Timesheet creation failed for employee {} on date {}", employeeId, timeSheetRequest.getWork_date());
 					request.setAttribute("message", "Timesheet creation failed!");
 					return false;
 				}
-
-				int timeSheetId = repo.getTimeSheetId(timesheet);
-
-				if (timeSheetId == -1) {
-					logger.error("Failed to retrieve timesheet ID for employee {} on date {}", employeeId, timeSheetRequest.getWork_date());
-					request.setAttribute("message", "Timesheet creation failed!");
-					return false;
+				else {
+					logger.info("Timesheet {} created successfully by employee {} for date {}", timeSheetId, employeeId,
+									timeSheetRequest.getWork_date());
+					request.setAttribute("message", "Timesheet created successfully!");
+					return true;
 				}
-
-				TimeSheetEntryDAO entryRepo = new TimeSheetEntryDAO();
-
-				flag = entryRepo.createTimeSheetEntries(timeSheetId, timeSheetRequest.getEntries());
-
-				if (flag == false) {
-					logger.error("Timesheet entries insertion failed for timesheet ID {}", timeSheetId);
-					request.setAttribute("message", "Timesheet creation failed!");
-					return false;
-				}
-
-				logger.info("Timesheet {} created successfully by employee {} for date {}", timeSheetId, employeeId, timeSheetRequest.getWork_date());
-				request.setAttribute("message", "Timesheet created successfully!");
-				return true;
-				
 
 			} catch (JsonSyntaxException e) {
 				logger.error("Timesheet creation failed ", e);
@@ -116,6 +95,7 @@ public class CreateTimesheetCommandJson implements Command {
 				request.setAttribute("message", "Exception Occured!");
 				return false;
 			}
+
 		}
 		else {
 			request.setAttribute("message", "Invalid Request!");

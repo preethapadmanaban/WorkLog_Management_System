@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 
 public class Employee {
 	
-	private int id;
+	private String id;
 	private String name;
 	private String role;
 	private String email;
@@ -23,11 +23,11 @@ public class Employee {
 	}
 	
 	public Employee(Builder builder) {
-		
+		this.id = "WSM" + builder.id;
 		this.active=builder.active;
 		this.created_at=builder.created_at;
 		this.email=builder.email;
-		this.id=builder.id;
+
 		this.name=builder.name;
 		this.role=builder.role;
 		this.password=builder.password;
@@ -81,12 +81,12 @@ public class Employee {
 		
 	}
 
-	public int getId() {
+	public String getDisplayId() {
 		return id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public int getId() {
+		return Integer.parseInt(id.split("WSM")[1]);
 	}
 
 	public String getName() {

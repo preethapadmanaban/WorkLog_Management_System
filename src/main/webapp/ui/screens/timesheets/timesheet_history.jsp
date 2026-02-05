@@ -97,24 +97,25 @@
 			  </tbody>
 	     </table>
 	     <%-- <% if(totalPages > 1) {  %> --%>
-	     <div class="pagination-button">
-	   				<form action="controller">
-		     			<input type="hidden" name="action" value="timesheetHistory">
-		     			<input type="hidden" name="pageNumber" value="<%=pageNumber - 1%>">
-	     				<button class="btn btn-primary" type="submit" <%if(pageNumber <= 1) { %> disabled <% } %> >Prev</button>
-	    			</form>
-	    			
-	    			<span><%=pageNumber%></span>
-	    			<%-- <%System.out.println("Page Number: "+(pageNumber<=1)); %> --%>
-	    			<form action="controller">
-	    				<input type="hidden" name="action" value="timesheetHistory">
-		     			<input type="hidden" name="pageNumber" value="<%=pageNumber + 1%>">
-	     				<button class="btn btn-primary" type="submit" <%if(pageNumber >= totalPages ) { %> disabled <% } %>>Next</button>
-	    			</form>
-	     </div>
+	     
 	     <%-- <% } %> --%>
 	    </div>
  	</div>
+ 	<div class="pagination-button">
+		<form action="controller">
+   			<input type="hidden" name="action" value="timesheetHistory">
+   			<input type="hidden" name="pageNumber" value="<%=pageNumber - 1%>">
+			<button class="btn btn-primary" type="submit" <%if(pageNumber <= 1) { %> disabled <% } %> >Prev</button>
+		</form>
+	 			
+		<span><%=pageNumber%></span>
+	 			<%-- <%System.out.println("Page Number: "+(pageNumber<=1)); %> --%>
+		<form action="controller">
+			<input type="hidden" name="action" value="timesheetHistory">
+ 			<input type="hidden" name="pageNumber" value="<%=pageNumber + 1%>">
+			<button class="btn btn-primary" type="submit" <%if(pageNumber >= totalPages ) { %> disabled <% } %>>Next</button>
+		</form>
+	  </div>
 </div>
 <script>
  	

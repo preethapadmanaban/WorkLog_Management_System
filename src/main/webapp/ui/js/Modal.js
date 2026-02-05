@@ -18,7 +18,7 @@
 
 window.closePopup = function() {
 	  document.getElementById("modalOverlay").style.display = "none";
-	  window.location.reload();
+	  /*window.location.reload();*/
 }
 
 window.openPopup = function(msg, popupTitle="Message", type="info", options={}) {

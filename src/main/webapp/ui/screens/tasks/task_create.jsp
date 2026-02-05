@@ -68,7 +68,7 @@
       
       <p id="formError" class="form-error"></p>
       
-		<button type="button" class="submit_button" onclick="submitTask()">Submit</button>
+		<button type="button" class="button button-primary" onclick="submitTask()">Submit</button>
       
       </form>
     </section>

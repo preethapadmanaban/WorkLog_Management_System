@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Work Log | Login</title>
-
+<title>Worklog | Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 :root {
     --primary: #1F3A5F;
@@ -178,8 +178,8 @@ width:20px;
 			<div id="password-wrapper">
     			<input type="password" id="password" name="password" class="field" placeholder="Your password">
    				<span class="eye" id="togglePassword">
-        		<img class="open-eye" id="open-eye" src="<%=request.getContextPath()%>/ui/icons/eye-open.svg">
-        		<img class="close-eye" id="close-eye" src="<%=request.getContextPath()%>/ui/icons/eye-slash.svg">
+        		<img class="open-eye" id="open-eye" src="<%=request.getContextPath()%>/ui/assets/icons/eye-open.svg">
+        		<img class="close-eye" id="close-eye" src="<%=request.getContextPath()%>/ui/assets/icons/eye-slash.svg">
     			</span>
 			</div>
 

@@ -90,7 +90,9 @@ label {
     cursor: pointer;
     margin-right: 10px;
 }
-
+.close-eye{
+	display: none;
+}
 .eye img {
     width: 18px;
     height: 18px;
@@ -162,7 +164,8 @@ label {
             <div class="password-wrapper" id="password-wrapper">
                 <input type="password" id="password" class="field" placeholder="Enter your password">
                 <span class="eye" id="togglePassword">
-                    <img src="<%=request.getContextPath()%>/ui/images/eye-open-svgrepo-com.svg" alt="eye">
+                    <img class="open-eye" id="open-eye" src="<%=request.getContextPath()%>/ui/assets/icons/eye-open.svg">
+        		<img class="close-eye" id="close-eye" src="<%=request.getContextPath()%>/ui/assets/icons/eye-slash.svg">
                 </span>
             </div>
             
@@ -330,8 +333,12 @@ button.addEventListener("click", () => {
 let password = document.getElementById("password");
 
  if (password.type === "password") {
-   password.type = "text";
+	password.type = "text";
+	document.getElementById("open-eye").style.display = "block";
+	document.getElementById("close-eye").style.display = "none";
  } else {
+	document.getElementById("open-eye").style.display = "none";
+	document.getElementById("close-eye").style.display = "block";
    password.type = "password";
  }
 });

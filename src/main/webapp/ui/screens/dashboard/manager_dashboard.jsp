@@ -7,6 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Manager Dashboard</title>
 <jsp:include page="/ui/screens/common/app_logo.jsp"></jsp:include>
 <link rel="stylesheet" href="<%= request.getContextPath() %>/ui/css/styles.css">
@@ -89,7 +90,7 @@
 			        for(Employee e : members){
 			    %>
 			      <tr>
-			        <td><%= e.getId() %></td>
+			        <td><%= e.getDisplayId() %></td>
 			        <td><%= e.getName() %></td>
 			        <td><%= e.getRole() %></td>
 			      </tr>

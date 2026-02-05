@@ -81,11 +81,7 @@
 	<br>
 	
 	<a class="info_anchor"
-	   href="controller?action=listTasks
-	   &employee_id=<%= request.getParameter("employee_id") %>
-	   &status=<%= request.getParameter("status") %>
-	   &fromDate=<%= request.getParameter("fromDate") %>
-	   &toDate=<%= request.getParameter("toDate") %>">
+	   href="controller?action=listTasks">
 	   Back to Task List
 	</a>
 

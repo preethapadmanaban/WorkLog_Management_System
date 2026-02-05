@@ -6,6 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Create Timesheet</title>
 <link href="/worklog/ui/css/styles.css" rel="stylesheet">
 <script src="${pageContext.request.contextPath}/ui/js/Modal.js"></script>
@@ -34,7 +35,7 @@
 			  </div>
 		</div>
 	    <div class="create_timesheet_section">
-	        <div class="timesheet-entry-form">
+	        <div class="timesheet-entry-form flex-item">
 	        <h3>Add Entry Form</h3>
 	            <form onsubmit="add_enrty(event)">
 	                <div class="nice-form-group">
@@ -68,7 +69,12 @@
 	                </div>
 	            </form>
 	        </div>
-	        <div class="entry_section" id="entry_section"><h3>Entry Section</h3></div>
+	        <div class="entry_section flex-item" id="entry_section">
+	        	<div class="entry-header-section">
+	        		<h3>Entry Section</h3>
+	        	</div>
+	        
+	        </div>
 	    </div>
 	    <div class="full_div_action_button">
 	        <button onclick="createTimesheet()" class="button button-primary" >Create Timesheet</button>
@@ -270,26 +276,24 @@
         }
         
         function createTimesheet(){
-			if(entries == null || entries.length === 0){
-				openPopup("Please Create Atleast One Entry!", "Message", "error");
+        	if(entries == null || entries.length === 0){
+				openPopup("Please Create Atleast One Entry!", "Data Required", "error");
 				return;
 			}
-			
-			document.getElementById("loader_outlier").style.display = "flex";
-			console.log("Entries => ", entries);
-			let work_date = document.getElementById("work_date").value;	
-			console.log("payload => ", {"manager_id" : manager_id, 
-				  "work_date" : work_date, 
-				  "entries" : entries});
-			openPopup("Please Create Atleast One Entry!", "Message", "error", {
+			openPopup("Be sure to submit the timesheet, You cannot edit further!", "Confirmation Required", "info", {
 		            showCancel: true,
 		            okText: "Yes, Proceed!",
 		            cancelText: "Cancel",
-		            onOk: () => {alert("Action Confirmed!")},
+		            onOk: () => {proceedToSubmit()},
 		            onCancel: () => {} // do nothing
-			});
-			return;
-			fetch("/worklog/controller/api?action=createTimesheet", {
+			});			
+        }
+        
+        function proceedToSubmit(){
+        	document.getElementById("loader_outlier").style.display = "flex";
+			console.log("Entries => ", entries);
+			let work_date = document.getElementById("work_date").value;	
+        	fetch("/worklog/controller/api?action=createTimesheet", {
 				method: "POST",
 				header: {"Content-Type": "application/json"},
 				body: JSON.stringify({"manager_id" : manager_id, 
@@ -299,13 +303,21 @@
 			.then( (res) => res.json() )
 			.then( (data) =>{ 
 				document.getElementById("loader_outlier").style.display = "none";
-				openPopup(data.message, "Message", data.status);
+				
+				if(data.status === "success"){
+					openPopup(data.message, "Success ✅", "success", {onOk:()=>{window.location.reload()}});
+				}
+				else{
+					openPopup(data.message, "Failed ❌", "error",{onOk:()=>{window.location.reload()}});
+					
+				}
 			})
 			.catch( err=> console.log("error =>", err))
 			.finally(()=>{
 				document.getElementById("loader_outlier").style.display = "none";
+				
 			});
-        }
+        };
         
      </script>
 </body>

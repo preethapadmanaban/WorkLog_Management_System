@@ -31,9 +31,8 @@ public class TimeSheetEntryDAO {
 		return timeSheetEntry;
 	}
 
-	private String createQuery(List<TimeSheetEntryDTO> entries) {
+	public static String createQuery(List<TimeSheetEntryDTO> entries) {
 		
-
 		StringBuilder builder = new StringBuilder();
 		builder.append("INSERT INTO timesheet_entries(timesheet_id, task_id, notes, hours_spent) values ");
 		for (int i = 0; i < entries.size(); i++) {
@@ -45,7 +44,8 @@ public class TimeSheetEntryDAO {
 		return builder.toString();
 	}
 
-	private PreparedStatement bindQuery(int timeSheetId, PreparedStatement pstmt, List<TimeSheetEntryDTO> entries) throws SQLException {
+	public static PreparedStatement bindQuery(int timeSheetId, PreparedStatement pstmt, List<TimeSheetEntryDTO> entries)
+					throws SQLException {
 
 		// initially set to 1 to bind the value to the sql query. increase to place dynamiclly with respect to the size of the entries
 		// array.

@@ -94,7 +94,10 @@
        %>
        </tbody>
      </table>
-     <% if(tasks != null || tasks.size() > 5) {  %>
+     
+    </div>
+  </div>
+  <% if(tasks != null || tasks.size() > 5) {  %>
      <div class="pagination-button">
      		<%
      			
@@ -114,8 +117,6 @@
     			</form>
      </div>
      <% } %>
-    </div>
-  </div>
 </div>
  	
  	<script>
