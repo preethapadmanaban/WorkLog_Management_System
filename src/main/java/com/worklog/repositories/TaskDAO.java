@@ -163,14 +163,15 @@ public class TaskDAO {
 		}
 		
 		if (statusEnum != null) {
-			query = " FROM tasks WHERE assigned_to =" + employeeId + " AND status ILIKE '%" + status + "%' LIMIT " + rowsPerPage
-							+ " OFFSET " + offset;
+			query = " FROM tasks WHERE assigned_to =" + employeeId + " AND status ILIKE '%" + status + "%'";
 		}
 		else {
-			query = " FROM tasks where assigned_to = " + employeeId + " LIMIT " + rowsPerPage + " OFFSET " + offset;
+			query = " FROM tasks where assigned_to = " + employeeId;
 		}
 
-		List<Task> tasks = getTasksWithQuery(selectData + query).orElse(Collections.emptyList());
+		String paginationQuery = " LIMIT " + rowsPerPage + " OFFSET " + offset;
+
+		List<Task> tasks = getTasksWithQuery(selectData + query + paginationQuery).orElse(Collections.emptyList());
 		int rowCount = getRowCountForQuery(selectCount + query);
 		return Optional.of(new ListResultWithRowCount<Task>(tasks, rowCount));
 

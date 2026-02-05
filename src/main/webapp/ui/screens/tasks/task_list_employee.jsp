@@ -63,7 +63,6 @@
 		List<Task> tasks = (List<Task>)request.getAttribute("tasks");
 		if(tasks != null && tasks.size() != 0) 
 		{
-		 	
 		int currentSerialSequence = TaskDAO.rowsPerPage * (pageNumber - 1);
 		//for(ListTaskDTO task:tasks)
 		for(int i=0; i<tasks.size(); i++)
@@ -104,6 +103,7 @@
      			%>	
    			<form action="controller" method="post">
      			<input type="hidden" name="action" value="listEmployeeTasks">
+     			<input type="hidden" name="status" value="<%=request.getParameter("status")%>">
      			<input type="hidden" name="pageNumber" value="<%=pageNumber - 1%>">
      			<button class="btn btn-primary" type="submit" <%if(pageNumber <= 1) { %> disabled <% } %> >Prev</button>
     			</form>
@@ -112,9 +112,11 @@
     			
     			<form action="controller" method="post">
     				<input type="hidden" name="action" value="listEmployeeTasks">
-     			<input type="hidden" name="pageNumber" value="<%=pageNumber + 1%>">
-     			<button class="btn btn-primary" type="submit" <%if(pageNumber >= totalPages ) { %> disabled <% } %>>Next</button>
-    			</form>
+	     			<input type="hidden" name="status" value="<%=request.getParameter("status")%>">
+     				<input type="hidden" name="pageNumber" value="<%=pageNumber + 1%>">
+     			<button class="btn btn-primary" type="submit" <%if(pageNumber >= totalPages) { %> disabled <% } %>>Next</button>
+     			
+    		</form>
      </div>
      <% } %>
 </div>
@@ -125,7 +127,7 @@
  	
  		document.addEventListener('DOMContentLoaded', ()=>{
 			<%
-				String statusSelect = request.getParameter("status") == null ? "all" : request.getParameter("status");
+				String statusSelect = (request.getParameter("status") == null || request.getParameter("status").equals("null")) ? "all" : request.getParameter("status");	
 			%>
 			let status = "<%=statusSelect%>";
 			document.getElementById("status_select").value = status;

@@ -29,7 +29,7 @@ public class EmployeeUpdateTaskCommand implements Command {
 
 		TaskDAO dao = new TaskDAO();
 
-		if (request.getRequestURI().contains("/api")) {
+		if (request.getRequestURI().contains("/api")) { // it updates the task status through fetch api.
 			String status = request.getParameter("status");
 
 			if (status == null) {
@@ -46,7 +46,7 @@ public class EmployeeUpdateTaskCommand implements Command {
 			}
 
 
-		} else {
+		} else { // it navigate the page with the task.
 
 			Task task = dao.getTaskById(task_id).orElse(null);
 

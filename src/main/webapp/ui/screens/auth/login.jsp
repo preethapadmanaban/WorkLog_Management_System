@@ -197,7 +197,7 @@ width:20px;
             </button>
 
             <a href="/worklog/controller?action=signup" class="create-link">
-                Create New Account
+                New User? Create New Account
             </a>
 
         </form>

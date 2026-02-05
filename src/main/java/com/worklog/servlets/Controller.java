@@ -88,7 +88,7 @@ public class Controller extends HttpServlet {
 		} catch (CommandNotFoundException e) {
 			// e.printStackTrace();
 			logger.error("Command not found for query String :" + request.getQueryString(), e);
-			request.getRequestDispatcher("/worklog/").forward(request, response);
+			request.getRequestDispatcher(CommandXMLFactory.configMap.get("notFound").getSuccessPage()).forward(request, response);
 		} catch (UnAuthorizedException e) {
 			logger.error("Authorization error: ", e);
 			request.setAttribute("message", e.getMessage());

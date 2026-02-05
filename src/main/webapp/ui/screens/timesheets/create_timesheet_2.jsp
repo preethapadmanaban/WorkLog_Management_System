@@ -304,7 +304,7 @@
 			.then( (data) =>{ 
 				document.getElementById("loader_outlier").style.display = "none";
 				
-				if(data.status === "success"){
+				if(data.success === true){
 					openPopup(data.message, "Success ✅", "success", {onOk:()=>{window.location.reload()}});
 				}
 				else{

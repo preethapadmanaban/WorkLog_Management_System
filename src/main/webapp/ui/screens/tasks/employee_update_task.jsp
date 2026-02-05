@@ -81,7 +81,13 @@
 					})
 					.then((res)=>res.json())
 					.then((data)=>{		
-						openPopup(data.message, "Message", data.status);
+						
+						if(data.success === true){
+							openPopup(data.message, "Success ✅", "success", {onOk: ()=>{window.location.reload()}});
+						}
+						else{
+							openPopup(data.message, "Failed ❌", "error");
+						}
 					})
 					.catch(err => openPopup("Unable to Connect to the Server!", "Alert", "error"));
 				}

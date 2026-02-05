@@ -21,7 +21,7 @@
 	<div class="container">
 		<h1>Hello, <%=request.getSession().getAttribute("name")%></h1>
 		<div>
-		 <div class="task-section" id="task_section">
+		 <div class="task-flex-container" id="task_section">
 			<% if(request.getAttribute("tasksMap") != null)
 			{
 
@@ -36,8 +36,10 @@
 				List<Task> completedTasks = tasks.stream().filter(t->t.getStatus().equals(TaskStatus.COMPLETED)).toList(); */
 			
 			%>
-			<div class="pending_task_array task_card_array">
-				<h3>Assigned Tasks</h3>
+			<div class="task-flex-item">
+				<div class="task-flex-item-header">
+					<h3>Assigned Tasks</h3>
+				</div>
 				<% if(tasks.get(TaskStatus.ASSIGNED.name()) != null && tasks.get(TaskStatus.ASSIGNED.name()).size() > 0)
 				{
 				for(Task task:tasks.get(TaskStatus.ASSIGNED.name()))
@@ -76,8 +78,10 @@
 			
 			</div>
 			
-			<div class="progress_task_array task_card_array">
-				<h3>In Progress Tasks</h3>
+			<div class="task-flex-item">
+				<div class="task-flex-item-header">
+					<h3>In Progress Tasks</h3>
+				</div>
 				<% if(tasks.get(TaskStatus.IN_PROGRESS.name()) != null && tasks.get(TaskStatus.IN_PROGRESS.name()).size() > 0)
 				{
 					for(Task task:tasks.get(TaskStatus.IN_PROGRESS.name()))
@@ -115,8 +119,10 @@
 				%>
 			</div>
 			
-			<div class="completed_task_array task_card_array">
-				<h3>Completed Tasks</h3>
+			<div class="task-flex-item">
+				<div class="task-flex-item-header">
+					<h3>Completed Tasks</h3>
+				</div>
 				<% if(tasks.get(TaskStatus.COMPLETED.name()) != null && tasks.get(TaskStatus.COMPLETED.name()).size() > 0)
 				{
 					for(Task task:tasks.get(TaskStatus.COMPLETED.name()))

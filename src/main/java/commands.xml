@@ -45,6 +45,13 @@
 	  <failure>ui/screens/auth/access_denied.jsp</failure>
 	</command>
 	
+	
+	<command name="notFound">
+	    <class>com.worklog.commands.auth.DummyClass</class>
+		<success>ui/screens/auth/not_found.jsp</success>
+		<failure>ui/screens/auth/not_found.jsp</failure>
+	</command>
+	
 	<!-- ROUTING -->
 	
 	<command name="routing">
